@@ -9,3 +9,8 @@ spring:
     mongodb:
       database: ${MONGO_DATABASE}
       uri: ${MONGO_URI}
+
+firebase:
+  secret:
+    key:
+      path: ${FIREBASE_KEY_PATH}

@@ -28,6 +28,9 @@ dependencies {
     // Web
     implementation("org.springframework.boot:spring-boot-starter-web")
 
+    // Firebase
+    implementation("com.google.firebase:firebase-admin:9.5.0")
+
     // Jsoup (Crawler)
     implementation("org.jsoup:jsoup:1.21.2")
 
@@ -38,7 +41,7 @@ dependencies {
     // Coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
-    
+
     // Lombok
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

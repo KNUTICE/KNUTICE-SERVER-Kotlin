@@ -18,7 +18,7 @@ class NoticeCrawlScheduler(
 
         @Scheduled(cron = "0 0/15 * * * *")
 //    @Scheduled(fixedRate = 60_000) // 60,000ms = 1분
-    fun crawlNotices() {
+    fun crawlAndPushNotices() {
         log.info("Starting scheduled notice crawling")
 
         CoroutineScope(Dispatchers.Default).launch {

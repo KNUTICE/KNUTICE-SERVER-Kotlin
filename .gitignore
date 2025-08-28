@@ -1,3 +1,15 @@
+# image
+/images
+
+# Ignore .log
+*.log
+
+# Ignore Firebase service key
+firebase_service_key.json
+
+# Ignore .env
+*.env
+
 HELP.md
 .gradle
 build/
