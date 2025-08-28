@@ -4,11 +4,7 @@ import java.time.LocalDateTime
 
 data class FcmToken(
     val fcmToken: String,
-    val generalNewsTopic: Boolean,
-    val scholarshipNewsTopic: Boolean,
-    val eventNewsTopic: Boolean,
-    val academicNewsTopic: Boolean,
-    val employmentNewsTopic: Boolean,
+    val subscribedTopics: Set<String> = emptySet(),
     val deviceType: DeviceType,
     val isActive: Boolean,
 

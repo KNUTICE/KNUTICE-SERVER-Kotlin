@@ -1,6 +1,9 @@
 # image
 /images
 
+# QueryDSL #
+**/src/main/generated
+
 # Ignore .log
 *.log
 
