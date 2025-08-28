@@ -10,7 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Getter
 @SuperBuilder
 @NoArgsConstructor
-public class MongoBaseRecord {
+public class MongoBaseDocument {
 
     @CreatedDate
     protected LocalDateTime createdAt = null;

@@ -1,6 +1,6 @@
 package adapter.out.persistence.document;
 
-import adapter.out.persistence.base.MongoBaseRecord;
+import adapter.out.persistence.base.MongoBaseDocument;
 import com.fx.crawler.domain.CrawlableType;
 import com.fx.crawler.domain.Notice;
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "notice")
 @SuperBuilder
 @NoArgsConstructor
-public class NoticeDocument extends MongoBaseRecord {
+public class NoticeDocument extends MongoBaseDocument {
 
     @Id
     private Long nttId;
