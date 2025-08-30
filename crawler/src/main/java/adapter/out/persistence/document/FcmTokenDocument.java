@@ -5,6 +5,7 @@ import com.fx.crawler.domain.DeviceType;
 import com.fx.crawler.domain.FcmToken;
 import com.querydsl.core.annotations.QueryEntity;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,6 +52,10 @@ public class FcmTokenDocument extends MongoBaseDocument {
             .isActive(fcmToken.isActive())
             .createdAt(fcmToken.getCreatedAt())
             .build();
+    }
+
+    public static List<FcmTokenDocument> from(List<FcmToken> fcmTokens) {
+        return fcmTokens.stream().map(FcmTokenDocument::from).toList();
     }
 
 }

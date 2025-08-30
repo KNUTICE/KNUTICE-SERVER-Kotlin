@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @CrawlAdapter
@@ -63,7 +64,8 @@ class NoticeCrawlAdapter: NoticeCrawlPort {
                         contentImage = null, // 상세에서 채움
                         registrationDate = registrationDate,
                         isAttachment = isAttachment,
-                        type = type
+                        type = type,
+                        createdAt = LocalDateTime.now()
                     )
                 } catch (e: Exception) {
                     log.error("crawlNoticeSummaries error: ${e.message}", e)

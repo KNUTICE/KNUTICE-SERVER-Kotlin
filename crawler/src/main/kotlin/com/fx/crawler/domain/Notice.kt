@@ -13,6 +13,6 @@ data class Notice(
     val isAttachment: Boolean,
     val type: CrawlableType, // 일반공지, 학사공지 등....
 
-    val createdAt: LocalDateTime? = null,
+    val createdAt: LocalDateTime? = null, // nttId(@Id) 를 미리 지정한 경우 createdAt 생성 불가.
     val updatedAt: LocalDateTime? = null
 )

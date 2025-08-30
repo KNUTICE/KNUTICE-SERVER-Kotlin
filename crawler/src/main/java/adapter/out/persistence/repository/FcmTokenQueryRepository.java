@@ -25,13 +25,14 @@ public class FcmTokenQueryRepository {
     public List<FcmTokenDocument> findByCreatedAtAndIsActive(FcmTokenQuery fcmTokenQuery) {
         Query query = new Query();
 
+        Sort sort = fcmTokenQuery.getPageable().getSort();
+        if (sort.isUnsorted()) {
+            sort = Sort.by(Sort.Direction.ASC, "createdAt");
+        }
+
         // cursor 조건
         if (fcmTokenQuery.getCreatedAt() != null) {
-            // ASC 기준이면 cursor 이후 데이터 조회
-            Sort.Order order = fcmTokenQuery.getPageable().getSort().stream()
-                .findFirst()
-                .orElse(Sort.Order.asc("createdAt"));
-
+            Sort.Order order = sort.stream().findFirst().orElse(Sort.Order.asc("createdAt"));
             if (order.isAscending()) {
                 query.addCriteria(Criteria.where("createdAt").gt(fcmTokenQuery.getCreatedAt()));
             } else {
@@ -42,13 +43,15 @@ public class FcmTokenQueryRepository {
         // isActive 조건
         query.addCriteria(Criteria.where("isActive").is(fcmTokenQuery.isActive()));
 
+        // topic 조건
         if (fcmTokenQuery.getSubscribedTopic() != null) {
             query.addCriteria(Criteria.where("subscribedTopics").is(fcmTokenQuery.getSubscribedTopic()));
         }
 
-        // 페이징 + 정렬
-        query.with(fcmTokenQuery.getPageable());
+        query.limit(fcmTokenQuery.getPageable().getPageSize());
+        query.with(sort);
 
         return mongoTemplate.find(query, FcmTokenDocument.class);
     }
+
 }

@@ -1,6 +1,7 @@
 package com.fx.crawler.adapter.`in`
 
 import com.fx.crawler.appllication.port.`in`.NoticeCrawlUseCase
+import com.fx.crawler.appllication.port.`in`.NotificationUseCase
 import com.fx.crawler.common.annotation.ScheduleAdapter
 import com.fx.crawler.domain.NoticeType
 import kotlinx.coroutines.CoroutineScope
@@ -11,13 +12,14 @@ import org.springframework.scheduling.annotation.Scheduled
 
 @ScheduleAdapter
 class NoticeCrawlScheduler(
-    private val noticeCrawlUseCase: NoticeCrawlUseCase
+    private val noticeCrawlUseCase: NoticeCrawlUseCase,
+    private val notificationUseCase: NotificationUseCase
 ) {
 
     private val log = LoggerFactory.getLogger(NoticeCrawlScheduler::class.java)
 
-        @Scheduled(cron = "0 0/15 * * * *")
-//    @Scheduled(fixedRate = 60_000) // 60,000ms = 1분
+//        @Scheduled(cron = "0 0/15 * * * *")
+    @Scheduled(fixedRate = 60_000) // 60,000ms = 1분
     fun crawlAndPushNotices() {
         log.info("Starting scheduled notice crawling")
 
@@ -25,6 +27,12 @@ class NoticeCrawlScheduler(
             try {
                 val newNotices = noticeCrawlUseCase.crawlAndSaveNotices(NoticeType.entries)
                 log.info("Scheduled crawl finished")
+                if (newNotices.isEmpty()) {
+                    return@launch
+                }
+                log.info("Starting notification")
+                notificationUseCase.sendNotification(newNotices)
+
             } catch (e: Exception) {
                 log.error("Error during scheduled notice crawling", e)
             }
