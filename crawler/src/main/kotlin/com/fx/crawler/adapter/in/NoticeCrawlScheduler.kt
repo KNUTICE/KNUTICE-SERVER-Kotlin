@@ -21,18 +21,22 @@ class NoticeCrawlScheduler(
 //        @Scheduled(cron = "0 0/15 * * * *")
     @Scheduled(fixedRate = 60_000) // 60,000ms = 1분
     fun crawlAndPushNotices() {
-        log.info("Starting scheduled notice crawling")
+        log.info("---------- Starting scheduled notice crawling ----------")
 
         CoroutineScope(Dispatchers.Default).launch {
             try {
                 val newNotices = noticeCrawlUseCase.crawlAndSaveNotices(NoticeType.entries)
-                log.info("Scheduled crawl finished")
+                log.info("---------- Scheduled crawl finished ----------")
                 if (newNotices.isEmpty()) {
                     return@launch
                 }
-                log.info("Starting notification")
-                notificationUseCase.sendNotification(newNotices)
+                newNotices.forEach {
+                    log.info("New Notice Found - nttId: {}, title: {}", it.nttId, it.title)
+                }
 
+                log.info("---------- Starting notification ----------")
+                notificationUseCase.sendNotification(newNotices)
+                log.info("---------- Notification competed ----------")
             } catch (e: Exception) {
                 log.error("Error during scheduled notice crawling", e)
             }

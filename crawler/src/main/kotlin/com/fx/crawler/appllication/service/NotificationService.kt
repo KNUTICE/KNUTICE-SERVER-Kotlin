@@ -33,7 +33,6 @@ class NotificationService(
 
         // 공지 타입별 그룹화
         val noticesByType: Map<String, List<Notice>> = notices.groupBy { it.type.typeName }
-        log.info("notice group type: {}", noticesByType)
 
         noticesByType.map { (typeName, noticeList) ->
             log.info("TYPE : {}", typeName)

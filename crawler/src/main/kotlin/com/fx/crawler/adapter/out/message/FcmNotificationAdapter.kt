@@ -1,5 +1,6 @@
 package com.fx.crawler.adapter.out.message
 
+import com.fx.crawler.adapter.`in`.NoticeCrawlScheduler
 import com.fx.crawler.appllication.port.out.FcmNotificationPort
 import com.fx.crawler.common.annotation.NotificationAdapter
 import com.fx.crawler.domain.CrawlableType
@@ -10,9 +11,12 @@ import com.google.firebase.messaging.MessagingErrorCode
 import com.google.firebase.messaging.MulticastMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 
 @NotificationAdapter
 class FcmNotificationAdapter : FcmNotificationPort {
+
+    private val log = LoggerFactory.getLogger(FcmNotificationAdapter::class.java)
 
     /**
      * @return failedTokens
@@ -33,7 +37,12 @@ class FcmNotificationAdapter : FcmNotificationPort {
 
             // UNREGISTERED 인 경우 실패로 간주합니다.
             val failedTokens = response.responses.mapIndexedNotNull { index, sendResponse ->
-                if (!sendResponse.isSuccessful && sendResponse.exception?.messagingErrorCode == MessagingErrorCode.UNREGISTERED) {
+                if (
+                    !sendResponse.isSuccessful && (
+                        sendResponse.exception?.messagingErrorCode == MessagingErrorCode.UNREGISTERED ||
+                        sendResponse.exception?.messagingErrorCode == MessagingErrorCode.INVALID_ARGUMENT
+                    )
+                ) {
                     fcmTokens[index]
                 } else null
             }

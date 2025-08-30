@@ -28,8 +28,7 @@ class NoticeCrawlService(
         }
         val summaries = crawlResult.value.distinctBy { it.nttId } // Set
         log.info("Summaries crawl finished in {} ms", crawlResult.duration.inWholeMilliseconds)
-        log.info("Total : {}", crawlResult.value.size)
-        log.info("Distinct total : {}", summaries.size)
+        log.info("Total : {} - Distinct total : {}", crawlResult.value.size, summaries.size)
 
         if (summaries.isEmpty()) return emptyList()
 
