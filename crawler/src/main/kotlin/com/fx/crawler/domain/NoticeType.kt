@@ -16,25 +16,25 @@ enum class NoticeType(
     SCHOLARSHIP_NEWS(
         "https://www.ut.ac.kr",
         "/cop/bbs/BBSMSTR_000000000060/selectBoardList.do",
-        "일반소식"
+        "장학안내"
     ),
 
     EVENT_NEWS(
         "https://www.ut.ac.kr",
         "/cop/bbs/BBSMSTR_000000000055/selectBoardList.do",
-        "일반소식"
+        "행사안내"
     ),
 
     ACADEMIC_NEWS(
         "https://www.ut.ac.kr",
         "/cop/bbs/BBSMSTR_000000000179/selectBoardList.do",
-        "일반소식"
+        "학사공지사항"
     ),
 
     EMPLOYMENT_NEWS(
         "https://www.ut.ac.kr",
         "/cop/bbs/BBSMSTR_000000000055/selectBoardList.do",
-        "일반소식"
+        "취업지원안내"
     );
 
     override val typeName: String

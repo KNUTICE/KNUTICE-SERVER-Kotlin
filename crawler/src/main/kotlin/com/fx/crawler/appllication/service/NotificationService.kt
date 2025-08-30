@@ -9,7 +9,6 @@ import com.fx.crawler.domain.Notice
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import org.slf4j.LoggerFactory
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -34,7 +33,7 @@ class NotificationService(
         // 공지 타입별 그룹화
         val noticesByType: Map<String, List<Notice>> = notices.groupBy { it.type.typeName }
 
-        noticesByType.map { (typeName, noticeList) ->
+        noticesByType.map { (typeName, notices) ->
             log.info("TYPE : {}", typeName)
             async {
                 var cursor: LocalDateTime? = null
@@ -51,9 +50,8 @@ class NotificationService(
                     )
                     if (fcmTokens.isEmpty()) break
 
-                    val message = buildMessage(noticeList)
-                    val failedTokens = fcmNotificationPort.sendNotification(fcmTokens, noticeList[0].type, message)
-                    log.info("{} - 전송 실패 토큰 개수 : {} / {}", typeName, failedTokens.size, BATCH_SIZE)
+                    val failedTokens = fcmNotificationPort.sendNotification(fcmTokens, notices) // 타입별 전송
+                    log.info("{} - 전송 실패 토큰 개수 : {} / {}", typeName, failedTokens.size, fcmTokens.size)
 
                     handleFailedTokens(failedTokens) // 실패 토큰에 대해 isActive 값 변경 -> false
                     cursor = fcmTokens.last().createdAt // cursor update
@@ -61,14 +59,6 @@ class NotificationService(
 
             }
         }.forEach { it.await() } // 비동기 병렬 전송 대기. 모든 작업이 끝나야 코루틴 종료
-    }
-
-    private fun buildMessage(noticeList: List<Notice>): String {
-        return if (noticeList.size == 1) {
-            noticeList[0].title
-        } else {
-            "${noticeList[0].title} 외 ${noticeList.size - 1}개의 소식이 있습니다."
-        }
     }
 
     private fun handleFailedTokens(failedTokens: List<FcmToken>) {

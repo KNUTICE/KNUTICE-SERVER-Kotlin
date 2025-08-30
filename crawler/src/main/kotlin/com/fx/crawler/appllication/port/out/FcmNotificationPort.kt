@@ -1,7 +1,7 @@
 package com.fx.crawler.appllication.port.out
 
-import com.fx.crawler.domain.CrawlableType
 import com.fx.crawler.domain.FcmToken
+import com.fx.crawler.domain.Notice
 
 interface FcmNotificationPort {
 
@@ -11,6 +11,6 @@ interface FcmNotificationPort {
      * @param message
      * @return failedTokens
      */
-    suspend fun sendNotification(fcmTokens: List<FcmToken>, notice: CrawlableType, message: String): List<FcmToken>
+    suspend fun sendNotification(fcmTokens: List<FcmToken>, notices: List<Notice>): List<FcmToken>
 
 }
