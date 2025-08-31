@@ -53,7 +53,9 @@ class NotificationService(
                     val failedTokens = fcmNotificationPort.sendNotification(fcmTokens, notices) // 타입별 전송
                     log.info("{} - 전송 실패 토큰 개수 : {} / {}", typeName, failedTokens.size, fcmTokens.size)
 
-                    handleFailedTokens(failedTokens) // 실패 토큰에 대해 isActive 값 변경 -> false
+                    if (failedTokens.isNotEmpty()) {
+                        handleFailedTokens(failedTokens) // 실패 토큰에 대해 isActive 값 변경 -> false
+                    }
                     cursor = fcmTokens.last().createdAt // cursor update
                 }
 
