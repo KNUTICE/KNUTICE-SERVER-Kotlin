@@ -1,4 +1,4 @@
-package adapter.out.persistence.repository;
+package com.fx.adapter.out.persistence.repository;
 
 import adapter.out.persistence.document.NoticeDocument;
 import java.util.List;

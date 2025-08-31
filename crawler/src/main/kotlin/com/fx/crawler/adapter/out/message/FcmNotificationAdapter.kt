@@ -3,8 +3,8 @@ package com.fx.crawler.adapter.out.message
 import com.fx.crawler.adapter.out.message.factory.MessageFactory
 import com.fx.crawler.appllication.port.out.FcmNotificationPort
 import com.fx.crawler.common.annotation.NotificationAdapter
-import com.fx.crawler.domain.FcmToken
-import com.fx.crawler.domain.Notice
+import com.fx.global.domain.FcmToken
+import com.fx.global.domain.Notice
 import com.google.firebase.messaging.BatchResponse
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.MessagingErrorCode

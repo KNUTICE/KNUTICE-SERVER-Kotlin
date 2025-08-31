@@ -1,8 +1,8 @@
 package adapter.out.persistence.document;
 
 import adapter.out.persistence.base.MongoBaseDocument;
-import com.fx.crawler.domain.CrawlableType;
-import com.fx.crawler.domain.Notice;
+import com.fx.global.domain.CrawlableType;
+import com.fx.global.domain.Notice;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

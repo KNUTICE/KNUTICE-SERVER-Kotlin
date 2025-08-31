@@ -1,4 +1,4 @@
-package com.fx.crawler.domain
+package com.fx.global.domain
 
 import java.time.LocalDate
 import java.time.LocalDateTime

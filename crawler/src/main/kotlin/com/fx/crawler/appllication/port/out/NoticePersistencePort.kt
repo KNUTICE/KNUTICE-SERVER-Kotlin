@@ -1,6 +1,6 @@
 package com.fx.crawler.appllication.port.out
 
-import com.fx.crawler.domain.Notice
+import com.fx.global.domain.Notice
 
 interface NoticePersistencePort {
 

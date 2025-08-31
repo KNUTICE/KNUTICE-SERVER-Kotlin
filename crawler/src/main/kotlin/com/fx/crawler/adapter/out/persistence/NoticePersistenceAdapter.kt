@@ -1,9 +1,9 @@
 package com.fx.crawler.adapter.out.persistence
 
 import adapter.out.persistence.document.NoticeDocument
-import adapter.out.persistence.repository.NoticeMongoRepository
+import com.fx.adapter.out.persistence.repository.NoticeMongoRepository
 import com.fx.crawler.appllication.port.out.NoticePersistencePort
-import com.fx.crawler.domain.Notice
+import com.fx.global.domain.Notice
 import org.springframework.stereotype.Component
 
 @Component

@@ -3,9 +3,9 @@ package com.fx.crawler.appllication.service
 import com.fx.crawler.appllication.port.`in`.NotificationUseCase
 import com.fx.crawler.appllication.port.out.FcmNotificationPort
 import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort
-import com.fx.crawler.domain.FcmToken
+import com.fx.global.domain.FcmToken
 import com.fx.crawler.domain.FcmTokenQuery
-import com.fx.crawler.domain.Notice
+import com.fx.global.domain.Notice
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import org.slf4j.LoggerFactory

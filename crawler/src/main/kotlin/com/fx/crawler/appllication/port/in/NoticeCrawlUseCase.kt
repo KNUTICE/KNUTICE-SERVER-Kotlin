@@ -1,7 +1,7 @@
 package com.fx.crawler.appllication.port.`in`
 
-import com.fx.crawler.domain.CrawlableType
-import com.fx.crawler.domain.Notice
+import com.fx.global.domain.CrawlableType
+import com.fx.global.domain.Notice
 
 interface NoticeCrawlUseCase {
 

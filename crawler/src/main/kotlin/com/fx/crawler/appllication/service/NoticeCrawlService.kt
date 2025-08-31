@@ -3,8 +3,8 @@ package com.fx.crawler.appllication.service
 import com.fx.crawler.appllication.port.`in`.NoticeCrawlUseCase
 import com.fx.crawler.appllication.port.out.NoticeCrawlPort
 import com.fx.crawler.appllication.port.out.NoticePersistencePort
-import com.fx.crawler.domain.CrawlableType
-import com.fx.crawler.domain.Notice
+import com.fx.global.domain.CrawlableType
+import com.fx.global.domain.Notice
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import kotlin.time.measureTimedValue

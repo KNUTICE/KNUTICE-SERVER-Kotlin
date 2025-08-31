@@ -1,9 +1,9 @@
 package adapter.out.persistence.document;
 
 import adapter.out.persistence.base.MongoBaseDocument;
-import com.fx.crawler.domain.DeviceType;
-import com.fx.crawler.domain.FcmToken;
 import com.querydsl.core.annotations.QueryEntity;
+import com.fx.global.domain.DeviceType;
+import com.fx.global.domain.FcmToken;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

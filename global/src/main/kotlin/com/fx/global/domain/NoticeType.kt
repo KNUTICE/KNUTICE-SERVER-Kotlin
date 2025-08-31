@@ -1,4 +1,4 @@
-package com.fx.crawler.domain
+package com.fx.global.domain
 
 enum class NoticeType(
     override val rootDomain: String,

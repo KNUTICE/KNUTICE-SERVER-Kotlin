@@ -1,6 +1,6 @@
 package com.fx.crawler.appllication.port.out
 
-import com.fx.crawler.domain.FcmToken
+import com.fx.global.domain.FcmToken
 import com.fx.crawler.domain.FcmTokenQuery
 
 interface FcmTokenPersistencePort {

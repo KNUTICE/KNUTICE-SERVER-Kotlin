@@ -1,6 +1,6 @@
 package com.fx.crawler.adapter.out.message.factory
 
-import com.fx.crawler.domain.Notice
+import com.fx.global.domain.Notice
 import com.google.firebase.messaging.*
 
 object MessageFactory {

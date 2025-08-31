@@ -1,4 +1,4 @@
-package com.fx.crawler.domain
+package com.fx.global.domain
 
 interface CrawlableType {
     val rootDomain: String

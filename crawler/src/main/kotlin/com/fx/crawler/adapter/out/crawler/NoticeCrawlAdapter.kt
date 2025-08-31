@@ -2,8 +2,8 @@ package com.fx.crawler.adapter.out.crawler
 
 import com.fx.crawler.appllication.port.out.NoticeCrawlPort
 import com.fx.crawler.common.annotation.CrawlAdapter
-import com.fx.crawler.domain.CrawlableType
-import com.fx.crawler.domain.Notice
+import com.fx.global.domain.CrawlableType
+import com.fx.global.domain.Notice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

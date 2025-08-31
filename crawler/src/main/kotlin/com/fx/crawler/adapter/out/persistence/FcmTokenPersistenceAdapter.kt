@@ -1,15 +1,11 @@
 package com.fx.crawler.adapter.out.persistence
 
 import adapter.out.persistence.document.FcmTokenDocument
-import adapter.out.persistence.document.NoticeDocument
-import adapter.out.persistence.repository.FcmTokenMongoRepository
-import adapter.out.persistence.repository.FcmTokenQueryRepository
-import adapter.out.persistence.repository.NoticeMongoRepository
+import com.fx.adapter.out.persistence.repository.FcmTokenMongoRepository
+import com.fx.adapter.out.persistence.repository.FcmTokenQueryRepository
 import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort
-import com.fx.crawler.appllication.port.out.NoticePersistencePort
-import com.fx.crawler.domain.FcmToken
+import com.fx.global.domain.FcmToken
 import com.fx.crawler.domain.FcmTokenQuery
-import com.fx.crawler.domain.Notice
 import org.springframework.stereotype.Component
 
 @Component

@@ -1,4 +1,4 @@
-package com.fx.crawler.domain
+package com.fx.global.domain
 
 enum class MajorType(
     override val rootDomain: String,

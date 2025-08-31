@@ -26,28 +26,13 @@ dependencies {
     // Mongo
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
-    // Web
-    implementation("org.springframework.boot:spring-boot-starter-web")
-
-    // Firebase
-    implementation("com.google.firebase:firebase-admin:9.5.0")
-
-    // Jsoup (Crawler)
-    implementation("org.jsoup:jsoup:1.21.2")
-
     // Kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    // Coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
-
     // Lombok
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-
-    implementation(project(":global"))
 
     // QueryDSL
     implementation("com.querydsl:querydsl-mongodb:${queryDslVersion}") {
@@ -79,11 +64,11 @@ tasks.withType<Test> {
 }
 
 tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
-    enabled = true
+    enabled = false
 }
 
 tasks.getByName<Jar>("jar") {
-    enabled = false
+    enabled = true
 }
 
 val querydslDir = "src/main/generated"
