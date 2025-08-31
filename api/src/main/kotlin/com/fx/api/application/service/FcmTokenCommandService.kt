@@ -2,6 +2,7 @@ package com.fx.api.application.service
 
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.api.application.port.`in`.dto.FcmTokenCommand
+import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.global.domain.FcmToken
 import org.springframework.stereotype.Service
@@ -22,4 +23,14 @@ class FcmTokenCommandService(
         fcmTokenPersistencePort.saveFcmToken(fcmToken)
         return true
     }
+
+    override fun updateTopics(topicUpdateCommand: TopicUpdateCommand): FcmToken {
+        val fcmToken = fcmTokenPersistencePort.findByFcmToken(topicUpdateCommand.fcmToken)
+            ?: throw RuntimeException("Token not found")
+
+        val updatedToken = fcmToken.copy(subscribedTopics = topicUpdateCommand.subscribedTopics)
+        fcmTokenPersistencePort.saveFcmToken(updatedToken)
+        return updatedToken
+    }
+
 }
