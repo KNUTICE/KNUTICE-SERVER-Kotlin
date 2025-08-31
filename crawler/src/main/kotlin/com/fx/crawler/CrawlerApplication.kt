@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 @EnableScheduling
 @EnableMongoAuditing
-@EnableMongoRepositories(basePackages = ["com.fx.adapter.out.persistence.repository"])
-@SpringBootApplication(scanBasePackages = ["com.fx.crawler", "com.fx.adapter"])
+@EnableMongoRepositories(basePackages = ["com.fx.crawler.adapter.out.persistence.repository"])
+@SpringBootApplication(scanBasePackages = ["com.fx.crawler", "com.fx.crawler.adapter"])
 class CrawlerApplication
 
 fun main(args: Array<String>) {

@@ -1,4 +1,4 @@
-package com.fx.adapter.out.persistence.repository;
+package com.fx.crawler.adapter.out.persistence.repository;
 
 import adapter.out.persistence.document.FcmTokenDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
