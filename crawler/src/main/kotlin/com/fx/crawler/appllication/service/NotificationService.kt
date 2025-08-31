@@ -9,7 +9,9 @@ import com.fx.global.domain.Notice
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -45,7 +47,7 @@ class NotificationService(
                             createdAt = cursor,
                             isActive = true,
                             subscribedTopic = typeName,
-                            pageable = Pageable.ofSize(BATCH_SIZE)
+                            pageable =  PageRequest.of(0, BATCH_SIZE, Sort.by(Sort.Direction.ASC, "createdAt"))
                         )
                     )
                     if (fcmTokens.isEmpty()) break

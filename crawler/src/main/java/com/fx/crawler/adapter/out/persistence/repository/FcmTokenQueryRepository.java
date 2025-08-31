@@ -1,57 +1,73 @@
 package com.fx.crawler.adapter.out.persistence.repository;
 
-import com.fx.global.adapter.out.persistence.document.FcmTokenDocument;
 import com.fx.crawler.domain.FcmTokenQuery;
-import lombok.RequiredArgsConstructor;
+import com.fx.global.adapter.out.persistence.document.FcmTokenDocument;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import java.time.LocalDateTime;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.fx.global.adapter.out.persistence.document.QFcmTokenDocument.fcmTokenDocument;
 
 @Repository
-@RequiredArgsConstructor
-public class FcmTokenQueryRepository {
+public class FcmTokenQueryRepository extends QuerydslRepositorySupport {
 
-    private final MongoTemplate mongoTemplate;
+    public FcmTokenQueryRepository(@Qualifier("mongoTemplate") MongoOperations operations) {
+        super(operations);
+    }
 
     /**
-     * Cursor 기반 batch 조회
-     * createdAt 기준 ASC 정렬
+     * Cursor 기반 오름차순 batch 조회
+     * createdAt 기준 정렬
      */
-    public List<FcmTokenDocument> findByCreatedAtAndIsActive(FcmTokenQuery fcmTokenQuery) {
-        Query query = new Query();
+    public List<FcmTokenDocument> findByCreatedAtAndIsActive(FcmTokenQuery queryParam) {
+        return from(fcmTokenDocument)
+            .where(
+                cursorCondition(queryParam.getCreatedAt(), queryParam.getPageable().getSort()),
+                isActive(queryParam.isActive()),
+                eqSubscribedTopic(queryParam.getSubscribedTopic())
+            )
+            .orderBy(getOrderSpecifier(queryParam.getPageable().getSort())
+                .toArray(OrderSpecifier[]::new))
+            .limit(queryParam.getPageable().getPageSize())
+            .fetch();
+    }
 
-        Sort sort = fcmTokenQuery.getPageable().getSort();
-        if (sort.isUnsorted()) {
-            sort = Sort.by(Sort.Direction.ASC, "createdAt");
-        }
+    private BooleanExpression cursorCondition(LocalDateTime createdAt, Sort sort) {
+        if (createdAt == null) return null;
 
-        // cursor 조건
-        if (fcmTokenQuery.getCreatedAt() != null) {
-            Sort.Order order = sort.stream().findFirst().orElse(Sort.Order.asc("createdAt"));
-            if (order.isAscending()) {
-                query.addCriteria(Criteria.where("createdAt").gt(fcmTokenQuery.getCreatedAt()));
-            } else {
-                query.addCriteria(Criteria.where("createdAt").lt(fcmTokenQuery.getCreatedAt()));
-            }
-        }
+        Sort.Order order = sort.stream().findFirst().orElse(Sort.Order.desc("createdAt"));
 
-        // isActive 조건
-        query.addCriteria(Criteria.where("isActive").is(fcmTokenQuery.isActive()));
+        return order.isAscending()
+            ? fcmTokenDocument.createdAt.gt(createdAt)
+            : fcmTokenDocument.createdAt.lt(createdAt);
+    }
 
-        // topic 조건
-        if (fcmTokenQuery.getSubscribedTopic() != null) {
-            query.addCriteria(Criteria.where("subscribedTopics").is(fcmTokenQuery.getSubscribedTopic()));
-        }
+    private BooleanExpression isActive(boolean isActive) {
+        return fcmTokenDocument.isActive.eq(isActive);
+    }
 
-        query.limit(fcmTokenQuery.getPageable().getPageSize());
-        query.with(sort);
+    private BooleanExpression eqSubscribedTopic(String topic) {
+        return topic != null ? fcmTokenDocument.subscribedTopics.contains(topic) : null;
+    }
 
-        return mongoTemplate.find(query, FcmTokenDocument.class);
+    private List<OrderSpecifier> getOrderSpecifier(Sort sort) {
+        List<OrderSpecifier> orders = new ArrayList<>();
+        sort.stream().forEach(order -> {
+            PathBuilder orderByExpression = new PathBuilder(FcmTokenDocument.class, "fcmTokenDocument");
+            orders.add(new OrderSpecifier<>(order.isDescending() ? Order.DESC : Order.ASC,
+                orderByExpression.get(order.getProperty())));
+        });
+        return orders;
     }
 
 }
