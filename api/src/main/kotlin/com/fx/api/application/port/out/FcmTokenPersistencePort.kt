@@ -8,4 +8,6 @@ interface FcmTokenPersistencePort {
 
     fun findByFcmToken(fcmToken: String): FcmToken?
 
+    fun existsByFcmToken(fcmToken: String): Boolean
+
 }

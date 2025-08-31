@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 
 @WebInputAdapter
 @RequestMapping("/open-api/v1/fcm-tokens")
-class FcmTokenOpenApiController(
+class FcmTokenOpenApiAdapter(
     private val fcmTokenCommandUseCase: FcmTokenCommandUseCase
 ) {
 

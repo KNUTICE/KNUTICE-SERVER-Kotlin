@@ -18,4 +18,7 @@ class FcmTokenPersistenceAdapter(
     override fun findByFcmToken(fcmToken: String): FcmToken? =
         fcmTokenRepository.findById(fcmToken).orElse(null)?.toDomain()
 
+    override fun existsByFcmToken(fcmToken: String): Boolean =
+        fcmTokenRepository.existsById(fcmToken)
+
 }

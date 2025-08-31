@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 
 @WebInputAdapter
 @RequestMapping("/open-api/v1/notices")
-class NoticeOpenApiController(
+class NoticeOpenApiAdapter(
     private val noticeQueryUseCase: NoticeQueryUseCase
 ) {
 
@@ -34,9 +34,7 @@ class NoticeOpenApiController(
 
     @Operation(summary = "단일 공지 조회", description = "nttId 로 공지를 조회합니다.")
     @GetMapping("/{nttId}")
-    fun getNotice(
-        @PathVariable nttId: Long
-    ): ResponseEntity<Api<NoticeResponse>> =
+    fun getNotice(@PathVariable nttId: Long): ResponseEntity<Api<NoticeResponse>> =
         Api.OK(NoticeResponse.from(noticeQueryUseCase.getNotice(nttId)))
 
 }
