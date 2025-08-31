@@ -1,6 +1,6 @@
 package com.fx.crawler.adapter.out.persistence
 
-import adapter.out.persistence.document.FcmTokenDocument
+import com.fx.global.adapter.out.persistence.document.FcmTokenDocument
 import com.fx.crawler.adapter.out.persistence.repository.FcmTokenMongoRepository
 import com.fx.crawler.adapter.out.persistence.repository.FcmTokenQueryRepository
 import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort

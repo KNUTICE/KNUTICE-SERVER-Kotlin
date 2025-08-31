@@ -1,6 +1,6 @@
-package adapter.out.persistence.document;
+package com.fx.global.adapter.out.persistence.document;
 
-import adapter.out.persistence.base.MongoBaseDocument;
+import com.fx.global.adapter.out.persistence.base.MongoBaseDocument;
 import com.querydsl.core.annotations.QueryEntity;
 import com.fx.global.domain.DeviceType;
 import com.fx.global.domain.FcmToken;

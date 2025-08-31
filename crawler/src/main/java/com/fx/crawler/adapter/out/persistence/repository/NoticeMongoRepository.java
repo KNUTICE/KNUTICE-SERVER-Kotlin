@@ -1,6 +1,6 @@
 package com.fx.crawler.adapter.out.persistence.repository;
 
-import adapter.out.persistence.document.NoticeDocument;
+import com.fx.global.adapter.out.persistence.document.NoticeDocument;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

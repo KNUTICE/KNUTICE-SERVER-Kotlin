@@ -1,6 +1,6 @@
 package com.fx.crawler.adapter.out.persistence.repository;
 
-import adapter.out.persistence.document.FcmTokenDocument;
+import com.fx.global.adapter.out.persistence.document.FcmTokenDocument;
 import com.fx.crawler.domain.FcmTokenQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;

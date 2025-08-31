@@ -1,4 +1,4 @@
-package adapter.out.persistence.base;
+package com.fx.global.adapter.out.persistence.base;
 
 import java.time.LocalDateTime;
 import lombok.Builder;

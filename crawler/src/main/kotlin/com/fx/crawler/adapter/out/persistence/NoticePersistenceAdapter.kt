@@ -1,6 +1,6 @@
 package com.fx.crawler.adapter.out.persistence
 
-import adapter.out.persistence.document.NoticeDocument
+import com.fx.global.adapter.out.persistence.document.NoticeDocument
 import com.fx.crawler.adapter.out.persistence.repository.NoticeMongoRepository
 import com.fx.crawler.appllication.port.out.NoticePersistencePort
 import com.fx.global.domain.Notice
