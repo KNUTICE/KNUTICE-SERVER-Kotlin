@@ -14,4 +14,7 @@ class NoticeQueryService(
     override fun getNotices(noticeQuery: NoticeQuery): List<Notice> =
         noticePersistencePort.getNotices(noticeQuery)
 
+    override fun getNotice(nttId: Long): Notice =
+        // TODO 예외처리
+        noticePersistencePort.getNotice(nttId)?: throw RuntimeException("공지가 존재하지 않음")
 }

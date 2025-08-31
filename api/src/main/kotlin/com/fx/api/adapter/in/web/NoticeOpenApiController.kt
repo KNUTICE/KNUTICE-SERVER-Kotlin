@@ -12,6 +12,7 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 
 @WebInputAdapter
@@ -31,5 +32,11 @@ class NoticeOpenApiController(
             noticeQueryUseCase.getNotices(noticeSearchParam.toCommand(pageable)))
         )
 
+    @Operation(summary = "단일 공지 조회", description = "nttId 로 공지를 조회합니다.")
+    @GetMapping("/{nttId}")
+    fun getNotice(
+        @PathVariable nttId: Long
+    ): ResponseEntity<Api<NoticeResponse>> =
+        Api.OK(NoticeResponse.from(noticeQueryUseCase.getNotice(nttId)))
 
 }

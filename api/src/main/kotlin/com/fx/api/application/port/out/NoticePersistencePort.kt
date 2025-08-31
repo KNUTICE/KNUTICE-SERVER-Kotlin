@@ -6,5 +6,6 @@ import com.fx.global.domain.Notice
 interface NoticePersistencePort {
 
     fun getNotices(noticeQuery: NoticeQuery): List<Notice>
+    fun getNotice(nttId: Long): Notice?
 
 }

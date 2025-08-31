@@ -18,18 +18,19 @@ data class NoticeResponse(
 
     companion object {
 
+        fun from(notice: Notice): NoticeResponse =
+            NoticeResponse(
+                nttId = notice.nttId,
+                title = notice.title,
+                contentUrl = notice.contentUrl,
+                contentImageUrl = notice.contentImageUrl,
+                department = notice.department,
+                registrationDate = notice.registrationDate,
+                noticeType = notice.type
+            )
+
         fun from(notices: List<Notice>): List<NoticeResponse> =
-            notices.map {
-                NoticeResponse(
-                    nttId = it.nttId,
-                    title = it.title,
-                    contentUrl = it.contentUrl,
-                    contentImageUrl = it.contentImageUrl,
-                    department = it.department,
-                    registrationDate = it.registrationDate,
-                    noticeType = it.type
-                )
-            }
+            notices.map { this.from(it) }
     }
 
 }
