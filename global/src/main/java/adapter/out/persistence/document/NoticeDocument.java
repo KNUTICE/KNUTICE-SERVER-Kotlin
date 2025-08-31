@@ -57,6 +57,7 @@ public class NoticeDocument extends MongoBaseDocument {
             .registrationDate(notice.getRegistrationDate())
             .isAttachment(notice.isAttachment())
             .type(notice.getType().getTypeName())
+            .createdAt(notice.getCreatedAt())
             .build();
     }
 
