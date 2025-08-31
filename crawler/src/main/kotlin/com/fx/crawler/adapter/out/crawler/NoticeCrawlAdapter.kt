@@ -61,7 +61,7 @@ class NoticeCrawlAdapter: NoticeCrawlPort {
                         title = title,
                         department = department,
                         contentUrl = contentUrl,
-                        contentImage = null, // 상세에서 채움
+                        contentImageUrl = null, // 상세에서 채움
                         registrationDate = registrationDate,
                         isAttachment = isAttachment,
                         type = type,
@@ -84,7 +84,7 @@ class NoticeCrawlAdapter: NoticeCrawlPort {
                     val detailDocument = Jsoup.connect(notice.contentUrl).get()
                     val firstImage = detailDocument.select("div.bbs_detail_content img").first()?.attr("src")
 
-                    notice.copy(contentImage = firstImage)
+                    notice.copy(contentImageUrl = firstImage)
                 } catch (e: Exception) {
                     log.error("crawlNoticeDetails error for nttId=${notice.nttId}: ${e.message}", e)
                     notice

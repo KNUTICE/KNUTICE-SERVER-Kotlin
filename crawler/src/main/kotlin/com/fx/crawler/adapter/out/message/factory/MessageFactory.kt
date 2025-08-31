@@ -29,7 +29,7 @@ object MessageFactory {
         Notification.builder()
             .setTitle(notice.type.category)
             .setBody(body)
-            .setImage(notice.contentImage)
+            .setImage(notice.contentImageUrl)
             .build()
 
     private fun apnsConfig(notice: Notice): ApnsConfig =
@@ -38,7 +38,7 @@ object MessageFactory {
             .setAps(
                 Aps.builder()
                     .setMutableContent(true)
-                    .setAlert(ApsAlert.builder().setLaunchImage(notice.contentImage).build())
+                    .setAlert(ApsAlert.builder().setLaunchImage(notice.contentImageUrl).build())
                     .setSound("default")
                     .build()
             )

@@ -25,7 +25,7 @@ public class NoticeDocument extends MongoBaseDocument {
 
     private String contentUrl;
 
-    private String contentImage;
+    private String contentImageUrl;
 
     private LocalDate registrationDate;
 
@@ -39,7 +39,7 @@ public class NoticeDocument extends MongoBaseDocument {
             this.title,
             this.department,
             this.contentUrl,
-            this.contentImage,
+            this.contentImageUrl,
             this.registrationDate,
             this.isAttachment,
             CrawlableType.fromString(this.type),
@@ -53,7 +53,7 @@ public class NoticeDocument extends MongoBaseDocument {
             .nttId(notice.getNttId())
             .title(notice.getTitle())
             .department(notice.getDepartment())
-            .contentUrl(notice.getContentUrl())
+            .contentImageUrl(notice.getContentUrl())
             .registrationDate(notice.getRegistrationDate())
             .isAttachment(notice.isAttachment())
             .type(notice.getType().getTypeName())

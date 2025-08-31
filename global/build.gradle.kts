@@ -26,6 +26,9 @@ dependencies {
     // Mongo
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
+    // Web
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
     // Kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

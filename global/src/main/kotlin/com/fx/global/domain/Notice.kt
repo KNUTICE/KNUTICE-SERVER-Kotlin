@@ -8,7 +8,7 @@ data class Notice(
     val title: String,
     val department: String,
     val contentUrl: String,
-    val contentImage: String? = null,
+    val contentImageUrl: String? = null,
     val registrationDate: LocalDate,
     val isAttachment: Boolean,
     val type: CrawlableType, // 일반공지, 학사공지 등....
