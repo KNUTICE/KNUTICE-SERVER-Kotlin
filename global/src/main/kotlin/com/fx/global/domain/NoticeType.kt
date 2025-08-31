@@ -21,19 +21,19 @@ enum class NoticeType(
 
     EVENT_NEWS(
         "https://www.ut.ac.kr",
-        "/cop/bbs/BBSMSTR_000000000055/selectBoardList.do",
+        "/cop/bbs/BBSMSTR_000000000061/selectBoardList.do",
         "행사안내"
     ),
 
     ACADEMIC_NEWS(
         "https://www.ut.ac.kr",
-        "/cop/bbs/BBSMSTR_000000000179/selectBoardList.do",
+        "/cop/bbs/BBSMSTR_000000000055/selectBoardList.do",
         "학사공지사항"
     ),
 
     EMPLOYMENT_NEWS(
         "https://www.ut.ac.kr",
-        "/cop/bbs/BBSMSTR_000000000055/selectBoardList.do",
+        "/cop/bbs/BBSMSTR_000000000179/selectBoardList.do",
         "취업지원안내"
     );
 

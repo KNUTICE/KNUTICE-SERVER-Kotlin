@@ -6,9 +6,9 @@ import com.fx.crawler.adapter.out.persistence.repository.FcmTokenQueryRepository
 import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort
 import com.fx.global.domain.FcmToken
 import com.fx.crawler.domain.FcmTokenQuery
-import org.springframework.stereotype.Component
+import com.fx.global.annotation.PersistenceAdapter
 
-@Component
+@PersistenceAdapter
 class FcmTokenPersistenceAdapter(
     private val fcmTokenMongoRepository: FcmTokenMongoRepository,
     private val fcmTokenQueryRepository: FcmTokenQueryRepository

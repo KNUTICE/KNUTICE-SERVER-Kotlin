@@ -3,7 +3,9 @@ package com.fx.global.adapter.out.persistence.document;
 import com.fx.global.adapter.out.persistence.base.MongoBaseDocument;
 import com.fx.global.domain.CrawlableType;
 import com.fx.global.domain.Notice;
+import com.querydsl.core.annotations.QueryEntity;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -14,6 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "notice")
 @SuperBuilder
 @NoArgsConstructor
+@QueryEntity
 public class NoticeDocument extends MongoBaseDocument {
 
     @Id
@@ -53,7 +56,8 @@ public class NoticeDocument extends MongoBaseDocument {
             .nttId(notice.getNttId())
             .title(notice.getTitle())
             .department(notice.getDepartment())
-            .contentImageUrl(notice.getContentUrl())
+            .contentUrl(notice.getContentUrl())
+            .contentImageUrl(notice.getContentImageUrl())
             .registrationDate(notice.getRegistrationDate())
             .isAttachment(notice.isAttachment())
             .type(notice.getType().getTypeName())
