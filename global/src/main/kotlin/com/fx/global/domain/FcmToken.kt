@@ -10,4 +10,21 @@ data class FcmToken(
 
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null
-)
+) {
+
+    companion object {
+
+        fun createFcmToken(fcmToken: String, deviceType: DeviceType): FcmToken {
+            return FcmToken(
+                fcmToken = fcmToken,
+                subscribedTopics = CrawlableType.allTypeNames(),
+                deviceType = deviceType,
+                isActive = true,
+                createdAt = LocalDateTime.now()
+            )
+        }
+
+    }
+
+
+}
