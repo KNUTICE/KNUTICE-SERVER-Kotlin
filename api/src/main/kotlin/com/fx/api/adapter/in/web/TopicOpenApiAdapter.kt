@@ -26,6 +26,8 @@ class TopicOpenApiAdapter(
     fun getMyTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<TopicResponse>> =
         Api.OK(TopicResponse.from(fcmTokenQueryUseCase.getMyTokenInfo(fcmToken)))
 
+
+    // TODO Header
     @PostMapping
     fun updateTopics(@RequestBody topicUpdateRequest: TopicUpdateRequest): ResponseEntity<Api<TopicResponse>> {
         val updatedFcmToken = fcmTokenCommandUseCase.updateTopics(topicUpdateRequest.from())
