@@ -1,9 +1,9 @@
 package com.fx.api.exception
 
-import com.fx.global.api.ErrorCodeIfs
+import com.fx.global.api.BaseErrorCode
 import java.lang.RuntimeException
 
 class FcmTokenException(
-    val errorCodeIfs: ErrorCodeIfs,
+    val baseErrorCode: BaseErrorCode,
     cause: Throwable? = null
-) : RuntimeException(errorCodeIfs.message, cause)
+) : RuntimeException(baseErrorCode.message, cause)

@@ -64,14 +64,14 @@ class Api<T>(
                 )
 
         @JvmStatic
-        fun ERROR(errorCodeIfs: ErrorCodeIfs): ResponseEntity<Api<ErrorCodeIfs>> =
+        fun ERROR(baseErrorCode: BaseErrorCode): ResponseEntity<Api<BaseErrorCode>> =
             ResponseEntity
-                .status(errorCodeIfs.httpStatus)
+                .status(baseErrorCode.httpStatus)
                 .body(
                     Api(
                         success = false,
-                        code = errorCodeIfs.httpStatus.value(),
-                        message = errorCodeIfs.message,
+                        code = baseErrorCode.httpStatus.value(),
+                        message = baseErrorCode.message,
                         data = null
                     )
                 )
