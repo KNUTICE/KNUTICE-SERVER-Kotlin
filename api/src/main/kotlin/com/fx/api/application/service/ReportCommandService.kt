@@ -6,7 +6,7 @@ import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.ReportPersistencePort
 import com.fx.api.domain.Report
 import com.fx.api.exception.FcmTokenException
-import com.fx.api.exception.errorcode.FcmTokenBaseErrorCode
+import com.fx.api.exception.errorcode.FcmTokenErrorCode
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,7 +17,7 @@ class ReportCommandService(
 
     override fun saveReport(reportCommand: ReportCommand): Boolean {
         if (!fcmTokenPersistencePort.existsByFcmToken(reportCommand.fcmToken)) {
-            throw FcmTokenException(FcmTokenBaseErrorCode.TOKEN_NOT_FOUND)
+            throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
         }
 
         reportPersistencePort.saveReport(Report.createReport(reportCommand))

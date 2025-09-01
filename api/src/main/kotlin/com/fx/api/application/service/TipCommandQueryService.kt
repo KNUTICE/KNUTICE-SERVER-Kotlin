@@ -6,7 +6,7 @@ import com.fx.api.application.port.`in`.dto.TipCommand
 import com.fx.api.application.port.out.TipPersistencePort
 import com.fx.api.domain.Tip
 import com.fx.api.exception.TipException
-import com.fx.api.exception.errorcode.TipBaseErrorCode
+import com.fx.api.exception.errorcode.TipErrorCode
 import com.fx.global.domain.DeviceType
 import org.springframework.stereotype.Service
 
@@ -28,7 +28,7 @@ class TipCommandQueryService(
     override fun getTips(deviceType: DeviceType): List<Tip> {
         val tips = tipPersistencePort.getTips(deviceType)
         if (tips.isEmpty()) {
-            throw TipException(TipBaseErrorCode.TIP_NOT_FOUND)
+            throw TipException(TipErrorCode.TIP_NOT_FOUND)
         }
         return tips
     }
