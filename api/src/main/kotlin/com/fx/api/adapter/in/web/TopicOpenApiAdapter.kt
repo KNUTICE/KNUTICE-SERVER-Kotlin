@@ -7,6 +7,7 @@ import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import com.fx.global.api.Api
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -28,7 +29,7 @@ class TopicOpenApiAdapter(
 
     // TODO Header
     @PostMapping
-    override fun updateTopics(@RequestBody topicUpdateRequest: TopicUpdateRequest): ResponseEntity<Api<TopicResponse>> {
+    override fun updateTopics(@RequestBody @Valid topicUpdateRequest: TopicUpdateRequest): ResponseEntity<Api<TopicResponse>> {
         val updatedFcmToken = fcmTokenCommandUseCase.updateTopics(topicUpdateRequest.from())
         return Api.OK(TopicResponse.from(updatedFcmToken))
     }

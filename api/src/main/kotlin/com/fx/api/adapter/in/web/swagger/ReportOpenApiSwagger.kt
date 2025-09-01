@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web.swagger
 
-import com.fx.api.adapter.`in`.web.dto.ReportRequest
+import com.fx.api.adapter.`in`.web.dto.ReportSaveRequest
 import com.fx.api.exception.errorcode.FcmTokenErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
@@ -23,9 +23,11 @@ interface ReportOpenApiSwagger {
             ),
         ]
     )
-    @Operation(summary = "문의사항 저장", description = "문의사항을 저장합니다.")
+    @Operation(summary = "문의사항 저장", description = "문의사항을 저장합니다. <br>" +
+            "content : 5자에서 최대 500자까지 허용됩니다.<br>" +
+            "deviceName : 최대 50자입니다. <br>version : 최대 50자입니다.")
     fun saveReport(
-        @RequestBody reportRequest: ReportRequest
+        @RequestBody reportSaveRequest: ReportSaveRequest
     ): ResponseEntity<Api<Boolean>>
 
 }

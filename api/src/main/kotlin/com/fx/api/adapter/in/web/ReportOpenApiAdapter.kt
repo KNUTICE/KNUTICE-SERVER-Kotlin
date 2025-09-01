@@ -1,10 +1,11 @@
 package com.fx.api.adapter.`in`.web
 
-import com.fx.api.adapter.`in`.web.dto.ReportRequest
+import com.fx.api.adapter.`in`.web.dto.ReportSaveRequest
 import com.fx.api.adapter.`in`.web.swagger.ReportOpenApiSwagger
 import com.fx.api.application.port.`in`.ReportCommandUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import com.fx.global.api.Api
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -19,8 +20,8 @@ class ReportOpenApiAdapter(
     // TODO Header Token
     @PostMapping
     override fun saveReport(
-        @RequestBody reportRequest: ReportRequest
+        @RequestBody @Valid reportSaveRequest: ReportSaveRequest
     ): ResponseEntity<Api<Boolean>> =
-        Api.OK(reportCommandUseCase.saveReport(reportRequest.toCommand()))
+        Api.OK(reportCommandUseCase.saveReport(reportSaveRequest.toCommand()))
 
 }

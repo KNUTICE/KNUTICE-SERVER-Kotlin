@@ -1,10 +1,11 @@
 package com.fx.api.adapter.`in`.web
 
-import com.fx.api.adapter.`in`.web.dto.TipRequest
+import com.fx.api.adapter.`in`.web.dto.TipSaveRequest
 import com.fx.api.adapter.`in`.web.swagger.TipApiSwagger
 import com.fx.api.application.port.`in`.TipCommandUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import com.fx.global.api.Api
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -19,8 +20,8 @@ class TipApiAdapter(
 ) : TipApiSwagger {
 
     @PostMapping
-    override fun saveTip(@RequestBody tipRequest: TipRequest): ResponseEntity<Api<Boolean>> =
-        Api.OK(tipCommandUseCase.saveTip(tipRequest.toCommand()), "TIP 이 저장되었습니다.")
+    override fun saveTip(@RequestBody @Valid tipSaveRequest: TipSaveRequest): ResponseEntity<Api<Boolean>> =
+        Api.OK(tipCommandUseCase.saveTip(tipSaveRequest.toCommand()), "TIP 이 저장되었습니다.")
 
     @DeleteMapping("/{tipId}")
     override fun deleteTip(@PathVariable tipId: String): ResponseEntity<Api<Boolean>> =

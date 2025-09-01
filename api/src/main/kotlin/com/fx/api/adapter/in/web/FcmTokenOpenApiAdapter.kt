@@ -1,10 +1,11 @@
 package com.fx.api.adapter.`in`.web
 
-import com.fx.api.adapter.`in`.web.dto.FcmTokenRequest
+import com.fx.api.adapter.`in`.web.dto.FcmTokenSaveRequest
 import com.fx.api.adapter.`in`.web.swagger.FcmTokenOpenApiSwagger
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import com.fx.global.api.Api
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -17,7 +18,7 @@ class FcmTokenOpenApiAdapter(
 ) : FcmTokenOpenApiSwagger {
 
     @PostMapping
-    override fun saveFcmToken(@RequestBody tokenRequest: FcmTokenRequest): ResponseEntity<Api<Boolean>> {
+    override fun saveFcmToken(@RequestBody @Valid tokenRequest: FcmTokenSaveRequest): ResponseEntity<Api<Boolean>> {
         fcmTokenCommandUseCase.saveFcmToken(tokenRequest.toCommand())
         return Api.OK(true, "토큰이 저장되었습니다.")
     }
