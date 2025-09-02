@@ -24,7 +24,7 @@ class NoticeCrawlScheduler(
         processCrawl(NoticeType.entries, "notice")
     }
 
-    @Scheduled(cron = "0 10 9 * * *") // 매일 오전 9시 10분
+    @Scheduled(cron = "0 10 16 * * *") // 매일 16시 10분마다
     fun crawlAndPushMajorNotices() = runBlocking {
         processCrawl(MajorType.entries, "major notice")
     }
