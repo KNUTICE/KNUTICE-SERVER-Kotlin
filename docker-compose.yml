@@ -1,0 +1,37 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    image: ${DOCKER_API_IMAGE_NAME}
+    container_name: knutice-api
+    ports:
+      - ${API_PORT}:${API_PORT}
+    networks:
+      - app-network
+    environment:
+      - API_PORT
+      - MONGO_URI
+      - MONGO_DATABASE
+      - TZ=Asia/Seoul
+
+  crawler:
+    build:
+      context: .
+      dockerfile: ./crawler/Dockerfile
+    image: ${DOCKER_CRAWLER_IMAGE_NAME}
+    container_name: knutice-crawler
+    ports:
+      - ${CRAWLER_PORT}:${CRAWLER_PORT}
+    networks:
+      - app-network
+    environment:
+      - CRAWLER_PORT
+      - MONGO_URI
+      - MONGO_DATABASE
+      - FIREBASE_KEY_PATH
+      - TZ=Asia/Seoul
+
+networks:
+  app-network:
+    external: true
