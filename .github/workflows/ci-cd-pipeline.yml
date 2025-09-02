@@ -84,16 +84,16 @@ jobs:
             
             export DOPPLER_TOKEN=${{ secrets.DOPPLER_TOKEN_PRD }}
             
-            if [ -d KNUTICE-SERVER ]; then rm -rf KNUTICE-SERVER; fi
+            if [ -d KNUTICE-SERVER-Kotlin ]; then rm -rf KNUTICE-SERVER-Kotlin; fi
             git clone https://github.com/KNUTICE/KNUTICE-SERVER-Kotlin.git
             
-            cd KNUTICE-SERVER
+            cd KNUTICE-SERVER-Kotlin
             doppler run -- docker compose pull
             doppler run -- docker compose up -d
             docker image prune -f
             
             cd ..
-            rm -rf KNUTICE-SERVER
+            rm -rf KNUTICE-SERVER-Kotlin
 
 #      - name: Slack Notification
 #        uses: 8398a7/action-slack@v3
