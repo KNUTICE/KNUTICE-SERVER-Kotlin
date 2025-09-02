@@ -2,10 +2,13 @@ package com.fx.api.adapter.`in`.web
 
 import com.fx.api.adapter.`in`.web.dto.NoticeResponse
 import com.fx.api.adapter.`in`.web.dto.NoticeSearchParam
+import com.fx.api.adapter.`in`.web.dto.NoticeTypeResponse
 import com.fx.api.adapter.`in`.web.swagger.NoticeOpenApiSwagger
 import com.fx.api.application.port.`in`.NoticeQueryUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import com.fx.global.api.Api
+import com.fx.global.domain.MajorType
+import com.fx.global.domain.NoticeType
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
@@ -33,5 +36,27 @@ class NoticeOpenApiAdapter(
     @GetMapping("/{nttId}")
     override fun getNotice(@PathVariable nttId: Long): ResponseEntity<Api<NoticeResponse>> =
         Api.OK(NoticeResponse.from(noticeQueryUseCase.getNotice(nttId)))
+
+    @GetMapping("/notice-types")
+    override fun getNoticeTypes(): ResponseEntity<Api<List<NoticeTypeResponse>>> {
+        val types = NoticeType.entries.map {
+            NoticeTypeResponse(
+                code = it.name,
+                category = it.category
+            )
+        }
+        return Api.OK(types)
+    }
+
+    @GetMapping("/major-types")
+    override fun getMajorTypes(): ResponseEntity<Api<List<NoticeTypeResponse>>> {
+        val types = MajorType.entries.map {
+            NoticeTypeResponse(
+                code = it.name,
+                category = it.category
+            )
+        }
+        return Api.OK(types)
+    }
 
 }
