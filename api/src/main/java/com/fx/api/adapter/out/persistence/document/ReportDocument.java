@@ -29,6 +29,7 @@ public class ReportDocument extends MongoBaseDocument {
 
     public static ReportDocument from(Report report) {
         return ReportDocument.builder()
+            .id(report.getId())
             .fcmToken(report.getFcmToken())
             .content(report.getContent())
             .deviceName(report.getDeviceName())

@@ -27,12 +27,9 @@ class JwtProvider(
 
     private val key = Keys.hmacShaKeyFor(secretKey.toByteArray())
 
-    override fun generateTokens(userId: Long, role: UserRole): TokenInfo {
+    override fun generateTokens(userId: String, role: UserRole): TokenInfo {
         val accessToken = createToken(userId, role, accessTokenPlusHour)
         val refreshToken = createToken(userId, role, refreshTokenPlusHour)
-
-        val expiration = parseTokenSafely(refreshToken).expiration
-
         // TODO refresh token 저장
 
         return TokenInfo(
@@ -44,7 +41,7 @@ class JwtProvider(
     override fun getAuthenticatedUserInfo(accessToken: String): AuthenticatedUserInfo {
         val claims = parseTokenSafely(accessToken)
 
-        val userId = claims["userId"].toString().toLong()
+        val userId = claims["userId"].toString()
         val role = UserRole.valueOf(claims["role"].toString())
 
         return AuthenticatedUserInfo(
@@ -74,7 +71,7 @@ class JwtProvider(
         }
     }
 
-    private fun createToken(userId: Long, role: UserRole, expireHour: Long): String {
+    private fun createToken(userId: String, role: UserRole, expireHour: Long): String {
         val claims = mutableMapOf<String, Any>()
         claims["userId"] = userId
         claims["role"] = role.toString()

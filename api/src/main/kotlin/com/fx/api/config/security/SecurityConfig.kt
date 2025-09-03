@@ -18,6 +18,7 @@ class SecurityConfig(
     private val WHITE_LIST = arrayOf(
         "/open-api/**",
         "/swagger-ui/**",
+        "/v3/api-docs/**"
     )
 
     @Bean
