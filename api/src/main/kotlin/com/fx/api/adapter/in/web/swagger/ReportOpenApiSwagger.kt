@@ -7,8 +7,10 @@ import com.fx.global.annotation.ApiResponseExplanations
 import com.fx.global.api.Api
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 
 @Tag(name = "문의사항 API")
 interface ReportOpenApiSwagger {
@@ -27,7 +29,8 @@ interface ReportOpenApiSwagger {
             "content : 5자에서 최대 500자까지 허용됩니다.<br>" +
             "deviceName : 최대 50자입니다. <br>version : 최대 50자입니다.")
     fun saveReport(
-        @RequestBody reportSaveRequest: ReportSaveRequest
+        @RequestHeader fcmToken: String,
+        @RequestBody @Valid reportSaveRequest: ReportSaveRequest
     ): ResponseEntity<Api<Boolean>>
 
 }

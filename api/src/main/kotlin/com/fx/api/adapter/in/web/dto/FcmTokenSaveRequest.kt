@@ -7,16 +7,13 @@ import jakarta.validation.constraints.NotNull
 
 data class FcmTokenSaveRequest(
 
-    @field:NotBlank
-    val fcmToken: String,
-
     @field:NotNull
     val deviceType: DeviceType
 
 ) {
-    fun toCommand() =
+    fun toCommand(fcmToken: String) =
         FcmTokenCommand(
-            fcmToken = this.fcmToken,
+            fcmToken = fcmToken,
             deviceType = this.deviceType
         )
 }

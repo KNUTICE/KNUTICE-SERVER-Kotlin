@@ -9,6 +9,7 @@ import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 
 @WebInputAdapter
@@ -17,11 +18,11 @@ class ReportOpenApiAdapter(
     private val reportCommandUseCase: ReportCommandUseCase
 ) : ReportOpenApiSwagger {
 
-    // TODO Header Token
     @PostMapping
     override fun saveReport(
+        @RequestHeader fcmToken: String,
         @RequestBody @Valid reportSaveRequest: ReportSaveRequest
     ): ResponseEntity<Api<Boolean>> =
-        Api.OK(reportCommandUseCase.saveReport(reportSaveRequest.toCommand()))
+        Api.OK(reportCommandUseCase.saveReport(reportSaveRequest.toCommand(fcmToken)))
 
 }
