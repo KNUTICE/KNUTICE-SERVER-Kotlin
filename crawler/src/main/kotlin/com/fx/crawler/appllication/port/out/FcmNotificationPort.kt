@@ -13,4 +13,6 @@ interface FcmNotificationPort {
      */
     suspend fun sendNotification(fcmTokens: List<FcmToken>, notices: List<Notice>): List<FcmToken>
 
+    suspend fun sendSilentPushNotification(fcmTokens: List<FcmToken>): List<FcmToken>
+
 }
