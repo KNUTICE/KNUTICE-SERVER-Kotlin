@@ -1,6 +1,7 @@
 package com.fx.api.adapter.`in`.web.swagger
 
 import com.fx.api.adapter.`in`.web.dto.fcm.FcmTokenSaveRequest
+import com.fx.api.adapter.`in`.web.dto.fcm.FcmTokenUpdateRequest
 import com.fx.global.api.Api
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -17,4 +18,12 @@ interface FcmTokenOpenApiSwagger {
         @RequestHeader fcmToken: String,
         @RequestBody @Valid tokenSaveRequest: FcmTokenSaveRequest
     ): ResponseEntity<Api<Boolean>>
+
+    @Operation(summary = "새로운 토큰으로 업데이트", description = "Silent Push 요청 시 사용되는 API 입니다.<br>" +
+            "header 에는 oldFcmToken 값을 넣으며, Body 에는 newFcmToken, deviceType 을 지정합니다.")
+    fun updateFcmToken(
+        @RequestHeader oldFcmToken: String,
+        @RequestBody @Valid tokenUpdateRequest: FcmTokenUpdateRequest
+    ): ResponseEntity<Api<Boolean>>
+
 }

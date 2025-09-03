@@ -24,6 +24,16 @@ data class FcmToken(
             )
         }
 
+        fun updateFcmToken(newFcmToken: String, oldFcmToken: FcmToken): FcmToken {
+            return FcmToken(
+                fcmToken = newFcmToken,
+                subscribedTopics = oldFcmToken.subscribedTopics,
+                deviceType = oldFcmToken.deviceType,
+                isActive = true,
+                createdAt = oldFcmToken.createdAt
+            )
+        }
+
     }
 
 

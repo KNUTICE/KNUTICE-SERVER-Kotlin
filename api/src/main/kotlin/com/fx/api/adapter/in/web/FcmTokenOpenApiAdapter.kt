@@ -1,12 +1,14 @@
 package com.fx.api.adapter.`in`.web
 
-import com.fx.api.adapter.`in`.web.dto.FcmTokenSaveRequest
+import com.fx.api.adapter.`in`.web.dto.fcm.FcmTokenSaveRequest
+import com.fx.api.adapter.`in`.web.dto.fcm.FcmTokenUpdateRequest
 import com.fx.api.adapter.`in`.web.swagger.FcmTokenOpenApiSwagger
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import com.fx.global.api.Api
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
@@ -25,6 +27,15 @@ class FcmTokenOpenApiAdapter(
     ): ResponseEntity<Api<Boolean>> {
         fcmTokenCommandUseCase.saveFcmToken(tokenSaveRequest.toCommand(fcmToken))
         return Api.OK(true, "토큰이 저장되었습니다.")
+    }
+
+    @PatchMapping // fcmToken 만 일부 변경하므로 Patch ...
+    override fun updateFcmToken(
+        @RequestHeader oldFcmToken: String,
+        @RequestBody @Valid tokenUpdateRequest: FcmTokenUpdateRequest
+    ): ResponseEntity<Api<Boolean>> {
+        fcmTokenCommandUseCase.updateFcmToken(tokenUpdateRequest.toCommand(oldFcmToken))
+        return Api.OK(true, "토큰이 업데이트되었습니다.")
     }
 
 
