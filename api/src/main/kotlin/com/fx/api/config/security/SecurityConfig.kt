@@ -30,8 +30,8 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers(*WHITE_LIST)
-                    .permitAll()
+                    .requestMatchers(*WHITE_LIST).permitAll()
+                    .requestMatchers("/api/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             }
             .addFilterBefore(

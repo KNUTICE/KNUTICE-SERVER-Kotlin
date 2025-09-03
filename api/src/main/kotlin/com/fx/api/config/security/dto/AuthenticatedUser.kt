@@ -8,7 +8,7 @@ data class AuthenticatedUser(
     val userId: String,
     val role: UserRole
 ) : UserDetails {
-    override fun getAuthorities() = listOf(SimpleGrantedAuthority(role.name))
+    override fun getAuthorities() = listOf(SimpleGrantedAuthority(role.description))
     override fun getPassword() = ""
     override fun getUsername() = userId
     override fun isAccountNonExpired() = true

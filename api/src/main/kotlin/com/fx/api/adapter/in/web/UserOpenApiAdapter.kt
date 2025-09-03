@@ -4,6 +4,7 @@ import com.fx.api.adapter.`in`.web.dto.user.TokenResponse
 import com.fx.api.adapter.`in`.web.dto.user.UserIdResponse
 import com.fx.api.adapter.`in`.web.dto.user.UserLoginRequest
 import com.fx.api.adapter.`in`.web.dto.user.UserSignUpRequest
+import com.fx.api.adapter.`in`.web.swagger.UserOpenApiSwagger
 import com.fx.api.application.port.`in`.UserCommandUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import com.fx.global.api.Api
@@ -19,11 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 @RequestMapping("/open-api/v1/users")
 class UserOpenApiAdapter(
     private val userCommandUseCase: UserCommandUseCase
-) {
+) : UserOpenApiSwagger {
 
-    @Operation(summary = "회원가입")
     @PostMapping("/signup")
-    fun signUp(
+    override fun signUp(
         @RequestBody @Valid signUpRequest: UserSignUpRequest
     ): ResponseEntity<Api<UserIdResponse>> =
         Api.OK(UserIdResponse(
@@ -32,9 +32,8 @@ class UserOpenApiAdapter(
             HttpStatus.CREATED,
         )
 
-    @Operation(summary = "로그인")
     @PostMapping("/login")
-    fun login(
+    override fun login(
         @RequestBody @Valid loginRequest: UserLoginRequest
     ): ResponseEntity<Api<TokenResponse>> =
         Api.OK(
