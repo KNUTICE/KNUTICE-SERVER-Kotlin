@@ -26,11 +26,12 @@ class TopicOpenApiAdapter(
     override fun getMyTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<TopicResponse>> =
         Api.OK(TopicResponse.from(fcmTokenQueryUseCase.getMyTokenInfo(fcmToken)))
 
-
-    // TODO Header
     @PostMapping
-    override fun updateTopics(@RequestBody @Valid topicUpdateRequest: TopicUpdateRequest): ResponseEntity<Api<TopicResponse>> {
-        val updatedFcmToken = fcmTokenCommandUseCase.updateTopics(topicUpdateRequest.from())
+    override fun updateTopics(
+        @RequestHeader fcmToken: String,
+        @RequestBody @Valid topicUpdateRequest: TopicUpdateRequest
+    ): ResponseEntity<Api<TopicResponse>> {
+        val updatedFcmToken = fcmTokenCommandUseCase.updateTopics(topicUpdateRequest.toCommand(fcmToken))
         return Api.OK(TopicResponse.from(updatedFcmToken))
     }
 

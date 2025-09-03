@@ -6,9 +6,6 @@ import jakarta.validation.constraints.Size
 
 data class ReportSaveRequest(
 
-    @field:NotBlank
-    val fcmToken: String,
-
     @field:Size(min = 5, max = 500)
     val content: String,
 
@@ -19,9 +16,9 @@ data class ReportSaveRequest(
     val version: String
 
 ) {
-    fun toCommand(): ReportCommand =
+    fun toCommand(fcmToken: String): ReportCommand =
         ReportCommand(
-            fcmToken = this.fcmToken,
+            fcmToken = fcmToken,
             content = this.content,
             deviceName = this.deviceName,
             version = this.version

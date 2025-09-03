@@ -9,6 +9,7 @@ import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 
 @WebInputAdapter
@@ -18,8 +19,11 @@ class FcmTokenOpenApiAdapter(
 ) : FcmTokenOpenApiSwagger {
 
     @PostMapping
-    override fun saveFcmToken(@RequestBody @Valid tokenRequest: FcmTokenSaveRequest): ResponseEntity<Api<Boolean>> {
-        fcmTokenCommandUseCase.saveFcmToken(tokenRequest.toCommand())
+    override fun saveFcmToken(
+        @RequestHeader fcmToken: String,
+        @RequestBody @Valid tokenSaveRequest: FcmTokenSaveRequest
+    ): ResponseEntity<Api<Boolean>> {
+        fcmTokenCommandUseCase.saveFcmToken(tokenSaveRequest.toCommand(fcmToken))
         return Api.OK(true, "토큰이 저장되었습니다.")
     }
 

@@ -39,5 +39,8 @@ interface TopicOpenApiSwagger {
         ]
     )
     @Operation(summary = "Topic 변경", description = "변경된 Topic 을 업데이트합니다.")
-    fun updateTopics(@RequestBody topicUpdateRequest: TopicUpdateRequest): ResponseEntity<Api<TopicResponse>>
+    fun updateTopics(
+        @RequestHeader fcmToken: String,
+        @RequestBody topicUpdateRequest: TopicUpdateRequest
+    ): ResponseEntity<Api<TopicResponse>>
 }
