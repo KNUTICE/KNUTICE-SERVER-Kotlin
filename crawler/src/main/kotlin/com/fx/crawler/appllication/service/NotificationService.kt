@@ -5,8 +5,11 @@ import com.fx.crawler.appllication.port.out.FcmNotificationPort
 import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort
 import com.fx.global.domain.FcmToken
 import com.fx.crawler.domain.FcmTokenQuery
+import com.fx.global.domain.DeviceType
 import com.fx.global.domain.Notice
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
@@ -68,5 +71,32 @@ class NotificationService(
         fcmTokenPersistencePort.saveAll(failedTokens.map { it.copy(isActive = false) })
     }
 
+    override suspend fun sendSilentPushNotification() = coroutineScope {
+        var cursor: LocalDateTime? = null
+        val tasks = mutableListOf<Deferred<List<FcmToken>>>()
+        while (true) {
+            val fcmTokens = fcmTokenPersistencePort.findByCreatedAtAndIsActive(
+                FcmTokenQuery(
+                    createdAt = cursor,
+                    isActive = true,
+                    deviceType = DeviceType.iOS,
+                    pageable = PageRequest.of(0, BATCH_SIZE, Sort.by(Sort.Direction.ASC, "createdAt"))
+                )
+            )
+            if (fcmTokens.isEmpty()) break
+
+            tasks += async {
+                val failedTokens = fcmNotificationPort.sendSilentPushNotification(fcmTokens)
+                log.info("SilentPush - 전송 실패 토큰 개수 : {} / {}", failedTokens.size, fcmTokens.size)
+                failedTokens
+            }
+            cursor = fcmTokens.last().createdAt
+        }
+        val failedAll = tasks.awaitAll().flatten()
+
+        if (failedAll.isNotEmpty()) {
+            handleFailedTokens(failedAll) // 실패 토큰 처리
+        }
+    }
 
 }
