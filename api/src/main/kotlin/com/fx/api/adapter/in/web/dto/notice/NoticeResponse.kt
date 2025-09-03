@@ -1,4 +1,4 @@
-package com.fx.api.adapter.`in`.web.dto
+package com.fx.api.adapter.`in`.web.dto.notice
 
 import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.Notice

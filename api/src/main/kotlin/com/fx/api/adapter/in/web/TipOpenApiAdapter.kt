@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web
 
-import com.fx.api.adapter.`in`.web.dto.TipResponse
+import com.fx.api.adapter.`in`.web.dto.tip.TipResponse
 import com.fx.api.adapter.`in`.web.swagger.TipOpenApiSwagger
 import com.fx.api.application.port.`in`.TipQueryUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter

@@ -1,8 +1,7 @@
-package com.fx.api.adapter.`in`.web.dto
+package com.fx.api.adapter.`in`.web.dto.fcm
 
-import com.fx.api.application.port.`in`.dto.FcmTokenCommand
+import com.fx.api.application.port.`in`.dto.FcmTokenSaveCommand
 import com.fx.global.domain.DeviceType
-import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 
 data class FcmTokenSaveRequest(
@@ -12,7 +11,7 @@ data class FcmTokenSaveRequest(
 
 ) {
     fun toCommand(fcmToken: String) =
-        FcmTokenCommand(
+        FcmTokenSaveCommand(
             fcmToken = fcmToken,
             deviceType = this.deviceType
         )

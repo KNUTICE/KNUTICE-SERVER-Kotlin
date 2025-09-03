@@ -1,8 +1,8 @@
 package com.fx.api.adapter.`in`.web.swagger
 
-import com.fx.api.adapter.`in`.web.dto.NoticeResponse
-import com.fx.api.adapter.`in`.web.dto.NoticeSearchParam
-import com.fx.api.adapter.`in`.web.dto.NoticeTypeResponse
+import com.fx.api.adapter.`in`.web.dto.notice.NoticeResponse
+import com.fx.api.adapter.`in`.web.dto.notice.NoticeSearchParam
+import com.fx.api.adapter.`in`.web.dto.notice.NoticeTypeResponse
 import com.fx.api.exception.errorcode.NoticeErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations

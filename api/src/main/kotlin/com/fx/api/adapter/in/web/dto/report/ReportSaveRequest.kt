@@ -1,6 +1,6 @@
-package com.fx.api.adapter.`in`.web.dto
+package com.fx.api.adapter.`in`.web.dto.report
 
-import com.fx.api.application.port.`in`.dto.ReportCommand
+import com.fx.api.application.port.`in`.dto.ReportSaveCommand
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 
@@ -16,8 +16,8 @@ data class ReportSaveRequest(
     val version: String
 
 ) {
-    fun toCommand(fcmToken: String): ReportCommand =
-        ReportCommand(
+    fun toCommand(fcmToken: String): ReportSaveCommand =
+        ReportSaveCommand(
             fcmToken = fcmToken,
             content = this.content,
             deviceName = this.deviceName,

@@ -1,6 +1,6 @@
 package com.fx.api.domain
 
-import com.fx.api.application.port.`in`.dto.ReportCommand
+import com.fx.api.application.port.`in`.dto.ReportSaveCommand
 
 data class Report(
     val fcmToken: String,
@@ -9,12 +9,12 @@ data class Report(
     val version: String
 ) {
     companion object {
-        fun createReport(reportCommand: ReportCommand): Report =
+        fun createReport(reportSaveCommand: ReportSaveCommand): Report =
             Report(
-                fcmToken = reportCommand.fcmToken,
-                content = reportCommand.content,
-                deviceName = reportCommand.deviceName,
-                version = reportCommand.version
+                fcmToken = reportSaveCommand.fcmToken,
+                content = reportSaveCommand.content,
+                deviceName = reportSaveCommand.deviceName,
+                version = reportSaveCommand.version
             )
     }
 }

@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web.swagger
 
-import com.fx.api.adapter.`in`.web.dto.ReportSaveRequest
+import com.fx.api.adapter.`in`.web.dto.report.ReportSaveRequest
 import com.fx.api.exception.errorcode.FcmTokenErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations

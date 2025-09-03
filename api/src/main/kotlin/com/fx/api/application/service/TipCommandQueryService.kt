@@ -2,7 +2,7 @@ package com.fx.api.application.service
 
 import com.fx.api.application.port.`in`.TipQueryUseCase
 import com.fx.api.application.port.`in`.TipCommandUseCase
-import com.fx.api.application.port.`in`.dto.TipCommand
+import com.fx.api.application.port.`in`.dto.TipSaveCommand
 import com.fx.api.application.port.out.TipPersistencePort
 import com.fx.api.domain.Tip
 import com.fx.api.exception.TipException
@@ -15,8 +15,8 @@ class TipCommandQueryService(
     private val tipPersistencePort: TipPersistencePort
 ) : TipCommandUseCase, TipQueryUseCase {
 
-    override fun saveTip(tipCommand: TipCommand): Boolean {
-        tipPersistencePort.saveTip(Tip.createTip(tipCommand))
+    override fun saveTip(tipSaveCommand: TipSaveCommand): Boolean {
+        tipPersistencePort.saveTip(Tip.createTip(tipSaveCommand))
         return true
     }
 

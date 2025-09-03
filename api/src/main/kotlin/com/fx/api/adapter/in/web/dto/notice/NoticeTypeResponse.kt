@@ -1,4 +1,4 @@
-package com.fx.api.adapter.`in`.web.dto
+package com.fx.api.adapter.`in`.web.dto.notice
 
 data class NoticeTypeResponse(
     val code: String,
