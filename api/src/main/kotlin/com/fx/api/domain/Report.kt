@@ -3,6 +3,7 @@ package com.fx.api.domain
 import com.fx.api.application.port.`in`.dto.ReportSaveCommand
 
 data class Report(
+    val id: String ?= null,
     val fcmToken: String,
     val content: String,
     val deviceName: String,

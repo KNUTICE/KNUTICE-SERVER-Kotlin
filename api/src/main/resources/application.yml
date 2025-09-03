@@ -9,3 +9,11 @@ spring:
     mongodb:
       database: ${MONGO_DATABASE}
       uri: ${MONGO_URI}
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+  access-token:
+    plus-hour: ${JWT_ACCESS_PLUS_HOUR}
+  refresh-token:
+    plus-hour: ${JWT_REFRESH_PLUS_HOUR}
