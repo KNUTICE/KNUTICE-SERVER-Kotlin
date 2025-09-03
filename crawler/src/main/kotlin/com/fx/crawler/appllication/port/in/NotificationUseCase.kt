@@ -6,4 +6,6 @@ interface NotificationUseCase {
 
     suspend fun sendNotification(notices: List<Notice>)
 
+    suspend fun sendSilentPushNotification()
+
 }

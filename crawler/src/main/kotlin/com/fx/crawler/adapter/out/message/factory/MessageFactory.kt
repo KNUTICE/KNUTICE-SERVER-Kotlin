@@ -19,6 +19,13 @@ object MessageFactory {
             .build()
     }
 
+    fun createSilentPush(fcmTokens: List<String>): MulticastMessage =
+        MulticastMessage.builder()
+            .setApnsConfig(apnsSilentPushConfig())
+            .addAllTokens(fcmTokens)
+            .build()
+
+
     private fun defaultData(notice: Notice): Map<String, String> =
         mapOf(
             "nttId" to notice.nttId.toString(),
@@ -41,6 +48,18 @@ object MessageFactory {
                     .setAlert(ApsAlert.builder().setLaunchImage(notice.contentImageUrl).build())
                     .setSound("default")
                     .build()
+            )
+            .build()
+
+    private fun apnsSilentPushConfig(): ApnsConfig =
+        ApnsConfig.builder()
+            .putHeader("apns-priority", "5")
+            .putHeader("apns-push-type", "background")
+            .putCustomData("event", "token_update")
+            .setAps(Aps.builder()
+                .setContentAvailable(true)
+                .setMutableContent(true)
+                .build()
             )
             .build()
 

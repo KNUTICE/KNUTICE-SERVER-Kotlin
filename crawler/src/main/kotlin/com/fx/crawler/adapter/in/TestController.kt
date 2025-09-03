@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
 
 @RestController
@@ -21,9 +22,7 @@ class TestController(
 
         val BATCH_SIZE = 100
 
-        var cursor = OffsetDateTime
-            .parse("2024-07-05T23:34:37.369+00:00")
-            .toLocalDateTime()
+        var cursor: LocalDateTime? = null
 
         while (true) {
             val fcmTokens = fcmTokenQueryRepository.findByCreatedAtAndIsActive(
@@ -39,7 +38,7 @@ class TestController(
             }
             log.info("fcmToken size : {}", fcmTokens.size)
             log.info("last : {}", fcmTokens.last().createdAt)
-            cursor = fcmTokens.last().createdAt;
+            cursor = fcmTokens.last().createdAt
         }
     }
 

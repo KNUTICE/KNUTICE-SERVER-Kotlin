@@ -2,6 +2,7 @@ package com.fx.crawler.adapter.out.persistence.repository;
 
 import com.fx.crawler.domain.FcmTokenQuery;
 import com.fx.global.adapter.out.persistence.document.FcmTokenDocument;
+import com.fx.global.domain.DeviceType;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -34,7 +35,8 @@ public class FcmTokenQueryRepository extends QuerydslRepositorySupport {
             .where(
                 cursorCondition(queryParam.getCreatedAt(), queryParam.getPageable().getSort()),
                 isActive(queryParam.isActive()),
-                eqSubscribedTopic(queryParam.getSubscribedTopic())
+                eqSubscribedTopic(queryParam.getSubscribedTopic()),
+                eqDeviceType(queryParam.getDeviceType())
             )
             .orderBy(getOrderSpecifier(queryParam.getPageable().getSort())
                 .toArray(OrderSpecifier[]::new))
@@ -58,6 +60,10 @@ public class FcmTokenQueryRepository extends QuerydslRepositorySupport {
 
     private BooleanExpression eqSubscribedTopic(String topic) {
         return topic != null ? fcmTokenDocument.subscribedTopics.contains(topic) : null;
+    }
+
+    private BooleanExpression eqDeviceType(DeviceType deviceType) {
+        return deviceType != null ? fcmTokenDocument.deviceType.eq(deviceType) : null;
     }
 
     private List<OrderSpecifier> getOrderSpecifier(Sort sort) {

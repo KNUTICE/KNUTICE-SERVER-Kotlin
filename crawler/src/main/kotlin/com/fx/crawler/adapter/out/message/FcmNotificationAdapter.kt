@@ -11,6 +11,7 @@ import com.google.firebase.messaging.MessagingErrorCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
+import kotlin.collections.plusAssign
 
 @NotificationAdapter
 class FcmNotificationAdapter : FcmNotificationPort {
@@ -43,6 +44,21 @@ class FcmNotificationAdapter : FcmNotificationPort {
                 failedTokens += extractFailedTokens(fcmTokens, response)
             }
 
+
+            failedTokens
+        }
+    }
+
+    override suspend fun sendSilentPushNotification(fcmTokens: List<FcmToken>): List<FcmToken> {
+        return withContext(Dispatchers.IO) {
+            val failedTokens = mutableListOf<FcmToken>()
+
+            if (fcmTokens.isEmpty()) return@withContext emptyList()
+            val tokens = fcmTokens.map { it.fcmToken }
+
+            val multicastMessage = MessageFactory.createSilentPush(tokens)
+            val response = FirebaseMessaging.getInstance().sendEachForMulticast(multicastMessage)
+            failedTokens += extractFailedTokens(fcmTokens, response)
 
             failedTokens
         }
