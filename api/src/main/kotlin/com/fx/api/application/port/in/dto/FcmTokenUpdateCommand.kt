@@ -2,8 +2,7 @@ package com.fx.api.application.port.`in`.dto
 
 import com.fx.global.domain.DeviceType
 
-data class TipCommand(
-    val title: String,
-    val url: String,
+data class FcmTokenUpdateCommand(
+    val fcmToken: String,
     val deviceType: DeviceType
 )

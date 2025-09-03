@@ -1,7 +1,6 @@
 package com.fx.api.adapter.`in`.web.swagger
 
-import com.fx.api.adapter.`in`.web.dto.TipResponse
-import com.fx.api.exception.errorcode.FcmTokenErrorCode
+import com.fx.api.adapter.`in`.web.dto.tip.TipResponse
 import com.fx.api.exception.errorcode.TipErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations

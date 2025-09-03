@@ -1,7 +1,7 @@
 package com.fx.api.application.service
 
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
-import com.fx.api.application.port.`in`.dto.FcmTokenCommand
+import com.fx.api.application.port.`in`.dto.FcmTokenSaveCommand
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.exception.FcmTokenException
@@ -14,12 +14,12 @@ class FcmTokenCommandService(
     private val fcmTokenPersistencePort: FcmTokenPersistencePort
 ): FcmTokenCommandUseCase {
 
-    override fun saveFcmToken(fcmTokenCommand: FcmTokenCommand): Boolean {
-        val fcmToken = fcmTokenPersistencePort.findByFcmToken(fcmTokenCommand.fcmToken)
+    override fun saveFcmToken(fcmTokenSaveCommand: FcmTokenSaveCommand): Boolean {
+        val fcmToken = fcmTokenPersistencePort.findByFcmToken(fcmTokenSaveCommand.fcmToken)
             ?.copy(isActive = true) // 존재하는 경우 isActive = true
             ?: FcmToken.createFcmToken( // 없으면 새로 생성
-                fcmToken = fcmTokenCommand.fcmToken,
-                deviceType = fcmTokenCommand.deviceType
+                fcmToken = fcmTokenSaveCommand.fcmToken,
+                deviceType = fcmTokenSaveCommand.deviceType
             )
 
         fcmTokenPersistencePort.saveFcmToken(fcmToken)

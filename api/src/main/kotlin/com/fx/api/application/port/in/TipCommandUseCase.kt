@@ -1,10 +1,10 @@
 package com.fx.api.application.port.`in`
 
-import com.fx.api.application.port.`in`.dto.TipCommand
+import com.fx.api.application.port.`in`.dto.TipSaveCommand
 
 interface TipCommandUseCase {
 
-    fun saveTip(tipCommand: TipCommand): Boolean
+    fun saveTip(tipSaveCommand: TipSaveCommand): Boolean
     fun deleteTip(tipId: String): Boolean
 
 }

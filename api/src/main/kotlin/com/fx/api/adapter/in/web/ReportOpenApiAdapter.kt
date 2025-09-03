@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web
 
-import com.fx.api.adapter.`in`.web.dto.ReportSaveRequest
+import com.fx.api.adapter.`in`.web.dto.report.ReportSaveRequest
 import com.fx.api.adapter.`in`.web.swagger.ReportOpenApiSwagger
 import com.fx.api.application.port.`in`.ReportCommandUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter

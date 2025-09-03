@@ -1,7 +1,7 @@
 package com.fx.api.adapter.`in`.web.swagger
 
-import com.fx.api.adapter.`in`.web.dto.TopicResponse
-import com.fx.api.adapter.`in`.web.dto.TopicUpdateRequest
+import com.fx.api.adapter.`in`.web.dto.topic.TopicResponse
+import com.fx.api.adapter.`in`.web.dto.topic.TopicUpdateRequest
 import com.fx.api.exception.errorcode.FcmTokenErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations

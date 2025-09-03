@@ -1,7 +1,7 @@
 package com.fx.api.adapter.`in`.web
 
-import com.fx.api.adapter.`in`.web.dto.TopicResponse
-import com.fx.api.adapter.`in`.web.dto.TopicUpdateRequest
+import com.fx.api.adapter.`in`.web.dto.topic.TopicResponse
+import com.fx.api.adapter.`in`.web.dto.topic.TopicUpdateRequest
 import com.fx.api.adapter.`in`.web.swagger.TopicOpenApiSwagger
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase

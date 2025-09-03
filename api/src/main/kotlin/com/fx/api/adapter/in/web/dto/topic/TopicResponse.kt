@@ -1,4 +1,4 @@
-package com.fx.api.adapter.`in`.web.dto
+package com.fx.api.adapter.`in`.web.dto.topic
 
 import com.fx.global.domain.FcmToken
 

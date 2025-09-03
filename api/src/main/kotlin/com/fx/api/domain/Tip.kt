@@ -1,6 +1,6 @@
 package com.fx.api.domain
 
-import com.fx.api.application.port.`in`.dto.TipCommand
+import com.fx.api.application.port.`in`.dto.TipSaveCommand
 import com.fx.global.domain.DeviceType
 import java.time.LocalDateTime
 
@@ -13,11 +13,11 @@ data class Tip(
     val updatedAt: LocalDateTime? = null
 ) {
     companion object {
-        fun createTip(tipCommand: TipCommand): Tip =
+        fun createTip(tipSaveCommand: TipSaveCommand): Tip =
             Tip(
-                title = tipCommand.title,
-                url = tipCommand.url,
-                deviceType = tipCommand.deviceType,
+                title = tipSaveCommand.title,
+                url = tipSaveCommand.url,
+                deviceType = tipSaveCommand.deviceType,
             )
     }
 }

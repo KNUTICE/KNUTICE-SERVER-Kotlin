@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web.swagger
 
-import com.fx.api.adapter.`in`.web.dto.FcmTokenSaveRequest
+import com.fx.api.adapter.`in`.web.dto.fcm.FcmTokenSaveRequest
 import com.fx.global.api.Api
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

@@ -1,4 +1,4 @@
-package com.fx.api.adapter.`in`.web.dto
+package com.fx.api.adapter.`in`.web.dto.tip
 
 import com.fx.api.domain.Tip
 import com.fx.global.domain.DeviceType
