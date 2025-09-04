@@ -3,6 +3,8 @@ package com.fx.api.application.service
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.api.application.port.`in`.dto.FcmTokenSaveCommand
 import com.fx.api.application.port.`in`.dto.FcmTokenUpdateCommand
+import com.fx.api.application.port.`in`.dto.MajorTopicUpdateCommand
+import com.fx.api.application.port.`in`.dto.NoticeTopicUpdateCommand
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.exception.FcmTokenException
@@ -63,6 +65,38 @@ class FcmTokenCommandService(
                 )
                 fcmTokenPersistencePort.saveFcmToken(newToken)
             }
+        return true
+    }
+
+    override fun updateNoticeTopic(noticeTopicUpdateCommand: NoticeTopicUpdateCommand): Boolean {
+        val fcmToken = fcmTokenPersistencePort.findByFcmToken(noticeTopicUpdateCommand.fcmToken)
+            ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+
+        val updatedTopics = fcmToken.subscribedTopics.toMutableSet()
+
+        if (noticeTopicUpdateCommand.enabled) {
+            updatedTopics.add(noticeTopicUpdateCommand.type.typeName)
+        } else {
+            updatedTopics.remove(noticeTopicUpdateCommand.type.typeName)
+        }
+
+        fcmTokenPersistencePort.saveFcmToken(fcmToken.copy(subscribedTopics = updatedTopics))
+        return true
+    }
+
+    override fun updateMajorTopic(majorTopicUpdateCommand: MajorTopicUpdateCommand): Boolean {
+        val fcmToken = fcmTokenPersistencePort.findByFcmToken(majorTopicUpdateCommand.fcmToken)
+            ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+
+        val updatedTopics = fcmToken.subscribedTopics.toMutableSet()
+
+        if (majorTopicUpdateCommand.enabled) {
+            updatedTopics.add(majorTopicUpdateCommand.type.typeName)
+        } else {
+            updatedTopics.remove(majorTopicUpdateCommand.type.typeName)
+        }
+
+        fcmTokenPersistencePort.saveFcmToken(fcmToken.copy(subscribedTopics = updatedTopics))
         return true
     }
 }
