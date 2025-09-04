@@ -3,6 +3,8 @@ package com.fx.crawler.adapter.out.persistence.repository;
 import com.fx.crawler.domain.FcmTokenQuery;
 import com.fx.global.adapter.out.persistence.document.FcmTokenDocument;
 import com.fx.global.domain.DeviceType;
+import com.fx.global.domain.MajorType;
+import com.fx.global.domain.NoticeType;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -35,7 +37,8 @@ public class FcmTokenQueryRepository extends QuerydslRepositorySupport {
             .where(
                 cursorCondition(queryParam.getCreatedAt(), queryParam.getPageable().getSort()),
                 isActive(queryParam.isActive()),
-                eqSubscribedTopic(queryParam.getSubscribedTopic()),
+                eqSubscribedNoticeTopic(queryParam.getSubscribedNoticeTopic()),
+                eqSubscribedMajorTopic(queryParam.getSubscribedMajorTopic()),
                 eqDeviceType(queryParam.getDeviceType())
             )
             .orderBy(getOrderSpecifier(queryParam.getPageable().getSort())
@@ -58,8 +61,12 @@ public class FcmTokenQueryRepository extends QuerydslRepositorySupport {
         return fcmTokenDocument.isActive.eq(isActive);
     }
 
-    private BooleanExpression eqSubscribedTopic(String topic) {
-        return topic != null ? fcmTokenDocument.subscribedTopics.contains(topic) : null;
+    private BooleanExpression eqSubscribedNoticeTopic(NoticeType topic) {
+        return topic != null ? fcmTokenDocument.subscribedNoticeTopics.contains(topic) : null;
+    }
+
+    private BooleanExpression eqSubscribedMajorTopic(MajorType topic) {
+        return topic != null ? fcmTokenDocument.subscribedMajorTopics.contains(topic) : null;
     }
 
     private BooleanExpression eqDeviceType(DeviceType deviceType) {

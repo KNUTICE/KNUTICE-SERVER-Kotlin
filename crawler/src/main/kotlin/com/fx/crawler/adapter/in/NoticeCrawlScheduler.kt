@@ -29,7 +29,6 @@ class NoticeCrawlScheduler(
         processCrawl(MajorType.entries, "major notice")
     }
 
-
     private suspend fun processCrawl(targets: List<CrawlableType>, label: String) {
         log.info("---------- Starting scheduled $label crawling ----------")
         try {
