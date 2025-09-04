@@ -17,7 +17,7 @@ data class FcmToken(
         fun createFcmToken(fcmToken: String, deviceType: DeviceType): FcmToken {
             return FcmToken(
                 fcmToken = fcmToken,
-                subscribedTopics = CrawlableType.allTypeNames(),
+                subscribedTopics = NoticeType.entries.map { it.name }.toSet(),
                 deviceType = deviceType,
                 isActive = true,
                 createdAt = LocalDateTime.now()

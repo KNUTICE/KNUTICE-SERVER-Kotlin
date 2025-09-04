@@ -14,7 +14,7 @@ class SilentPushScheduler(
     private val log = LoggerFactory.getLogger(SilentPushScheduler::class.java)
 
     @Scheduled(cron = "0 0 0 1 * *")
-    suspend fun sendSilentPushNotification() = runBlocking{
+    fun sendSilentPushNotification() = runBlocking{
         log.info("---------- Starting scheduled silent push notification ----------")
         notificationUseCase.sendSilentPushNotification()
         log.info("---------- Scheduled silent push notification finished ----------")
