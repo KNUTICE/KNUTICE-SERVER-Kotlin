@@ -4,6 +4,8 @@ import com.fx.global.domain.FcmToken
 
 interface FcmTokenQueryUseCase {
 
-    fun getMyTokenInfo(fcmToken: String): FcmToken
+    fun getMyNoticeTopics(fcmToken: String): FcmToken
+
+    fun getMyMajorTopics(fcmToken: String): FcmToken
 
 }
