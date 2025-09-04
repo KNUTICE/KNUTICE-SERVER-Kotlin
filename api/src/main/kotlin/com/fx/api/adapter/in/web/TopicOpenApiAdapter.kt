@@ -23,8 +23,12 @@ class TopicOpenApiAdapter(
 ) : TopicOpenApiSwagger {
 
     @GetMapping
-    override fun getMyTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<TopicResponse>> =
-        Api.OK(TopicResponse.from(fcmTokenQueryUseCase.getMyTokenInfo(fcmToken)))
+    override fun getMyNoticeTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<TopicResponse>> =
+        Api.OK(TopicResponse.from(fcmTokenQueryUseCase.getMyNoticeTopics(fcmToken)))
+
+    @GetMapping("/major")
+    override fun getMyMajorTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<TopicResponse>> =
+        Api.OK(TopicResponse.from(fcmTokenQueryUseCase.getMyMajorTopics(fcmToken)))
 
     @PostMapping
     override fun updateTopics(
