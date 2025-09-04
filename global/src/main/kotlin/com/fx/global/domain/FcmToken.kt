@@ -4,7 +4,8 @@ import java.time.LocalDateTime
 
 data class FcmToken(
     val fcmToken: String,
-    val subscribedTopics: Set<String> = emptySet(),
+    val subscribedNoticeTopics: Set<NoticeType> = emptySet(),
+    val subscribedMajorTopics: Set<MajorType> = emptySet(),
     val deviceType: DeviceType,
     val isActive: Boolean,
 
@@ -17,7 +18,7 @@ data class FcmToken(
         fun createFcmToken(fcmToken: String, deviceType: DeviceType): FcmToken {
             return FcmToken(
                 fcmToken = fcmToken,
-                subscribedTopics = NoticeType.entries.map { it.name }.toSet(),
+                subscribedNoticeTopics = NoticeType.entries.toSet(),
                 deviceType = deviceType,
                 isActive = true,
                 createdAt = LocalDateTime.now()
@@ -27,7 +28,8 @@ data class FcmToken(
         fun updateFcmToken(newFcmToken: String, oldFcmToken: FcmToken): FcmToken {
             return FcmToken(
                 fcmToken = newFcmToken,
-                subscribedTopics = oldFcmToken.subscribedTopics,
+                subscribedNoticeTopics = oldFcmToken.subscribedNoticeTopics,
+                subscribedMajorTopics =  oldFcmToken.subscribedMajorTopics,
                 deviceType = oldFcmToken.deviceType,
                 isActive = true,
                 createdAt = oldFcmToken.createdAt

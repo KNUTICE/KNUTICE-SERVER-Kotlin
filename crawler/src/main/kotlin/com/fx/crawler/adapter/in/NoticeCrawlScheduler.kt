@@ -19,7 +19,8 @@ class NoticeCrawlScheduler(
     private val log = LoggerFactory.getLogger(NoticeCrawlScheduler::class.java)
 
 
-    @Scheduled(cron = "0 0/15 * * * *") // 매일 15분마다
+//    @Scheduled(cron = "0 0/15 * * * *") // 매일 15분마다
+    @Scheduled(fixedRate = 60_000) // 매일 15분마다
     fun crawlAndPushNotices() = runBlocking {
         processCrawl(NoticeType.entries, "notice")
     }
@@ -29,7 +30,6 @@ class NoticeCrawlScheduler(
         processCrawl(MajorType.entries, "major notice")
     }
 
-
     private suspend fun processCrawl(targets: List<CrawlableType>, label: String) {
         log.info("---------- Starting scheduled $label crawling ----------")
         try {
@@ -38,7 +38,7 @@ class NoticeCrawlScheduler(
             if (newNotices.isEmpty()) return
 
             newNotices.forEach {
-                log.info("New $label found - nttId: {}, title: {}", it.nttId, it.title)
+                log.info("New $label found - nttId: {}, title: {}, type : {}", it.nttId, it.title, it.type)
             }
 
             log.info("---------- Starting notification ----------")

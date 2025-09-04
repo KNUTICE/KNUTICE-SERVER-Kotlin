@@ -5,8 +5,11 @@ import com.fx.crawler.appllication.port.out.FcmNotificationPort
 import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort
 import com.fx.global.domain.FcmToken
 import com.fx.crawler.domain.FcmTokenQuery
+import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.DeviceType
+import com.fx.global.domain.MajorType
 import com.fx.global.domain.Notice
+import com.fx.global.domain.NoticeType
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -35,27 +38,32 @@ class NotificationService(
         }
 
         // 공지 타입별 그룹화
-        val noticesByType: Map<String, List<Notice>> = notices.groupBy { it.type.typeName }
+        val noticesByType: Map<CrawlableType, List<Notice>> = notices.groupBy { it.type }
 
-        noticesByType.map { (typeName, notices) ->
-            log.info("TYPE : {}", typeName)
+        noticesByType.map { (type, notices) ->
+            log.info("Type : {}", type)
             async {
                 var cursor: LocalDateTime? = null
 
                 while (true) {
-                    // TypeName batch 조회
-                    val fcmTokens = fcmTokenPersistencePort.findByCreatedAtAndIsActive(
-                        FcmTokenQuery(
-                            createdAt = cursor,
-                            isActive = true,
-                            subscribedTopic = typeName,
-                            pageable =  PageRequest.of(0, BATCH_SIZE, Sort.by(Sort.Direction.ASC, "createdAt"))
-                        )
+                    // Type 별 batch 조회
+                    val baseQuery = FcmTokenQuery(
+                        createdAt = cursor,
+                        isActive = true,
+                        pageable = PageRequest.of(0, BATCH_SIZE, Sort.by(Sort.Direction.ASC, "createdAt"))
                     )
+
+                    val query = when (type) {
+                        is NoticeType -> baseQuery.copy(subscribedNoticeTopic = type)
+                        is MajorType -> baseQuery.copy(subscribedMajorTopic = type)
+                        else -> throw IllegalArgumentException("Unsupported type: $type")
+                    }
+
+                    val fcmTokens = fcmTokenPersistencePort.findByCreatedAtAndIsActive(query)
                     if (fcmTokens.isEmpty()) break
 
                     val failedTokens = fcmNotificationPort.sendNotification(fcmTokens, notices) // 타입별 전송
-                    log.info("{} - 전송 실패 토큰 개수 : {} / {}", typeName, failedTokens.size, fcmTokens.size)
+                    log.info("{} - 전송 실패 토큰 개수 : {} / {}", type, failedTokens.size, fcmTokens.size)
 
                     if (failedTokens.isNotEmpty()) {
                         handleFailedTokens(failedTokens) // 실패 토큰에 대해 isActive 값 변경 -> false

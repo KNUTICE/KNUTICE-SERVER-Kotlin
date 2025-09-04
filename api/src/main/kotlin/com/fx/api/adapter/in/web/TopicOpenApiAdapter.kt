@@ -1,8 +1,9 @@
 package com.fx.api.adapter.`in`.web
 
+import com.fx.api.adapter.`in`.web.dto.topic.MajorTopicResponse
 import com.fx.api.adapter.`in`.web.dto.topic.MajorTopicUpdateRequest
 import com.fx.api.adapter.`in`.web.dto.topic.NoticeTopicUpdateRequest
-import com.fx.api.adapter.`in`.web.dto.topic.TopicResponse
+import com.fx.api.adapter.`in`.web.dto.topic.NoticeTopicResponse
 import com.fx.api.adapter.`in`.web.swagger.TopicOpenApiSwagger
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase
@@ -24,14 +25,14 @@ class TopicOpenApiAdapter(
 ) : TopicOpenApiSwagger {
 
     @GetMapping("/notice")
-    override fun getMyNoticeTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<TopicResponse>> =
-        Api.OK(TopicResponse.from(fcmTokenQueryUseCase.getMyNoticeTopics(fcmToken)))
+    override fun getMyNoticeTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<NoticeTopicResponse>> =
+        Api.OK(NoticeTopicResponse.from(fcmTokenQueryUseCase.getMyNoticeTopics(fcmToken)))
 
     @GetMapping("/major")
-    override fun getMyMajorTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<TopicResponse>> =
-        Api.OK(TopicResponse.from(fcmTokenQueryUseCase.getMyMajorTopics(fcmToken)))
+    override fun getMyMajorTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<MajorTopicResponse>> =
+        Api.OK(MajorTopicResponse.from(fcmTokenQueryUseCase.getMyMajorTopics(fcmToken)))
 
-    // TODO 유효성 검증
+    // TODO 예외핸들링
     @PatchMapping("/notice")
     override fun updateNoticeTopic(
         @RequestHeader fcmToken: String,
