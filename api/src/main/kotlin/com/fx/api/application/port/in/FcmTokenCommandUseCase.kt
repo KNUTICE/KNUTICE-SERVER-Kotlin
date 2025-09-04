@@ -10,7 +10,6 @@ import com.fx.global.domain.FcmToken
 interface FcmTokenCommandUseCase {
 
     fun saveFcmToken(fcmTokenSaveCommand: FcmTokenSaveCommand): Boolean
-    fun updateTopics(topicUpdateCommand: TopicUpdateCommand): FcmToken
     fun updateFcmToken(fcmTokenUpdateCommand: FcmTokenUpdateCommand): Boolean
     fun updateNoticeTopic(noticeTopicUpdateCommand: NoticeTopicUpdateCommand): Boolean
     fun updateMajorTopic(majorTopicUpdateCommand: MajorTopicUpdateCommand): Boolean

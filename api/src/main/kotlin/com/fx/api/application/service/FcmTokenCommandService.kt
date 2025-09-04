@@ -30,15 +30,6 @@ class FcmTokenCommandService(
         return true
     }
 
-    override fun updateTopics(topicUpdateCommand: TopicUpdateCommand): FcmToken {
-        val fcmToken = fcmTokenPersistencePort.findByFcmToken(topicUpdateCommand.fcmToken)
-            ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
-
-        val updatedToken = fcmToken.copy(subscribedTopics = topicUpdateCommand.subscribedTopics)
-        fcmTokenPersistencePort.saveFcmToken(updatedToken)
-        return updatedToken
-    }
-
     /**
      * oldFcmToken 을 newFcmToken 으로 topic 정보 업데이트
      * oldFcmToken 이 존재하지 않는 경우 새로운 newFcmToken 생성
@@ -69,34 +60,38 @@ class FcmTokenCommandService(
     }
 
     override fun updateNoticeTopic(noticeTopicUpdateCommand: NoticeTopicUpdateCommand): Boolean {
-        val fcmToken = fcmTokenPersistencePort.findByFcmToken(noticeTopicUpdateCommand.fcmToken)
-            ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+        val fcmToken = findTokenOrThrow(noticeTopicUpdateCommand.fcmToken)
 
-        val updatedTopics = fcmToken.subscribedTopics.toMutableSet()
+        val updatedTopics = fcmToken.subscribedNoticeTopics.toMutableSet()
 
         if (noticeTopicUpdateCommand.enabled) {
-            updatedTopics.add(noticeTopicUpdateCommand.type.typeName)
+            updatedTopics.add(noticeTopicUpdateCommand.type)
         } else {
-            updatedTopics.remove(noticeTopicUpdateCommand.type.typeName)
+            updatedTopics.remove(noticeTopicUpdateCommand.type)
         }
 
-        fcmTokenPersistencePort.saveFcmToken(fcmToken.copy(subscribedTopics = updatedTopics))
+        fcmTokenPersistencePort.saveFcmToken(fcmToken.copy(subscribedNoticeTopics = updatedTopics))
         return true
     }
 
     override fun updateMajorTopic(majorTopicUpdateCommand: MajorTopicUpdateCommand): Boolean {
-        val fcmToken = fcmTokenPersistencePort.findByFcmToken(majorTopicUpdateCommand.fcmToken)
-            ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+        val fcmToken = findTokenOrThrow(majorTopicUpdateCommand.fcmToken)
 
-        val updatedTopics = fcmToken.subscribedTopics.toMutableSet()
+        val updatedTopics = fcmToken.subscribedMajorTopics.toMutableSet()
 
         if (majorTopicUpdateCommand.enabled) {
-            updatedTopics.add(majorTopicUpdateCommand.type.typeName)
+            updatedTopics.add(majorTopicUpdateCommand.type)
         } else {
-            updatedTopics.remove(majorTopicUpdateCommand.type.typeName)
+            updatedTopics.remove(majorTopicUpdateCommand.type)
         }
 
-        fcmTokenPersistencePort.saveFcmToken(fcmToken.copy(subscribedTopics = updatedTopics))
+        fcmTokenPersistencePort.saveFcmToken(fcmToken.copy(subscribedMajorTopics = updatedTopics))
         return true
     }
+
+    private fun findTokenOrThrow(fcmToken: String): FcmToken =
+        fcmTokenPersistencePort.findByFcmToken(fcmToken)
+            ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+
+
 }

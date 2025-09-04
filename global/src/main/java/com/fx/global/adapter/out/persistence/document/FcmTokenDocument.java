@@ -1,6 +1,8 @@
 package com.fx.global.adapter.out.persistence.document;
 
 import com.fx.global.adapter.out.persistence.base.MongoBaseDocument;
+import com.fx.global.domain.MajorType;
+import com.fx.global.domain.NoticeType;
 import com.querydsl.core.annotations.QueryEntity;
 import com.fx.global.domain.DeviceType;
 import com.fx.global.domain.FcmToken;
@@ -25,7 +27,10 @@ public class FcmTokenDocument extends MongoBaseDocument {
     private String fcmToken;
 
     @Builder.Default
-    private Set<String> subscribedTopics = new HashSet<>();
+    private Set<NoticeType> subscribedNoticeTopics = new HashSet<>();
+
+    @Builder.Default
+    private Set<MajorType> subscribedMajorTopics = new HashSet<>();
 
     @Builder.Default
     private Boolean isActive = true;
@@ -36,7 +41,8 @@ public class FcmTokenDocument extends MongoBaseDocument {
     public FcmToken toDomain() {
         return new FcmToken(
             this.fcmToken,
-            this.subscribedTopics,
+            this.subscribedNoticeTopics,
+            this.subscribedMajorTopics,
             this.deviceType,
             this.isActive,
             this.createdAt,
@@ -47,7 +53,8 @@ public class FcmTokenDocument extends MongoBaseDocument {
     public static FcmTokenDocument from(FcmToken fcmToken) {
         return FcmTokenDocument.builder()
             .fcmToken(fcmToken.getFcmToken())
-            .subscribedTopics(fcmToken.getSubscribedTopics())
+            .subscribedNoticeTopics(fcmToken.getSubscribedNoticeTopics())
+            .subscribedMajorTopics(fcmToken.getSubscribedMajorTopics())
             .deviceType(fcmToken.getDeviceType())
             .isActive(fcmToken.isActive())
             .createdAt(fcmToken.getCreatedAt())
