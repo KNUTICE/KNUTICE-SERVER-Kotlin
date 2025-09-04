@@ -1,5 +1,7 @@
 package com.fx.api.adapter.`in`.web.swagger
 
+import com.fx.api.adapter.`in`.web.dto.topic.MajorTopicUpdateRequest
+import com.fx.api.adapter.`in`.web.dto.topic.NoticeTopicUpdateRequest
 import com.fx.api.adapter.`in`.web.dto.topic.TopicResponse
 import com.fx.api.adapter.`in`.web.dto.topic.TopicUpdateRequest
 import com.fx.api.exception.errorcode.FcmTokenErrorCode
@@ -8,6 +10,7 @@ import com.fx.global.annotation.ApiResponseExplanations
 import com.fx.global.api.Api
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
@@ -56,4 +59,17 @@ interface TopicOpenApiSwagger {
         @RequestHeader fcmToken: String,
         @RequestBody topicUpdateRequest: TopicUpdateRequest
     ): ResponseEntity<Api<TopicResponse>>
+
+    @Operation(summary = "Notice Topic 변경", description = "Notice Topic 하나를 변경합니다.")
+    fun updateNoticeTopic(
+        @RequestHeader fcmToken: String,
+        @RequestBody @Valid noticeTopicUpdateRequest: NoticeTopicUpdateRequest
+    ): ResponseEntity<Api<Boolean>>
+
+    @Operation(summary = "Major Topic 변경", description = "Major Topic 하나를 변경합니다.")
+    fun updateMajorTopic(
+        @RequestHeader fcmToken: String,
+        @RequestBody @Valid majorTopicUpdateRequest: MajorTopicUpdateRequest
+    ): ResponseEntity<Api<Boolean>>
+
 }

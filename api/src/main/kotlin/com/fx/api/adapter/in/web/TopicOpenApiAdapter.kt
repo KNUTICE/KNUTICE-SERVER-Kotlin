@@ -1,5 +1,7 @@
 package com.fx.api.adapter.`in`.web
 
+import com.fx.api.adapter.`in`.web.dto.topic.MajorTopicUpdateRequest
+import com.fx.api.adapter.`in`.web.dto.topic.NoticeTopicUpdateRequest
 import com.fx.api.adapter.`in`.web.dto.topic.TopicResponse
 import com.fx.api.adapter.`in`.web.dto.topic.TopicUpdateRequest
 import com.fx.api.adapter.`in`.web.swagger.TopicOpenApiSwagger
@@ -10,6 +12,7 @@ import com.fx.global.api.Api
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
@@ -38,5 +41,21 @@ class TopicOpenApiAdapter(
         val updatedFcmToken = fcmTokenCommandUseCase.updateTopics(topicUpdateRequest.toCommand(fcmToken))
         return Api.OK(TopicResponse.from(updatedFcmToken))
     }
+
+    // TODO 유효성 검증
+    @PatchMapping("/notice")
+    override fun updateNoticeTopic(
+        @RequestHeader fcmToken: String,
+        @RequestBody @Valid noticeTopicUpdateRequest: NoticeTopicUpdateRequest
+    ): ResponseEntity<Api<Boolean>> =
+        Api.OK(fcmTokenCommandUseCase.updateNoticeTopic(noticeTopicUpdateRequest.toCommand(fcmToken)))
+
+    @PatchMapping("/major")
+    override fun updateMajorTopic(
+        @RequestHeader fcmToken: String,
+        @RequestBody @Valid majorTopicUpdateRequest: MajorTopicUpdateRequest
+    ): ResponseEntity<Api<Boolean>> =
+        Api.OK(fcmTokenCommandUseCase.updateMajorTopic(majorTopicUpdateRequest.toCommand(fcmToken)))
+
 
 }
