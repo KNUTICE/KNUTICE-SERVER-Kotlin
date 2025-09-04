@@ -41,24 +41,9 @@ interface TopicOpenApiSwagger {
             ),
         ]
     )
-    @Operation(summary = "Major Topic 정보 조회", description = "학과 Topic 을 조회합니다.")
+    @Operation(summary = "Major Topic 조회", description = "학과 Topic 을 조회합니다.")
     fun getMyMajorTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<TopicResponse>>
 
-    @ApiResponseExplanations(
-        errors = [
-            ApiExceptionExplanation(
-                name = "Topic 조회 실패",
-                description = "Fcm token 이 존재하지 않는 경우",
-                value = FcmTokenErrorCode::class,
-                constant = "TOKEN_NOT_FOUND"
-            ),
-        ]
-    )
-    @Operation(summary = "Topic 변경", description = "변경된 Topic 을 업데이트합니다.")
-    fun updateTopics(
-        @RequestHeader fcmToken: String,
-        @RequestBody topicUpdateRequest: TopicUpdateRequest
-    ): ResponseEntity<Api<TopicResponse>>
 
     @Operation(summary = "Notice Topic 변경", description = "Notice Topic 하나를 변경합니다.")
     fun updateNoticeTopic(
