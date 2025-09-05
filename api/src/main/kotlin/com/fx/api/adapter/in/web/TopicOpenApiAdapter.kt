@@ -4,11 +4,13 @@ import com.fx.api.adapter.`in`.web.dto.topic.MajorTopicUpdateRequest
 import com.fx.api.adapter.`in`.web.dto.topic.TopicResponse
 import com.fx.api.adapter.`in`.web.dto.topic.MealTopicUpdateRequest
 import com.fx.api.adapter.`in`.web.dto.topic.NoticeTopicUpdateRequest
+import com.fx.api.domain.TopicCategory
 import com.fx.api.adapter.`in`.web.swagger.TopicOpenApiSwagger
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import com.fx.global.api.Api
+import com.fx.global.domain.FcmToken
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 
 @WebInputAdapter
 @RequestMapping("/open-api/v1/topics")
@@ -24,30 +27,14 @@ class TopicOpenApiAdapter(
     private val fcmTokenCommandUseCase: FcmTokenCommandUseCase
 ) : TopicOpenApiSwagger {
 
-    @GetMapping("/notice")
-    override fun getMyNoticeTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<TopicResponse>> =
-        Api.OK(
-            TopicResponse.from(
-                fcmTokenQueryUseCase.getMyNoticeTopics(fcmToken),
-            ){ it.subscribedMajorTopics }
-        )
-
-    @GetMapping("/major")
-    override fun getMyMajorTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<TopicResponse>> =
-        Api.OK(
-            TopicResponse.from(
-                fcmTokenQueryUseCase.getMyMajorTopics(fcmToken)
-            ){ it.subscribedMajorTopics }
-        )
-
-    @GetMapping("/meal")
-    override fun getMyMealTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<TopicResponse>> =
-        Api.OK(
-            TopicResponse.from(
-                fcmTokenQueryUseCase.getMyMealTopics(fcmToken)
-            ) { it.subscribedMealTopics }
-        )
-
+    @GetMapping
+    override fun getMyTopics(
+        @RequestHeader fcmToken: String,
+        @RequestParam category: TopicCategory
+    ): ResponseEntity<Api<TopicResponse>> {
+        val myTopics = fcmTokenQueryUseCase.getMyTopics(fcmToken, category)
+        return Api.OK(TopicResponse.from(myTopics, category))
+    }
 
     // TODO 예외핸들링
     @PatchMapping("/notice")
