@@ -3,13 +3,14 @@ package com.fx.api.application.service
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.api.application.port.`in`.dto.FcmTokenSaveCommand
 import com.fx.api.application.port.`in`.dto.FcmTokenUpdateCommand
-import com.fx.api.application.port.`in`.dto.MajorTopicUpdateCommand
-import com.fx.api.application.port.`in`.dto.NoticeTopicUpdateCommand
-import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
+import com.fx.api.application.port.`in`.dto.topic.MajorTopicUpdateCommand
+import com.fx.api.application.port.`in`.dto.topic.MealTopicUpdateCommand
+import com.fx.api.application.port.`in`.dto.topic.NoticeTopicUpdateCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.exception.FcmTokenException
 import com.fx.api.exception.errorcode.FcmTokenErrorCode
 import com.fx.global.domain.FcmToken
+import com.fx.global.domain.MealType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -86,6 +87,21 @@ class FcmTokenCommandService(
         }
 
         fcmTokenPersistencePort.saveFcmToken(fcmToken.copy(subscribedMajorTopics = updatedTopics))
+        return true
+    }
+
+    override fun updateMealTopic(mealTopicUpdateCommand: MealTopicUpdateCommand): Boolean {
+        val fcmToken = findTokenOrThrow(mealTopicUpdateCommand.fcmToken)
+
+        val updatedTopics = fcmToken.subscribedMealTopics.toMutableSet()
+
+        if (mealTopicUpdateCommand.enabled) {
+            updatedTopics.add(mealTopicUpdateCommand.type)
+        } else {
+            updatedTopics.remove(mealTopicUpdateCommand.type)
+        }
+
+        fcmTokenPersistencePort.saveFcmToken(fcmToken.copy(subscribedMealTopics = updatedTopics))
         return true
     }
 

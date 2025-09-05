@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web.dto.topic
 
-import com.fx.api.application.port.`in`.dto.MajorTopicUpdateCommand
+import com.fx.api.application.port.`in`.dto.topic.MajorTopicUpdateCommand
 import com.fx.global.domain.MajorType
 
 data class MajorTopicUpdateRequest(

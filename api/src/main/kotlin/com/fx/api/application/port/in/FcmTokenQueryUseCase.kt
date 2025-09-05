@@ -8,4 +8,6 @@ interface FcmTokenQueryUseCase {
 
     fun getMyMajorTopics(fcmToken: String): FcmToken
 
+    fun getMyMealTopics(fcmToken: String): FcmToken
+
 }

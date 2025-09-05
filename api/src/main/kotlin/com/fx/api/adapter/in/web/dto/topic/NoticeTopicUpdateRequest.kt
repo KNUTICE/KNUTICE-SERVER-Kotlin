@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web.dto.topic
 
-import com.fx.api.application.port.`in`.dto.NoticeTopicUpdateCommand
+import com.fx.api.application.port.`in`.dto.topic.NoticeTopicUpdateCommand
 import com.fx.global.domain.NoticeType
 
 data class NoticeTopicUpdateRequest(

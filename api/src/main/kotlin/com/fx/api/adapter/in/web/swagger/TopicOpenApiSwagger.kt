@@ -2,6 +2,8 @@ package com.fx.api.adapter.`in`.web.swagger
 
 import com.fx.api.adapter.`in`.web.dto.topic.MajorTopicResponse
 import com.fx.api.adapter.`in`.web.dto.topic.MajorTopicUpdateRequest
+import com.fx.api.adapter.`in`.web.dto.topic.MealTopicResponse
+import com.fx.api.adapter.`in`.web.dto.topic.MealTopicUpdateRequest
 import com.fx.api.adapter.`in`.web.dto.topic.NoticeTopicUpdateRequest
 import com.fx.api.adapter.`in`.web.dto.topic.NoticeTopicResponse
 import com.fx.api.exception.errorcode.FcmTokenErrorCode
@@ -44,6 +46,18 @@ interface TopicOpenApiSwagger {
     @Operation(summary = "Major Topic 조회", description = "학과 Topic 을 조회합니다.")
     fun getMyMajorTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<MajorTopicResponse>>
 
+    @ApiResponseExplanations(
+        errors = [
+            ApiExceptionExplanation(
+                name = "Topic 조회 실패",
+                description = "Fcm token 이 존재하지 않는 경우",
+                value = FcmTokenErrorCode::class,
+                constant = "TOKEN_NOT_FOUND"
+            ),
+        ]
+    )
+    @Operation(summary = "Meal Topic 조회", description = "학식 Topic 을 조회합니다.")
+    fun getMyMealTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<MealTopicResponse>>
 
     @Operation(summary = "Notice Topic 변경", description = "Notice Topic 하나를 변경합니다.")
     fun updateNoticeTopic(
@@ -55,6 +69,12 @@ interface TopicOpenApiSwagger {
     fun updateMajorTopic(
         @RequestHeader fcmToken: String,
         @RequestBody @Valid majorTopicUpdateRequest: MajorTopicUpdateRequest
+    ): ResponseEntity<Api<Boolean>>
+
+    @Operation(summary = "Meal Topic 변경", description = "Meal Topic 하나를 변경합니다.")
+    fun updateMealTopic(
+        @RequestHeader fcmToken: String,
+        @RequestBody @Valid mealTopicUpdateRequest: MealTopicUpdateRequest
     ): ResponseEntity<Api<Boolean>>
 
 }

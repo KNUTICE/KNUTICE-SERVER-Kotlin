@@ -2,6 +2,8 @@ package com.fx.api.adapter.`in`.web
 
 import com.fx.api.adapter.`in`.web.dto.topic.MajorTopicResponse
 import com.fx.api.adapter.`in`.web.dto.topic.MajorTopicUpdateRequest
+import com.fx.api.adapter.`in`.web.dto.topic.MealTopicResponse
+import com.fx.api.adapter.`in`.web.dto.topic.MealTopicUpdateRequest
 import com.fx.api.adapter.`in`.web.dto.topic.NoticeTopicUpdateRequest
 import com.fx.api.adapter.`in`.web.dto.topic.NoticeTopicResponse
 import com.fx.api.adapter.`in`.web.swagger.TopicOpenApiSwagger
@@ -32,6 +34,11 @@ class TopicOpenApiAdapter(
     override fun getMyMajorTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<MajorTopicResponse>> =
         Api.OK(MajorTopicResponse.from(fcmTokenQueryUseCase.getMyMajorTopics(fcmToken)))
 
+    @GetMapping("/meal")
+    override fun getMyMealTopics(@RequestHeader fcmToken: String): ResponseEntity<Api<MealTopicResponse>> =
+        Api.OK(MealTopicResponse.from(fcmTokenQueryUseCase.getMyMealTopics(fcmToken)))
+
+
     // TODO 예외핸들링
     @PatchMapping("/notice")
     override fun updateNoticeTopic(
@@ -46,6 +53,13 @@ class TopicOpenApiAdapter(
         @RequestBody @Valid majorTopicUpdateRequest: MajorTopicUpdateRequest
     ): ResponseEntity<Api<Boolean>> =
         Api.OK(fcmTokenCommandUseCase.updateMajorTopic(majorTopicUpdateRequest.toCommand(fcmToken)))
+
+    @PatchMapping("/meal")
+    override fun updateMealTopic(
+        @RequestHeader fcmToken: String,
+        @RequestBody @Valid mealTopicUpdateRequest: MealTopicUpdateRequest
+    ): ResponseEntity<Api<Boolean>> =
+        Api.OK(fcmTokenCommandUseCase.updateMealTopic(mealTopicUpdateRequest.toCommand(fcmToken)))
 
 
 }

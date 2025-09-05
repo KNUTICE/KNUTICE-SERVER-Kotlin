@@ -26,4 +26,7 @@ class FcmTokenQueryService(
         fcmTokenPersistencePort.findByFcmToken(fcmToken)
             ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
 
+    override fun getMyMealTopics(fcmToken: String): FcmToken =
+        fcmTokenPersistencePort.findByFcmToken(fcmToken)
+            ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
 }
