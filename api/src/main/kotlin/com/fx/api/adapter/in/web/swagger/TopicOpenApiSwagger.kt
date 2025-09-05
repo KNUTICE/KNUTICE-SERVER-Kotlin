@@ -1,11 +1,10 @@
 package com.fx.api.adapter.`in`.web.swagger
 
-import com.fx.api.adapter.`in`.web.dto.topic.MajorTopicUpdateRequest
 import com.fx.api.adapter.`in`.web.dto.topic.TopicResponse
-import com.fx.api.adapter.`in`.web.dto.topic.MealTopicUpdateRequest
-import com.fx.api.adapter.`in`.web.dto.topic.NoticeTopicUpdateRequest
+import com.fx.api.adapter.`in`.web.dto.topic.TopicUpdateRequest
 import com.fx.api.domain.TopicCategory
 import com.fx.api.exception.errorcode.FcmTokenErrorCode
+import com.fx.api.exception.errorcode.TopicErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
 import com.fx.global.api.Api
@@ -36,22 +35,20 @@ interface TopicOpenApiSwagger {
         @RequestParam category: TopicCategory
     ): ResponseEntity<Api<TopicResponse>>
 
-    @Operation(summary = "Notice Topic 변경", description = "Notice Topic 하나를 변경합니다.")
-    fun updateNoticeTopic(
+    @ApiResponseExplanations(
+        errors = [
+            ApiExceptionExplanation(
+                name = "유효하지 않은 Topic",
+                description = "서버에 존재하지 않은 Topic 이름인 경우",
+                value = TopicErrorCode::class,
+                constant = "TOPIC_NOT_FOUND"
+            ),
+        ]
+    )
+    @Operation(summary = "Topic 변경", description = "Notice, Major, Meal Type 에 존재하는 topic 을 변경합니다.")
+    fun updateTopic(
         @RequestHeader fcmToken: String,
-        @RequestBody @Valid noticeTopicUpdateRequest: NoticeTopicUpdateRequest
+        @RequestParam category: TopicCategory,
+        @RequestBody @Valid topicUpdateRequest: TopicUpdateRequest
     ): ResponseEntity<Api<Boolean>>
-
-    @Operation(summary = "Major Topic 변경", description = "Major Topic 하나를 변경합니다.")
-    fun updateMajorTopic(
-        @RequestHeader fcmToken: String,
-        @RequestBody @Valid majorTopicUpdateRequest: MajorTopicUpdateRequest
-    ): ResponseEntity<Api<Boolean>>
-
-    @Operation(summary = "Meal Topic 변경", description = "Meal Topic 하나를 변경합니다.")
-    fun updateMealTopic(
-        @RequestHeader fcmToken: String,
-        @RequestBody @Valid mealTopicUpdateRequest: MealTopicUpdateRequest
-    ): ResponseEntity<Api<Boolean>>
-
 }
