@@ -62,47 +62,48 @@ class FcmTokenCommandService(
 
     override fun updateNoticeTopic(noticeTopicUpdateCommand: NoticeTopicUpdateCommand): Boolean {
         val fcmToken = findTokenOrThrow(noticeTopicUpdateCommand.fcmToken)
-
-        val updatedTopics = fcmToken.subscribedNoticeTopics.toMutableSet()
-
-        if (noticeTopicUpdateCommand.enabled) {
-            updatedTopics.add(noticeTopicUpdateCommand.type)
-        } else {
-            updatedTopics.remove(noticeTopicUpdateCommand.type)
-        }
-
+        val updatedTopics = updateTopicSet(
+            fcmToken.subscribedNoticeTopics,
+            noticeTopicUpdateCommand.type,
+            noticeTopicUpdateCommand.enabled
+        )
         fcmTokenPersistencePort.saveFcmToken(fcmToken.copy(subscribedNoticeTopics = updatedTopics))
         return true
     }
 
     override fun updateMajorTopic(majorTopicUpdateCommand: MajorTopicUpdateCommand): Boolean {
         val fcmToken = findTokenOrThrow(majorTopicUpdateCommand.fcmToken)
-
-        val updatedTopics = fcmToken.subscribedMajorTopics.toMutableSet()
-
-        if (majorTopicUpdateCommand.enabled) {
-            updatedTopics.add(majorTopicUpdateCommand.type)
-        } else {
-            updatedTopics.remove(majorTopicUpdateCommand.type)
-        }
-
+        val updatedTopics = updateTopicSet(
+            fcmToken.subscribedMajorTopics,
+            majorTopicUpdateCommand.type,
+            majorTopicUpdateCommand.enabled
+        )
         fcmTokenPersistencePort.saveFcmToken(fcmToken.copy(subscribedMajorTopics = updatedTopics))
         return true
     }
 
     override fun updateMealTopic(mealTopicUpdateCommand: MealTopicUpdateCommand): Boolean {
         val fcmToken = findTokenOrThrow(mealTopicUpdateCommand.fcmToken)
-
-        val updatedTopics = fcmToken.subscribedMealTopics.toMutableSet()
-
-        if (mealTopicUpdateCommand.enabled) {
-            updatedTopics.add(mealTopicUpdateCommand.type)
-        } else {
-            updatedTopics.remove(mealTopicUpdateCommand.type)
-        }
-
+        val updatedTopics = updateTopicSet(
+            fcmToken.subscribedMealTopics,
+            mealTopicUpdateCommand.type,
+            mealTopicUpdateCommand.enabled
+        )
         fcmTokenPersistencePort.saveFcmToken(fcmToken.copy(subscribedMealTopics = updatedTopics))
         return true
+    }
+
+    private fun <T> updateTopicSet(
+        currentTopics: Set<T>,
+        topic: T, enabled: Boolean
+    ): Set<T> {
+        val updated = currentTopics.toMutableSet()
+        if (enabled) {
+            updated.add(topic)
+        } else {
+            updated.remove(topic)
+        }
+        return updated
     }
 
     private fun findTokenOrThrow(fcmToken: String): FcmToken =
