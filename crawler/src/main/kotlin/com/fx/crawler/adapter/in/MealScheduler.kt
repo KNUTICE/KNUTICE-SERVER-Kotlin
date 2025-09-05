@@ -16,7 +16,7 @@ class MealScheduler(
 
     private val log = LoggerFactory.getLogger(MealScheduler::class.java)
 
-    @Scheduled(fixedRate = 60_000) // 매일 10시마다
+    @Scheduled(cron = "0 10 10 * * *") // 매일 10시 10분마다
     fun parseAndPushMeals() = runBlocking {
         log.info("---------- Starting scheduled meal parse ----------")
         val meals = mealParseUseCase.parseMeals(MealType.entries)
