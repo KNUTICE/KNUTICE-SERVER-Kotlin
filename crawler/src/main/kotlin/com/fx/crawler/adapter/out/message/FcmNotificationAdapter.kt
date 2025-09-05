@@ -4,6 +4,7 @@ import com.fx.crawler.adapter.out.message.factory.MessageFactory
 import com.fx.crawler.appllication.port.out.FcmNotificationPort
 import com.fx.crawler.common.annotation.NotificationAdapter
 import com.fx.global.domain.FcmToken
+import com.fx.global.domain.Meal
 import com.fx.global.domain.Notice
 import com.google.firebase.messaging.BatchResponse
 import com.google.firebase.messaging.FirebaseMessaging
@@ -49,6 +50,19 @@ class FcmNotificationAdapter : FcmNotificationPort {
         }
     }
 
+    override suspend fun sendNotification(fcmTokens: List<FcmToken>, meal: Meal): List<FcmToken> {
+        return withContext(Dispatchers.IO) {
+            if (fcmTokens.isEmpty()) return@withContext emptyList()
+
+            val tokens = fcmTokens.map { it.fcmToken }
+
+            val bodyMessage = buildMessage(meal)
+            val multicastMessage = MessageFactory.create(tokens, meal, bodyMessage)
+            val response = FirebaseMessaging.getInstance().sendEachForMulticast(multicastMessage)
+            extractFailedTokens(fcmTokens, response)
+        }
+    }
+
     override suspend fun sendSilentPushNotification(fcmTokens: List<FcmToken>): List<FcmToken> {
         return withContext(Dispatchers.IO) {
             val failedTokens = mutableListOf<FcmToken>()
@@ -76,4 +90,12 @@ class FcmNotificationAdapter : FcmNotificationPort {
     private fun buildMessage(notices: List<Notice>): String {
         return "${notices[0].title} 외 ${notices.size - 1}개의 소식이 있습니다."
     }
+
+
+    private fun buildMessage(meal: Meal): String {
+        val header = "${meal.mealDate} ${meal.type.category} 메뉴"
+        val menuList = meal.menus.joinToString("\n")
+        return "$header\n$menuList"
+    }
+
 }

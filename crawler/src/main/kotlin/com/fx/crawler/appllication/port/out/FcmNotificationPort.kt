@@ -1,6 +1,7 @@
 package com.fx.crawler.appllication.port.out
 
 import com.fx.global.domain.FcmToken
+import com.fx.global.domain.Meal
 import com.fx.global.domain.Notice
 
 interface FcmNotificationPort {
@@ -12,6 +13,8 @@ interface FcmNotificationPort {
      * @return failedTokens
      */
     suspend fun sendNotification(fcmTokens: List<FcmToken>, notices: List<Notice>): List<FcmToken>
+
+    suspend fun sendNotification(fcmTokens: List<FcmToken>, meal: Meal): List<FcmToken>
 
     suspend fun sendSilentPushNotification(fcmTokens: List<FcmToken>): List<FcmToken>
 

@@ -4,6 +4,7 @@ import com.fx.crawler.domain.FcmTokenQuery;
 import com.fx.global.adapter.out.persistence.document.FcmTokenDocument;
 import com.fx.global.domain.DeviceType;
 import com.fx.global.domain.MajorType;
+import com.fx.global.domain.MealType;
 import com.fx.global.domain.NoticeType;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -39,6 +40,7 @@ public class FcmTokenQueryRepository extends QuerydslRepositorySupport {
                 isActive(queryParam.isActive()),
                 eqSubscribedNoticeTopic(queryParam.getSubscribedNoticeTopic()),
                 eqSubscribedMajorTopic(queryParam.getSubscribedMajorTopic()),
+                eqSubscribedMealTopic(queryParam.getSubscribedMealTopic()),
                 eqDeviceType(queryParam.getDeviceType())
             )
             .orderBy(getOrderSpecifier(queryParam.getPageable().getSort())
@@ -67,6 +69,10 @@ public class FcmTokenQueryRepository extends QuerydslRepositorySupport {
 
     private BooleanExpression eqSubscribedMajorTopic(MajorType topic) {
         return topic != null ? fcmTokenDocument.subscribedMajorTopics.contains(topic) : null;
+    }
+
+    private BooleanExpression eqSubscribedMealTopic(MealType topic) {
+        return topic != null ? fcmTokenDocument.subscribedMealTopics.contains(topic) : null;
     }
 
     private BooleanExpression eqDeviceType(DeviceType deviceType) {
