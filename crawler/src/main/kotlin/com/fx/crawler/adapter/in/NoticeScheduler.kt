@@ -11,16 +11,15 @@ import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 
 @ScheduleAdapter
-class NoticeCrawlScheduler(
+class NoticeScheduler(
     private val noticeCrawlUseCase: NoticeCrawlUseCase,
     private val notificationUseCase: NotificationUseCase
 ) {
 
-    private val log = LoggerFactory.getLogger(NoticeCrawlScheduler::class.java)
+    private val log = LoggerFactory.getLogger(NoticeScheduler::class.java)
 
 
-//    @Scheduled(cron = "0 0/15 * * * *") // 매일 15분마다
-    @Scheduled(fixedRate = 60_000) // 매일 15분마다
+    @Scheduled(cron = "0 0/15 * * * *") // 매일 15분마다
     fun crawlAndPushNotices() = runBlocking {
         processCrawl(NoticeType.entries, "notice")
     }

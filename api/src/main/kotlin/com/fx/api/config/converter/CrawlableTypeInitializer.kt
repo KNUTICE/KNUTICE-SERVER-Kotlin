@@ -2,6 +2,7 @@ package com.fx.api.config.converter
 
 import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.MajorType
+import com.fx.global.domain.MealType
 import com.fx.global.domain.NoticeType
 import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.Configuration
@@ -17,6 +18,7 @@ class CrawlableTypeInitializer {
     fun init() {
         NoticeType.entries.forEach { CrawlableType.register(it) }
         MajorType.entries.forEach { CrawlableType.register(it) }
+        MealType.entries.forEach { CrawlableType.register(it) }
     }
 
 }

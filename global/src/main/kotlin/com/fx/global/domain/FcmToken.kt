@@ -6,6 +6,7 @@ data class FcmToken(
     val fcmToken: String,
     val subscribedNoticeTopics: Set<NoticeType> = emptySet(),
     val subscribedMajorTopics: Set<MajorType> = emptySet(),
+    val subscribedMealTopics: Set<MealType> = emptySet(),
     val deviceType: DeviceType,
     val isActive: Boolean,
 
@@ -19,6 +20,7 @@ data class FcmToken(
             return FcmToken(
                 fcmToken = fcmToken,
                 subscribedNoticeTopics = NoticeType.entries.toSet(),
+                subscribedMealTopics = MealType.entries.toSet(),
                 deviceType = deviceType,
                 isActive = true,
                 createdAt = LocalDateTime.now()
@@ -30,6 +32,7 @@ data class FcmToken(
                 fcmToken = newFcmToken,
                 subscribedNoticeTopics = oldFcmToken.subscribedNoticeTopics,
                 subscribedMajorTopics =  oldFcmToken.subscribedMajorTopics,
+                subscribedMealTopics = oldFcmToken.subscribedMealTopics,
                 deviceType = oldFcmToken.deviceType,
                 isActive = true,
                 createdAt = oldFcmToken.createdAt

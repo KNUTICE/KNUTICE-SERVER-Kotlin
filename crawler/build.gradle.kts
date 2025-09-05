@@ -29,6 +29,9 @@ dependencies {
     // Web
     implementation("org.springframework.boot:spring-boot-starter-web")
 
+    // Webflux - WebClient 용도
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
     // Firebase
     implementation("com.google.firebase:firebase-admin:9.5.0")
 

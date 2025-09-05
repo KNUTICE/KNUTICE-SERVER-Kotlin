@@ -1,6 +1,10 @@
 package com.fx.api.application.port.`in`.dto
 
-data class TopicUpdateCommand (
+import com.fx.api.domain.TopicType
+
+data class TopicUpdateCommand(
     val fcmToken: String,
-    val subscribedTopics: Set<String>
+    val topicType: TopicType,
+    val topic: Enum<*>,
+    val enabled: Boolean
 )

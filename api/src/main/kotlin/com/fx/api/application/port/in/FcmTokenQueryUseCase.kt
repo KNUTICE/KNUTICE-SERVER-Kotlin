@@ -1,11 +1,10 @@
 package com.fx.api.application.port.`in`
 
+import com.fx.api.domain.TopicType
 import com.fx.global.domain.FcmToken
 
 interface FcmTokenQueryUseCase {
 
-    fun getMyNoticeTopics(fcmToken: String): FcmToken
-
-    fun getMyMajorTopics(fcmToken: String): FcmToken
+    fun getMyTopics(fcmToken: String, type: TopicType): FcmToken
 
 }

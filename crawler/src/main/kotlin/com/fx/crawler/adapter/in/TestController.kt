@@ -1,7 +1,9 @@
 package com.fx.crawler.adapter.`in`
 
+import com.fx.crawler.adapter.out.crawler.MealParseAdapter
 import com.fx.crawler.adapter.out.persistence.repository.FcmTokenQueryRepository
 import com.fx.crawler.domain.FcmTokenQuery
+import com.fx.global.domain.MealType
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -12,7 +14,8 @@ import java.time.OffsetDateTime
 
 @RestController
 class TestController(
-    private val fcmTokenQueryRepository: FcmTokenQueryRepository
+    private val fcmTokenQueryRepository: FcmTokenQueryRepository,
+    private val mealParseAdapter: MealParseAdapter
 ) {
 
     private val log = LoggerFactory.getLogger(TestController::class.java)
@@ -40,6 +43,12 @@ class TestController(
             log.info("last : {}", fcmTokens.last().createdAt)
             cursor = fcmTokens.last().createdAt
         }
+    }
+
+    @GetMapping("/meal")
+    fun getMeal() {
+        val parseMeal = mealParseAdapter.parseMeal(MealType.STAFF_CAFETERIA)
+        log.info("meal : {}", parseMeal)
     }
 
 
