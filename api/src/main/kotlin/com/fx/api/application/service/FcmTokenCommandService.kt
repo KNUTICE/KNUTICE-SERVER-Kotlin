@@ -5,13 +5,10 @@ import com.fx.api.application.port.`in`.dto.FcmTokenSaveCommand
 import com.fx.api.application.port.`in`.dto.FcmTokenUpdateCommand
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
-import com.fx.api.domain.TopicCategory
+import com.fx.api.domain.TopicType
 import com.fx.api.exception.FcmTokenException
 import com.fx.api.exception.errorcode.FcmTokenErrorCode
 import com.fx.global.domain.FcmToken
-import com.fx.global.domain.MajorType
-import com.fx.global.domain.MealType
-import com.fx.global.domain.NoticeType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -65,14 +62,14 @@ class FcmTokenCommandService(
         val fcmToken = (fcmTokenPersistencePort.findByFcmToken(topicUpdateCommand.fcmToken)
             ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND))
 
-        val updatedFcmToken = when (topicUpdateCommand.category) {
-            TopicCategory.NOTICE -> fcmToken.copy(
+        val updatedFcmToken = when (topicUpdateCommand.topicType) {
+            TopicType.NOTICE -> fcmToken.copy(
                 subscribedNoticeTopics = updateTopicSet(fcmToken.subscribedNoticeTopics, topicUpdateCommand)
             )
-            TopicCategory.MAJOR -> fcmToken.copy(
+            TopicType.MAJOR -> fcmToken.copy(
                 subscribedMajorTopics = updateTopicSet(fcmToken.subscribedMajorTopics, topicUpdateCommand)
             )
-            TopicCategory.MEAL -> fcmToken.copy(
+            TopicType.MEAL -> fcmToken.copy(
                 subscribedMealTopics = updateTopicSet(fcmToken.subscribedMealTopics, topicUpdateCommand)
             )
         }

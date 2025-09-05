@@ -1,7 +1,7 @@
 package com.fx.api.adapter.`in`.web.dto.topic
 
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
-import com.fx.api.domain.TopicCategory
+import com.fx.api.domain.TopicType
 import com.fx.api.exception.TopicException
 import com.fx.api.exception.errorcode.TopicErrorCode
 import com.fx.global.domain.MajorType
@@ -15,19 +15,19 @@ data class TopicUpdateRequest (
 
 ) {
 
-    fun toCommand(fcmToken: String, category: TopicCategory): TopicUpdateCommand {
+    fun toCommand(fcmToken: String, topicType: TopicType): TopicUpdateCommand {
         val enumValue: Enum<*> = try {
-            when (category) {
-                TopicCategory.NOTICE -> NoticeType.valueOf(topic)
-                TopicCategory.MAJOR -> MajorType.valueOf(topic)
-                TopicCategory.MEAL -> MealType.valueOf(topic)
+            when (topicType) {
+                TopicType.NOTICE -> NoticeType.valueOf(topic)
+                TopicType.MAJOR -> MajorType.valueOf(topic)
+                TopicType.MEAL -> MealType.valueOf(topic)
             }
         } catch (e: IllegalArgumentException) {
             throw TopicException(TopicErrorCode.TOPIC_NOT_FOUND)
         }
         return TopicUpdateCommand(
             fcmToken = fcmToken,
-            category = category,
+            topicType = topicType,
             topic = enumValue,
             enabled = enabled
         )

@@ -2,7 +2,7 @@ package com.fx.api.application.service
 
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase
 import com.fx.api.application.port.out.FcmTokenPersistencePort
-import com.fx.api.domain.TopicCategory
+import com.fx.api.domain.TopicType
 import com.fx.api.exception.FcmTokenException
 import com.fx.api.exception.errorcode.FcmTokenErrorCode
 import com.fx.global.domain.FcmToken
@@ -13,12 +13,12 @@ class FcmTokenQueryService(
     private val fcmTokenPersistencePort: FcmTokenPersistencePort
 ): FcmTokenQueryUseCase {
 
-    override fun getMyTopics(fcmToken: String, category: TopicCategory): FcmToken {
+    override fun getMyTopics(fcmToken: String, type: TopicType): FcmToken {
         val token = findTokenOrThrow(fcmToken)
-        return when(category) {
-            TopicCategory.NOTICE -> token.copy(subscribedNoticeTopics = token.subscribedNoticeTopics)
-            TopicCategory.MAJOR -> token.copy(subscribedMajorTopics = token.subscribedMajorTopics)
-            TopicCategory.MEAL -> token.copy(subscribedMealTopics = token.subscribedMealTopics)
+        return when(type) {
+            TopicType.NOTICE -> token.copy(subscribedNoticeTopics = token.subscribedNoticeTopics)
+            TopicType.MAJOR -> token.copy(subscribedMajorTopics = token.subscribedMajorTopics)
+            TopicType.MEAL -> token.copy(subscribedMealTopics = token.subscribedMealTopics)
         }
     }
 

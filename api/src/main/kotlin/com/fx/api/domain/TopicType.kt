@@ -1,6 +1,6 @@
 package com.fx.api.domain
 
-enum class TopicCategory {
+enum class TopicType {
 
     NOTICE,
     MAJOR,

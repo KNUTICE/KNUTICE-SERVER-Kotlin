@@ -2,7 +2,6 @@ package com.fx.api.adapter.`in`.web.swagger
 
 import com.fx.api.adapter.`in`.web.dto.notice.NoticeResponse
 import com.fx.api.adapter.`in`.web.dto.notice.NoticeSearchParam
-import com.fx.api.adapter.`in`.web.dto.notice.NoticeTypeResponse
 import com.fx.api.exception.errorcode.NoticeErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
@@ -52,9 +51,4 @@ interface NoticeOpenApiSwagger {
     @Operation(summary = "단일 공지 조회", description = "nttId 로 공지를 조회합니다.")
     fun getNotice(@PathVariable nttId: Long): ResponseEntity<Api<NoticeResponse>>
 
-    @Operation(summary = "공지 타입 조회", description = "기본적인 공지 타입을 조회합니다.")
-    fun getNoticeTypes(): ResponseEntity<Api<List<NoticeTypeResponse>>>
-
-    @Operation(summary = "학과 공지 타입 조회", description = "학과 공지 타입을 조회합니다.")
-    fun getMajorTypes(): ResponseEntity<Api<List<NoticeTypeResponse>>>
 }

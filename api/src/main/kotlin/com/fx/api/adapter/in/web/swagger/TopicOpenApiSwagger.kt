@@ -1,8 +1,9 @@
 package com.fx.api.adapter.`in`.web.swagger
 
+import com.fx.api.adapter.`in`.web.dto.topic.TypeResponse
 import com.fx.api.adapter.`in`.web.dto.topic.TopicResponse
 import com.fx.api.adapter.`in`.web.dto.topic.TopicUpdateRequest
-import com.fx.api.domain.TopicCategory
+import com.fx.api.domain.TopicType
 import com.fx.api.exception.errorcode.FcmTokenErrorCode
 import com.fx.api.exception.errorcode.TopicErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
@@ -29,10 +30,10 @@ interface TopicOpenApiSwagger {
             ),
         ]
     )
-    @Operation(summary = "Topic 조회", description = "Topic 을 조회합니다.<br> category 는 NOTICE, MAJOR, MEAL 입니다.")
+    @Operation(summary = "Topic 조회", description = "Topic 을 조회합니다.<br> type 는 NOTICE, MAJOR, MEAL 입니다.")
     fun getMyTopics(
         @RequestHeader fcmToken: String,
-        @RequestParam category: TopicCategory
+        @RequestParam type: TopicType
     ): ResponseEntity<Api<TopicResponse>>
 
     @ApiResponseExplanations(
@@ -48,7 +49,13 @@ interface TopicOpenApiSwagger {
     @Operation(summary = "Topic 변경", description = "Notice, Major, Meal Type 에 존재하는 topic 을 변경합니다.")
     fun updateTopic(
         @RequestHeader fcmToken: String,
-        @RequestParam category: TopicCategory,
+        @RequestParam type: TopicType,
         @RequestBody @Valid topicUpdateRequest: TopicUpdateRequest
     ): ResponseEntity<Api<Boolean>>
+
+    @Operation(summary = "Type 별 Topic 조회", description = "각 타입의 토픽들을 조회합니다.")
+    fun getTopicsByType(
+        @RequestParam type: TopicType
+    ): ResponseEntity<Api<List<TypeResponse>>>
+
 }
