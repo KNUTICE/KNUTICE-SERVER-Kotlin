@@ -1,6 +1,7 @@
 package com.fx.api.adapter.`in`.web
 
 import com.fx.api.adapter.`in`.web.dto.notification.NoticeNotificationRequest
+import com.fx.api.adapter.`in`.web.swagger.NotificationApiSwagger
 import com.fx.api.application.port.`in`.NotificationUseCase
 import com.fx.global.domain.TopicType
 import com.fx.global.annotation.hexagonal.WebInputAdapter
@@ -14,15 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 
 @WebInputAdapter
-@RequestMapping("/open-api/v1/notification")
+@RequestMapping("/api/v1/notification")
 class NotificationApiAdapter(
     private val notificationUseCase: NotificationUseCase
-) {
+) : NotificationApiSwagger {
 
     private val log = LoggerFactory.getLogger(NoticeOpenApiAdapter::class.java)
 
     @PostMapping("/notices")
-    fun pushTestNotice(
+    override fun pushTestNotice(
         @RequestHeader fcmToken: String,
         @RequestParam type: TopicType,
         @RequestBody notificationRequest: NoticeNotificationRequest
