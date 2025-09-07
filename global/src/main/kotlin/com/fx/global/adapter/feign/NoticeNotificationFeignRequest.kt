@@ -12,5 +12,5 @@ data class NoticeNotificationFeignRequest(
     val registrationDate: LocalDate,
     val isAttachment: Boolean,
     val topicType: TopicType,
-    val type: String
+    val topic: String
 )

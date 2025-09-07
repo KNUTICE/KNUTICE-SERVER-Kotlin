@@ -26,8 +26,10 @@ class NotificationApiAdapter(
         @RequestHeader fcmToken: String,
         @RequestParam type: TopicType,
         @RequestBody notificationRequest: NoticeNotificationRequest
-    ): ResponseEntity<Api<Boolean>> {
-        return Api.OK(notificationUseCase.sendTestNotice(notificationRequest.toCommand(fcmToken, type)))
-    }
+    ): ResponseEntity<Api<Boolean>> =
+        Api.OK(notificationUseCase.pushTestNotice(
+            notificationRequest.toCommand(fcmToken, type))
+            , "알림이 발송되었습니다.")
+
 
 }

@@ -1,12 +1,12 @@
 package com.fx.crawler.adapter.`in`.web
 
 import com.fx.crawler.appllication.port.`in`.NotificationUseCase
+import com.fx.crawler.appllication.port.`in`.dto.NoticeCommand
 import com.fx.global.adapter.feign.NoticeNotificationFeignRequest
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import com.fx.global.api.Api
 import com.fx.global.domain.MajorType
 import com.fx.global.domain.MealType
-import com.fx.global.domain.Notice
 import com.fx.global.domain.NoticeType
 import com.fx.global.domain.TopicType
 import org.slf4j.LoggerFactory
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
-import java.time.LocalDate
 
 @WebInputAdapter
 class NotificationApiAdapter(
@@ -28,27 +27,26 @@ class NotificationApiAdapter(
         @RequestHeader fcmToken: String,
         @RequestBody noticeNotificationFeignRequest: NoticeNotificationFeignRequest
     ): ResponseEntity<Api<Boolean>> {
-        log.info("fcmToken : {}", fcmToken)
-        log.info("notice : {}", noticeNotificationFeignRequest)
-        notificationUseCase.sendNotification(fcmToken, createNotice(noticeNotificationFeignRequest))
+        log.info("알림 발송 대상 fcmToken : {}", fcmToken)
+        notificationUseCase.sendNotification(fcmToken, toCommand(noticeNotificationFeignRequest))
         return Api.OK(true)
     }
 
-    private fun createNotice(request: NoticeNotificationFeignRequest): Notice {
-        val enumType = when (request.topicType) {
-            TopicType.NOTICE -> NoticeType.valueOf(request.type)
-            TopicType.MAJOR -> MajorType.valueOf(request.type)
-            TopicType.MEAL  -> MealType.valueOf(request.type)
+    fun toCommand(feignRequest: NoticeNotificationFeignRequest): NoticeCommand {
+        val crawlableType = when (feignRequest.topicType) {
+            TopicType.NOTICE -> NoticeType.valueOf(feignRequest.topic)
+            TopicType.MAJOR -> MajorType.valueOf(feignRequest.topic)
+            TopicType.MEAL  -> MealType.valueOf(feignRequest.topic)
         }
-        return Notice(
-            nttId = request.nttId,
-            title = request.title,
-            department = request.department,
-            contentUrl = request.contentUrl,
-            contentImageUrl = request.contentImageUrl,
-            registrationDate = request.registrationDate,
-            isAttachment = request.isAttachment,
-            type = enumType
+        return NoticeCommand(
+            nttId = feignRequest.nttId,
+            title = feignRequest.title,
+            department = feignRequest.department,
+            contentUrl = feignRequest.contentUrl,
+            contentImageUrl = feignRequest.contentImageUrl,
+            registrationDate = feignRequest.registrationDate,
+            isAttachment = feignRequest.isAttachment,
+            type = crawlableType
         )
     }
 

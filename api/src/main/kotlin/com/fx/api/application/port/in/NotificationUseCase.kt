@@ -4,6 +4,6 @@ import com.fx.api.application.port.`in`.dto.NoticeNotificationCommand
 
 interface NotificationUseCase {
 
-    fun sendTestNotice(noticeNotificationCommand: NoticeNotificationCommand): Boolean
+    fun pushTestNotice(noticeNotificationCommand: NoticeNotificationCommand): Boolean
 
 }

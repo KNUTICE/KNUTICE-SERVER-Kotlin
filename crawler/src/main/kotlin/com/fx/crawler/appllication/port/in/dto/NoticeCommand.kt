@@ -1,10 +1,10 @@
-package com.fx.api.application.port.`in`.dto
+package com.fx.crawler.appllication.port.`in`.dto
 
-import com.fx.global.domain.TopicType
+import com.fx.global.domain.CrawlableType
 import java.time.LocalDate
 
-data class NoticeNotificationCommand(
-    val fcmToken: String,
+data class NoticeCommand(
+
     val nttId: Long,
     val title: String,
     val department: String,
@@ -12,6 +12,6 @@ data class NoticeNotificationCommand(
     val contentImageUrl: String? = null,
     val registrationDate: LocalDate,
     val isAttachment: Boolean,
-    val topicType: TopicType,
-    val topic: String,
+    val type: CrawlableType
+
 )

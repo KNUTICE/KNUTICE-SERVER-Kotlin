@@ -21,7 +21,7 @@ data class NoticeNotificationRequest(
 ) {
 
     fun toCommand(fcmToken: String, topicType: TopicType): NoticeNotificationCommand {
-        val enumValue: CrawlableType = try {
+        try {
             when (topicType) {
                 TopicType.NOTICE -> NoticeType.valueOf(this.topic)
                 TopicType.MAJOR -> MajorType.valueOf(this.topic)
@@ -42,7 +42,7 @@ data class NoticeNotificationRequest(
             registrationDate = this.registrationDate,
             isAttachment = this.isAttachment,
             topicType = topicType,
-            topic = enumValue,
+            topic = topic,
         )
     }
 
