@@ -4,7 +4,7 @@ interface CrawlableType {
     val rootDomain: String
     val bbsPath: String
     val category: String
-    val typeName: String // DB에 저장할 이름 ex) GENERAL_NEWS, EVENT_NEWS....
+    val topicName: String // DB에 저장할 이름 ex) GENERAL_NEWS, EVENT_NEWS....
     fun getNoticeUrl(): String = "$rootDomain$bbsPath"
 
     companion object {
@@ -12,12 +12,12 @@ interface CrawlableType {
         private val registry = mutableMapOf<String, CrawlableType>()
 
         fun register(type: CrawlableType) {
-            registry[type.typeName] = type
+            registry[type.topicName] = type
         }
 
         @JvmStatic
-        fun fromString(typeName: String): CrawlableType =
-            registry[typeName] ?: throw IllegalArgumentException("Unknown type: $typeName")
+        fun fromString(topicName: String): CrawlableType =
+            registry[topicName] ?: throw IllegalArgumentException("Unknown type: $topicName")
 
         @JvmStatic
         fun allTypeNames(): Set<String> = registry.keys

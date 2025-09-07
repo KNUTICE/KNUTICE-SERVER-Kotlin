@@ -33,7 +33,7 @@ class MealNotificationService(
         }
 
         meals.map {
-            log.info("Type : {}", it.type)
+            log.info("Topic : {}", it.topic)
             async {
                 var cursor: LocalDateTime? = null
 
@@ -41,7 +41,7 @@ class MealNotificationService(
                     val query = FcmTokenQuery(
                         createdAt = cursor,
                         isActive = true,
-                        subscribedMealTopic = it.type,
+                        subscribedMealTopic = it.topic,
                         pageable = PageRequest.of(0, BATCH_SIZE, Sort.by(Sort.Direction.ASC, "createdAt"))
                     )
 
@@ -49,7 +49,7 @@ class MealNotificationService(
                     if (fcmTokens.isEmpty()) break
 
                     val failedTokens = fcmNotificationPort.sendNotification(fcmTokens, it)
-                    log.info("{} - 전송 실패 토큰 개수 : {} / {}", it.type, failedTokens.size, fcmTokens.size)
+                    log.info("{} - 전송 실패 토큰 개수 : {} / {}", it.topic, failedTokens.size, fcmTokens.size)
 
                     if (failedTokens.isNotEmpty()) {
                         handleFailedTokens(failedTokens) // 실패 토큰에 대해 isActive 값 변경 -> false

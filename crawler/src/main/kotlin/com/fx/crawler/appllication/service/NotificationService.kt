@@ -39,32 +39,32 @@ class NotificationService(
         }
 
         // 공지 타입별 그룹화
-        val noticesByType: Map<CrawlableType, List<Notice>> = notices.groupBy { it.type }
+        val noticesByTopic: Map<CrawlableType, List<Notice>> = notices.groupBy { it.topic }
 
-        noticesByType.map { (type, notices) ->
-            log.info("Type : {}", type)
+        noticesByTopic.map { (topic, notices) ->
+            log.info("Topic : {}", topic)
             async {
                 var cursor: LocalDateTime? = null
 
                 while (true) {
-                    // Type 별 batch 조회
+                    // Topic 별 batch 조회
                     val baseQuery = FcmTokenQuery(
                         createdAt = cursor,
                         isActive = true,
                         pageable = PageRequest.of(0, BATCH_SIZE, Sort.by(Sort.Direction.ASC, "createdAt"))
                     )
 
-                    val query = when (type) {
-                        is NoticeType -> baseQuery.copy(subscribedNoticeTopic = type)
-                        is MajorType -> baseQuery.copy(subscribedMajorTopic = type)
-                        else -> throw IllegalArgumentException("Unsupported type: $type")
+                    val query = when (topic) {
+                        is NoticeType -> baseQuery.copy(subscribedNoticeTopic = topic)
+                        is MajorType -> baseQuery.copy(subscribedMajorTopic = topic)
+                        else -> throw IllegalArgumentException("Unsupported topic: $topic")
                     }
 
                     val fcmTokens = fcmTokenPersistencePort.findByCreatedAtAndIsActive(query)
                     if (fcmTokens.isEmpty()) break
 
                     val failedTokens = fcmNotificationPort.sendNotification(fcmTokens, notices) // 타입별 전송
-                    log.info("{} - 전송 실패 토큰 개수 : {} / {}", type, failedTokens.size, fcmTokens.size)
+                    log.info("{} - 전송 실패 토큰 개수 : {} / {}", topic, failedTokens.size, fcmTokens.size)
 
                     if (failedTokens.isNotEmpty()) {
                         handleFailedTokens(failedTokens) // 실패 토큰에 대해 isActive 값 변경 -> false
@@ -110,7 +110,7 @@ class NotificationService(
             listOf(fcmToken),
             listOf(createNotice(noticeCommand))
         )
-        log.info("{} - 전송 실패 토큰 개수 : {}", noticeCommand.type, failedTokens.size)
+        log.info("{} - 전송 실패 토큰 개수 : {}", noticeCommand.topic, failedTokens.size)
     }
 
     private fun handleFailedTokens(failedTokens: List<FcmToken>) {
@@ -126,7 +126,7 @@ class NotificationService(
             contentImageUrl = noticeCommand.contentImageUrl,
             registrationDate = noticeCommand.registrationDate,
             isAttachment = noticeCommand.isAttachment,
-            type = noticeCommand.type,
+            topic = noticeCommand.topic,
         )
 
 }

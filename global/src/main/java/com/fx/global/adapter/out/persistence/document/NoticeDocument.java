@@ -34,7 +34,7 @@ public class NoticeDocument extends MongoBaseDocument {
 
     private Boolean isAttachment;
 
-    private String type;
+    private String topic;
 
     public Notice toDomain() {
         return new Notice(
@@ -45,7 +45,7 @@ public class NoticeDocument extends MongoBaseDocument {
             this.contentImageUrl,
             this.registrationDate,
             this.isAttachment,
-            CrawlableType.fromString(this.type),
+            CrawlableType.fromString(this.topic),
             this.createdAt,
             this.updatedAt
         );
@@ -60,7 +60,7 @@ public class NoticeDocument extends MongoBaseDocument {
             .contentImageUrl(notice.getContentImageUrl())
             .registrationDate(notice.getRegistrationDate())
             .isAttachment(notice.isAttachment())
-            .type(notice.getType().getTypeName())
+            .topic(notice.getTopic().getTopicName())
             .createdAt(notice.getCreatedAt())
             .build();
     }

@@ -17,8 +17,8 @@ class MealParseService(
 
     private val log = LoggerFactory.getLogger(MealParseService::class.java)
 
-    override suspend fun parseMeals(types: List<MealType>): List<Meal> = supervisorScope {
-        types.map {
+    override suspend fun parseMeals(topics: List<MealType>): List<Meal> = supervisorScope {
+        topics.map {
             async {
                 log.info("Parse target: {}", it)
                 try {

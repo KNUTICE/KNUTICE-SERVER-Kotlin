@@ -46,7 +46,7 @@ class NotificationApiAdapter(
             contentImageUrl = feignRequest.contentImageUrl,
             registrationDate = feignRequest.registrationDate,
             isAttachment = feignRequest.isAttachment,
-            type = crawlableType
+            topic = crawlableType
         )
     }
 

@@ -6,7 +6,7 @@ import com.fx.global.domain.Notice
 interface NoticeCrawlUseCase {
 
     suspend fun crawlAndSaveNotices(
-        crawlableTypes: List<CrawlableType>, page: Int = 1
+        topics: List<CrawlableType>, page: Int = 1
     ): List<Notice>
 
 }

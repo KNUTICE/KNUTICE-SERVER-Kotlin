@@ -29,15 +29,15 @@ class NoticeScheduler(
         processCrawl(MajorType.entries, "major notice")
     }
 
-    private suspend fun processCrawl(targets: List<CrawlableType>, label: String) {
+    private suspend fun processCrawl(topics: List<CrawlableType>, label: String) {
         log.info("---------- Starting scheduled $label crawling ----------")
         try {
-            val newNotices = noticeCrawlUseCase.crawlAndSaveNotices(targets)
+            val newNotices = noticeCrawlUseCase.crawlAndSaveNotices(topics)
             log.info("---------- Scheduled crawl finished ----------")
             if (newNotices.isEmpty()) return
 
             newNotices.forEach {
-                log.info("New $label found - nttId: {}, title: {}, type : {}", it.nttId, it.title, it.type)
+                log.info("New $label found - nttId: {}, title: {}, topic : {}", it.nttId, it.title, it.topic)
             }
 
             log.info("---------- Starting notification ----------")

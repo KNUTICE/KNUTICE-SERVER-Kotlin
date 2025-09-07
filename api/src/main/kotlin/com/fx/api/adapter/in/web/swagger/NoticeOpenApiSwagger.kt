@@ -29,7 +29,7 @@ interface NoticeOpenApiSwagger {
         ]
     )
     @Operation(summary = "공지 목록을 조회/검색합니다.",
-        description = "ex) /open-api/v1/notices?type=GENERAL_NEWS&size=5&nttId=1081908&keyword=파이썬&sort=nttId,DESC <br>" +
+        description = "ex) /open-api/v1/notices?topic=GENERAL_NEWS&size=5&nttId=1081908&keyword=파이썬&sort=nttId,DESC <br>" +
                 "[DEFAULT : sort=nttId,DESC&size=20]")
     fun getNotices(
         @ModelAttribute noticeSearchParam: NoticeSearchParam,

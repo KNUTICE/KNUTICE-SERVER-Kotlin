@@ -5,6 +5,6 @@ import com.fx.global.domain.MealType
 
 interface MealParseUseCase {
 
-    suspend fun parseMeals(types: List<MealType>): List<Meal>
+    suspend fun parseMeals(topics: List<MealType>): List<Meal>
 
 }

@@ -12,7 +12,7 @@ data class NoticeResponse(
     val contentImageUrl: String? = null,
     val department: String,
     val registrationDate: LocalDate,
-    val noticeType: CrawlableType
+    val topic: CrawlableType
 
 ) {
 
@@ -26,7 +26,7 @@ data class NoticeResponse(
                 contentImageUrl = notice.contentImageUrl,
                 department = notice.department,
                 registrationDate = notice.registrationDate,
-                noticeType = notice.type
+                topic = notice.topic
             )
 
         fun from(notices: List<Notice>): List<NoticeResponse> =

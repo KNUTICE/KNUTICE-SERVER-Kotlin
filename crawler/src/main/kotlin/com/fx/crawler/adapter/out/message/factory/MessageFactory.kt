@@ -48,14 +48,14 @@ object MessageFactory {
 
     private fun defaultNotification(notice: Notice, body: String): Notification =
         Notification.builder()
-            .setTitle(notice.type.category)
+            .setTitle(notice.topic.category)
             .setBody(body)
             .setImage(notice.contentImageUrl)
             .build()
 
     private fun mealNotification(meal: Meal, body: String): Notification =
         Notification.builder()
-            .setTitle(meal.type.category)
+            .setTitle(meal.topic.category)
             .setBody(body)
             .build()
 
