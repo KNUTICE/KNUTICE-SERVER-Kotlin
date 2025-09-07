@@ -1,4 +1,4 @@
-package com.fx.api.domain
+package com.fx.global.domain
 
 enum class TopicType {
 

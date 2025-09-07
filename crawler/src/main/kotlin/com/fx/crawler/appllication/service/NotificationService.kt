@@ -1,6 +1,7 @@
 package com.fx.crawler.appllication.service
 
 import com.fx.crawler.appllication.port.`in`.NotificationUseCase
+import com.fx.crawler.appllication.port.`in`.dto.NoticeCommand
 import com.fx.crawler.appllication.port.out.FcmNotificationPort
 import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort
 import com.fx.global.domain.FcmToken
@@ -75,10 +76,6 @@ class NotificationService(
         }.forEach { it.await() } // 비동기 병렬 전송 대기. 모든 작업이 끝나야 코루틴 종료
     }
 
-    private fun handleFailedTokens(failedTokens: List<FcmToken>) {
-        fcmTokenPersistencePort.saveAll(failedTokens.map { it.copy(isActive = false) })
-    }
-
     override suspend fun sendSilentPushNotification() = coroutineScope {
         var cursor: LocalDateTime? = null
         val tasks = mutableListOf<Deferred<List<FcmToken>>>()
@@ -106,5 +103,30 @@ class NotificationService(
             handleFailedTokens(failedAll) // 실패 토큰 처리
         }
     }
+
+    override suspend fun sendNotification(fcmToken: String, noticeCommand: NoticeCommand) {
+        val fcmToken = fcmTokenPersistencePort.findByFcmToken(fcmToken)?: throw RuntimeException("토큰이 존재하지 않습니다.")
+        val failedTokens = fcmNotificationPort.sendNotification(
+            listOf(fcmToken),
+            listOf(createNotice(noticeCommand))
+        )
+        log.info("{} - 전송 실패 토큰 개수 : {}", noticeCommand.type, failedTokens.size)
+    }
+
+    private fun handleFailedTokens(failedTokens: List<FcmToken>) {
+        fcmTokenPersistencePort.saveAll(failedTokens.map { it.copy(isActive = false) })
+    }
+
+    private fun createNotice(noticeCommand: NoticeCommand) =
+        Notice(
+            nttId = noticeCommand.nttId,
+            title = noticeCommand.title,
+            department = noticeCommand.department,
+            contentUrl = noticeCommand.contentUrl,
+            contentImageUrl = noticeCommand.contentImageUrl,
+            registrationDate = noticeCommand.registrationDate,
+            isAttachment = noticeCommand.isAttachment,
+            type = noticeCommand.type,
+        )
 
 }

@@ -5,7 +5,7 @@ import com.fx.api.application.port.`in`.dto.FcmTokenSaveCommand
 import com.fx.api.application.port.`in`.dto.FcmTokenUpdateCommand
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
-import com.fx.api.domain.TopicType
+import com.fx.global.domain.TopicType
 import com.fx.api.exception.FcmTokenException
 import com.fx.api.exception.errorcode.FcmTokenErrorCode
 import com.fx.global.domain.FcmToken
@@ -88,9 +88,9 @@ class FcmTokenCommandService(
         val topic = topicUpdateCommand.topic as T
 
         if (topicUpdateCommand.enabled)
-            updated.add(topicUpdateCommand.topic)
+            updated.add(topic)
         else
-            updated.remove(topicUpdateCommand.topic)
+            updated.remove(topic)
         return updated
     }
 
