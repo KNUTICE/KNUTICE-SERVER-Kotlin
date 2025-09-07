@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web.dto.topic
 
-import com.fx.api.domain.TopicType
+import com.fx.global.domain.TopicType
 import com.fx.global.domain.FcmToken
 
 data class TopicResponse(

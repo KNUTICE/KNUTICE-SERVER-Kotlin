@@ -75,10 +75,6 @@ class NotificationService(
         }.forEach { it.await() } // 비동기 병렬 전송 대기. 모든 작업이 끝나야 코루틴 종료
     }
 
-    private fun handleFailedTokens(failedTokens: List<FcmToken>) {
-        fcmTokenPersistencePort.saveAll(failedTokens.map { it.copy(isActive = false) })
-    }
-
     override suspend fun sendSilentPushNotification() = coroutineScope {
         var cursor: LocalDateTime? = null
         val tasks = mutableListOf<Deferred<List<FcmToken>>>()
@@ -105,6 +101,17 @@ class NotificationService(
         if (failedAll.isNotEmpty()) {
             handleFailedTokens(failedAll) // 실패 토큰 처리
         }
+    }
+
+    override suspend fun sendNotification(fcmToken: String, notice: Notice) {
+        val fcmToken = fcmTokenPersistencePort.findByFcmToken(fcmToken)?: throw RuntimeException("토큰이 존재하지 않습니다.")
+        val failedTokens = fcmNotificationPort.sendNotification(listOf(fcmToken), listOf(notice))
+        log.info("{} - 전송 실패 토큰 개수 : {}", notice.type, failedTokens.size)
+        handleFailedTokens(failedTokens)
+    }
+
+    private fun handleFailedTokens(failedTokens: List<FcmToken>) {
+        fcmTokenPersistencePort.saveAll(failedTokens.map { it.copy(isActive = false) })
     }
 
 }

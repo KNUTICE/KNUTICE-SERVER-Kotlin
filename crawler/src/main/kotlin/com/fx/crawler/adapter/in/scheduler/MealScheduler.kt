@@ -1,4 +1,4 @@
-package com.fx.crawler.adapter.`in`
+package com.fx.crawler.adapter.`in`.scheduler
 
 import com.fx.crawler.appllication.port.`in`.MealNotificationUseCase
 import com.fx.crawler.appllication.port.`in`.MealParseUseCase

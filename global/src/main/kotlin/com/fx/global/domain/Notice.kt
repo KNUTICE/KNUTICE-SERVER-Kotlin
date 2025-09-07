@@ -15,6 +15,14 @@ data class Notice(
 
     val createdAt: LocalDateTime? = null, // nttId(@Id) 를 미리 지정한 경우 createdAt 생성 불가.
     val updatedAt: LocalDateTime? = null
+) {
 
+    companion object {
 
-)
+        fun createSummary() {
+
+        }
+
+    }
+
+}

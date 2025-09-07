@@ -7,6 +7,8 @@ interface FcmTokenPersistencePort {
 
     fun findByCreatedAtAndIsActive(fcmTokenQuery: FcmTokenQuery): List<FcmToken>
 
+    fun findByFcmToken(fcmToken: String): FcmToken?
+
     fun save(fcmToken: FcmToken)
 
     fun saveAll(fcmTokens: List<FcmToken>)

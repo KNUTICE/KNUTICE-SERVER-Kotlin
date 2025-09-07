@@ -6,7 +6,7 @@ import com.fx.api.adapter.`in`.web.dto.topic.TypeResponse
 import com.fx.api.adapter.`in`.web.swagger.TopicOpenApiSwagger
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase
-import com.fx.api.domain.TopicType
+import com.fx.global.domain.TopicType
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import com.fx.global.api.Api
 import jakarta.validation.Valid

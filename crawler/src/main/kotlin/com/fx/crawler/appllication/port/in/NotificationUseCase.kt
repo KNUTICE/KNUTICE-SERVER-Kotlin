@@ -6,6 +6,8 @@ interface NotificationUseCase {
 
     suspend fun sendNotification(notices: List<Notice>)
 
+    suspend fun sendNotification(fcmToken: String, notice: Notice)
+
     suspend fun sendSilentPushNotification()
 
 }

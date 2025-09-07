@@ -17,3 +17,7 @@ jwt:
     plus-hour: ${JWT_ACCESS_PLUS_HOUR}
   refresh-token:
     plus-hour: ${JWT_REFRESH_PLUS_HOUR}
+
+crawler:
+  server:
+    address: ${CRAWLER_SERVER_ADDRESS}

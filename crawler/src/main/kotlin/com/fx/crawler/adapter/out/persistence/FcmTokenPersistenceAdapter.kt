@@ -22,7 +22,7 @@ class FcmTokenPersistenceAdapter(
         fcmTokenMongoRepository.saveAll(FcmTokenDocument.from(fcmTokens))
     }
 
-    fun findByToken(fcmToken: String): FcmToken?  {
+    override fun findByFcmToken(fcmToken: String): FcmToken?  {
         return fcmTokenMongoRepository.findById(fcmToken).orElse(null)?.toDomain()
     }
 
