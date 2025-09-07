@@ -6,9 +6,9 @@ import com.fx.global.domain.Notice
 interface NoticeCrawlPort {
 
     /**
-     * @return type & contentImage 를 제외한 Notice
+     * @return contentImage 를 제외한 Notice
      */
-    suspend fun crawlNoticeSummaries(type: CrawlableType, page: Int): List<Notice>
+    suspend fun crawlNoticeSummaries(topic: CrawlableType, page: Int): List<Notice>
 
     suspend fun crawlNoticeDetails(notices: List<Notice>): List<Notice>
 

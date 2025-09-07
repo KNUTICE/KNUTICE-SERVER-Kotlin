@@ -12,6 +12,6 @@ data class NoticeCommand(
     val contentImageUrl: String? = null,
     val registrationDate: LocalDate,
     val isAttachment: Boolean,
-    val type: CrawlableType
+    val topic: CrawlableType
 
 )

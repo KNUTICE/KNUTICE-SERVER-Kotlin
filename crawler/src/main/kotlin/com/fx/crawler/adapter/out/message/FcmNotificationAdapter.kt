@@ -93,7 +93,7 @@ class FcmNotificationAdapter : FcmNotificationPort {
 
 
     private fun buildMessage(meal: Meal): String {
-        val header = "${meal.mealDate} ${meal.type.category} 메뉴"
+        val header = "${meal.mealDate} ${meal.topic.category} 메뉴"
         val menuList = meal.menus.joinToString("\n")
         return "$header\n$menuList"
     }

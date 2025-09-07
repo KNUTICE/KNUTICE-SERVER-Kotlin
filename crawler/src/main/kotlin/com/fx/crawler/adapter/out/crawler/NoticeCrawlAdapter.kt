@@ -19,8 +19,8 @@ class NoticeCrawlAdapter: NoticeCrawlPort {
 
     private val log = LoggerFactory.getLogger(NoticeCrawlAdapter::class.java)
 
-    override suspend fun crawlNoticeSummaries(type: CrawlableType, page: Int): List<Notice> = withContext(Dispatchers.IO) {
-        val pageUrl = type.getNoticeUrl() + "?pageIndex=$page"
+    override suspend fun crawlNoticeSummaries(topic: CrawlableType, page: Int): List<Notice> = withContext(Dispatchers.IO) {
+        val pageUrl = topic.getNoticeUrl() + "?pageIndex=$page"
         val document = Jsoup.connect(pageUrl).get()
         val rows = document.select("table.basic_table tbody tr")
 
@@ -34,13 +34,13 @@ class NoticeCrawlAdapter: NoticeCrawlPort {
                         linkElement != null -> {
                             val pathUrl = linkElement.attr("href").trim()
                             val nttId = pathUrl.substringAfter("nttId=").substringBefore("&").toLongOrNull() ?: 0L
-                            Triple(nttId, type.rootDomain + pathUrl, linkElement.text().trim())
+                            Triple(nttId, topic.rootDomain + pathUrl, linkElement.text().trim())
                         }
                         formElement != null -> {
                             val actionUrl = formElement.attr("action").trim()
                             val nttId = formElement.selectFirst("input[name=nttId]")?.attr("value")?.toLongOrNull() ?: 0L
                             val titleText = formElement.selectFirst("input[type=submit]")?.attr("value")?.trim().orEmpty()
-                            Triple(nttId, type.rootDomain + actionUrl + "?nttId=$nttId", titleText)
+                            Triple(nttId, topic.rootDomain + actionUrl + "?nttId=$nttId", titleText)
                         }
                         else -> return@async null
                     }
@@ -64,7 +64,7 @@ class NoticeCrawlAdapter: NoticeCrawlPort {
                         contentImageUrl = null, // 상세에서 채움
                         registrationDate = registrationDate,
                         isAttachment = isAttachment,
-                        type = type,
+                        topic = topic,
                         createdAt = LocalDateTime.now()
                     )
                 } catch (e: Exception) {

@@ -20,15 +20,15 @@ class NoticeCrawlService(
     private val log = LoggerFactory.getLogger(NoticeCrawlService::class.java)
 
     override suspend fun crawlAndSaveNotices(
-        crawlableTypes: List<CrawlableType>,
+        topics: List<CrawlableType>,
         page: Int)
     : List<Notice> = coroutineScope {
 
         val allSummariesDeferred = (1..page).flatMap { p ->
-            crawlableTypes.map { type ->
+            topics.map { topic ->
                 async {
-                    log.info("Crawling page: {}, target: {}", p, type)
-                    noticeCrawlPort.crawlNoticeSummaries(type, p)
+                    log.info("Crawling page: {}, target: {}", p, topic)
+                    noticeCrawlPort.crawlNoticeSummaries(topic, p)
                 }
             }
         }
