@@ -37,7 +37,7 @@ enum class NoticeType(
         "취업지원안내"
     );
 
-    override val typeName: String
+    override val topicName: String
         get() = name
 
     init {

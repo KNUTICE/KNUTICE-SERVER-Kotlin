@@ -18,7 +18,7 @@ enum class MealType(
         "교직원식당"
     );
 
-    override val typeName: String
+    override val topicName: String
         get() = name
 
     init {

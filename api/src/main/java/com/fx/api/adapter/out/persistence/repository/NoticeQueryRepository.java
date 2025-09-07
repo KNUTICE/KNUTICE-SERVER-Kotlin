@@ -42,8 +42,8 @@ public class NoticeQueryRepository extends QuerydslRepositorySupport {
     }
 
     private BooleanExpression eqNoticeType(NoticeQuery noticeQuery) {
-        return noticeQuery.getType() != null
-            ? noticeDocument.type.eq(noticeQuery.getType().getTypeName())
+        return noticeQuery.getTopic() != null
+            ? noticeDocument.topic.eq(noticeQuery.getTopic().getTopicName())
             : null;
     }
 

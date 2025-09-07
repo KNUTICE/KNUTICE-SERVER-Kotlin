@@ -7,14 +7,14 @@ import org.springframework.data.domain.Pageable
 data class NoticeSearchParam(
 
     val nttId: Long? = null,
-    val type: CrawlableType? = null,
+    val topic: CrawlableType? = null,
     val keyword: String? = null
 
 ) {
     fun toCommand(pageable: Pageable) =
         NoticeQuery(
             nttId = this.nttId,
-            type = type,
+            topic = topic,
             keyword = this.keyword,
             pageable = pageable
         )

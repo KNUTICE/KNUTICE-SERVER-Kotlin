@@ -326,7 +326,7 @@ enum class MajorType(
     ),
     ;
 
-    override val typeName: String
+    override val topicName: String
         get() = name
 
     init {
