@@ -16,6 +16,7 @@ services:
       - JWT_ACCESS_PLUS_HOUR
       - JWT_REFRESH_PLUS_HOUR
       - JWT_SECRET_KEY
+      - CRAWLER_SERVER_ADDRESS
       - TZ=Asia/Seoul
 
   crawler:
