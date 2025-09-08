@@ -17,6 +17,10 @@ services:
       - JWT_REFRESH_PLUS_HOUR
       - JWT_SECRET_KEY
       - CRAWLER_SERVER_ADDRESS
+      - FILE_UPLOAD_DIR
+      - FILE_CONTEXT_PATH
+      - URL_HOST
+      - URL_SCHEME
       - TZ=Asia/Seoul
 
   crawler:
