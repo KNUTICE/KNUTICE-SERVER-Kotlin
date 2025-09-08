@@ -7,8 +7,8 @@ data class TopicResponse(
     val subscribedTopics: Set<String>
 ) {
     companion object {
-        fun from(fcmToken: FcmToken, category: TopicType): TopicResponse {
-            val topics = when(category) {
+        fun from(fcmToken: FcmToken, topicType: TopicType): TopicResponse {
+            val topics = when(topicType) {
                 TopicType.NOTICE -> fcmToken.subscribedNoticeTopics
                 TopicType.MAJOR -> fcmToken.subscribedMajorTopics
                 TopicType.MEAL -> fcmToken.subscribedMealTopics
