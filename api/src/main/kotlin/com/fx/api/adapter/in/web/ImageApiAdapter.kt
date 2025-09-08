@@ -1,5 +1,6 @@
 package com.fx.api.adapter.`in`.web
 
+import com.fx.api.adapter.`in`.web.dto.image.ImageResponse
 import com.fx.api.application.port.`in`.ImageCommandUseCase
 import com.fx.api.domain.ImageType
 import com.fx.global.annotation.hexagonal.WebInputAdapter
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.multipart.MultipartFile
 
 @WebInputAdapter
-@RequestMapping("/open-api/v1/images")
+@RequestMapping("/api/v1/images")
 class ImageApiAdapter(
     private val imageCommandUseCase: ImageCommandUseCase
 ) {
@@ -22,8 +23,11 @@ class ImageApiAdapter(
     fun uploadImage(
         @RequestParam("image") image: MultipartFile,
         @RequestParam type: ImageType
-    ): ResponseEntity<Api<String>> =
-        Api.OK(imageCommandUseCase.uploadImage(image, type), "$type 가 저장되었습니다.")
+    ): ResponseEntity<Api<ImageResponse>> =
+        Api.OK(
+            ImageResponse.from(imageCommandUseCase.uploadImage(image, type)),
+            "$type 가 저장되었습니다."
+        )
 
     @DeleteMapping
     fun deleteImage(@RequestParam imageId: String): ResponseEntity<Api<Boolean>> =
