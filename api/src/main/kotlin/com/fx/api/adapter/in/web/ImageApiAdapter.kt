@@ -1,6 +1,7 @@
 package com.fx.api.adapter.`in`.web
 
 import com.fx.api.adapter.`in`.web.dto.image.ImageResponse
+import com.fx.api.adapter.`in`.web.swagger.ImageApiSwagger
 import com.fx.api.application.port.`in`.ImageCommandUseCase
 import com.fx.api.domain.ImageType
 import com.fx.global.annotation.hexagonal.WebInputAdapter
@@ -17,10 +18,10 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/api/v1/images")
 class ImageApiAdapter(
     private val imageCommandUseCase: ImageCommandUseCase
-) {
+) : ImageApiSwagger {
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun uploadImage(
+    override fun uploadImage(
         @RequestParam("image") image: MultipartFile,
         @RequestParam type: ImageType
     ): ResponseEntity<Api<ImageResponse>> =
@@ -30,7 +31,7 @@ class ImageApiAdapter(
         )
 
     @DeleteMapping
-    fun deleteImage(@RequestParam imageId: String): ResponseEntity<Api<Boolean>> =
+    override fun deleteImage(@RequestParam imageId: String): ResponseEntity<Api<Boolean>> =
         Api.OK(imageCommandUseCase.deleteImage(imageId), "이미지가 제거되었습니다.")
 
 }
