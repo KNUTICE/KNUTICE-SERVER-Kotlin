@@ -21,3 +21,11 @@ jwt:
 crawler:
   server:
     address: ${CRAWLER_SERVER_ADDRESS}
+
+file:
+  upload-dir: ${FILE_UPLOAD_DIR}
+  context-path: ${FILE_CONTEXT_PATH}
+
+url:
+  scheme: ${URL_SCHEME}
+  host: ${URL_HOST}
