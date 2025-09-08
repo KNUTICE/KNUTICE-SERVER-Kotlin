@@ -18,6 +18,9 @@ class ImagePersistenceAdapter(
     override fun findByType(type: ImageType): Image? =
         imageMongoRepository.findByType(type)?.orElse(null)?.toDomain()
 
+    override fun findAllByType(type: ImageType): List<Image> =
+        imageMongoRepository.findAllByType(type).map { it.toDomain() }
+
     override fun findById(imageId: String): Image? =
         imageMongoRepository.findById(imageId).orElse(null)?.toDomain()
 

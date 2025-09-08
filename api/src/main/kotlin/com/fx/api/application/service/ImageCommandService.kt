@@ -44,9 +44,9 @@ class ImageCommandService(
         val imageUrl = imageStoragePort.save(imageFile, serverName)
 
         val newImage = Image.createImage(imageFile, imageUrl, serverName, extension, type)
-        imagePersistencePort.save(newImage)
+        val savedImage = imagePersistencePort.save(newImage)
 
-        return newImage
+        return savedImage
     }
 
     override fun deleteImage(imageId: String): Boolean {

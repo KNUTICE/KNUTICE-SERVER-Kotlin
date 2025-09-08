@@ -9,6 +9,8 @@ interface ImagePersistencePort {
 
     fun findByType(type: ImageType): Image?
 
+    fun findAllByType(type: ImageType): List<Image>
+
     fun findById(imageId: String): Image?
 
     fun delete(imageId: String)

@@ -33,7 +33,7 @@ class LocalStorageAdapter(
     }
 
     override fun delete(serverName: String) {
-        val possibleExtensions = listOf("jpg", "jpeg", "png", "gif", "webp")
+        val possibleExtensions = listOf("png", "jpg", "jpeg", "gif", "webp")
         for (ext in possibleExtensions) {
             val filePath = uploadDir.resolve("$serverName.$ext")
             if (Files.exists(filePath)) {
