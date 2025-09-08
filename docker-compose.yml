@@ -22,6 +22,8 @@ services:
       - URL_HOST
       - URL_SCHEME
       - TZ=Asia/Seoul
+    volumes:
+      - /home/ubuntu/knutice/images:/images
 
   crawler:
     build:
