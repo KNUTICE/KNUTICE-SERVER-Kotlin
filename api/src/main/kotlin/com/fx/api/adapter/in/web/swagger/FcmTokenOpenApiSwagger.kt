@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.RequestHeader
 @Tag(name = "토큰 관리 API")
 interface FcmTokenOpenApiSwagger {
 
-    @Operation(summary = "토큰 저장/업데이트", description = "토큰이 없는 경우 새로 저장하며 있는 경우 isActive 값을 true 로 활성화하여 저장합니다.")
+    @Operation(summary = "토큰 저장", description = "토큰이 없는 경우 새로 저장하며 있는 경우 isActive 값을 true 로 활성화하여 저장합니다.")
     fun saveFcmToken(
         @RequestHeader fcmToken: String,
         @RequestBody @Valid tokenSaveRequest: FcmTokenSaveRequest
     ): ResponseEntity<Api<Boolean>>
 
     @Operation(summary = "새로운 토큰으로 업데이트", description = "Silent Push 요청 시 사용되는 API 입니다.<br>" +
-            "header 에는 oldFcmToken 값을 넣으며, Body 에는 newFcmToken, deviceType 을 지정합니다.")
+            "header 에는 새로운 fcmToken 값을 넣으며, Body 에는 oldFcmToken, deviceType 을 지정합니다.")
     fun updateFcmToken(
-        @RequestHeader oldFcmToken: String,
+        @RequestHeader fcmToken: String,
         @RequestBody @Valid tokenUpdateRequest: FcmTokenUpdateRequest
     ): ResponseEntity<Api<Boolean>>
 

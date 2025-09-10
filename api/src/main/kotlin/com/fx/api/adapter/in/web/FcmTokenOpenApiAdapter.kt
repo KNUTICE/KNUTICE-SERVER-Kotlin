@@ -31,10 +31,10 @@ class FcmTokenOpenApiAdapter(
 
     @PatchMapping // fcmToken 만 일부 변경하므로 Patch ...
     override fun updateFcmToken(
-        @RequestHeader oldFcmToken: String,
+        @RequestHeader fcmToken: String, // 헤더 토큰이 새로운 값이며, Request body 는 oldFcmToken 이다.
         @RequestBody @Valid tokenUpdateRequest: FcmTokenUpdateRequest
     ): ResponseEntity<Api<Boolean>> {
-        fcmTokenCommandUseCase.updateFcmToken(tokenUpdateRequest.toCommand(oldFcmToken))
+        fcmTokenCommandUseCase.updateFcmToken(tokenUpdateRequest.toCommand(fcmToken))
         return Api.OK(true, "토큰이 업데이트되었습니다.")
     }
 

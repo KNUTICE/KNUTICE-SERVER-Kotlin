@@ -8,17 +8,17 @@ import jakarta.validation.constraints.NotNull
 data class FcmTokenUpdateRequest(
 
     @field:NotBlank
-    val newFcmToken: String,
+    val oldFcmToken: String,
 
     @field:NotNull
     val deviceType: DeviceType
 
 ) {
 
-    fun toCommand(oldFcmToken: String) =
+    fun toCommand(newFcmToken: String) =
         FcmTokenUpdateCommand(
             oldFcmToken = oldFcmToken,
-            newFcmToken = this.newFcmToken,
+            newFcmToken = newFcmToken,
             deviceType = this.deviceType
         )
 
