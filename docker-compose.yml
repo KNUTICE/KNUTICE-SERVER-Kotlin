@@ -21,6 +21,7 @@ services:
       - FILE_CONTEXT_PATH
       - URL_HOST
       - URL_SCHEME
+      - WEBHOOK_SLACK_URL
       - TZ=Asia/Seoul
     volumes:
       - /home/ubuntu/knutice/images:/images

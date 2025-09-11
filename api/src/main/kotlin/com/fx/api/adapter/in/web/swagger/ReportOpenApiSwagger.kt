@@ -28,7 +28,7 @@ interface ReportOpenApiSwagger {
     @Operation(summary = "문의사항 저장", description = "문의사항을 저장합니다. <br>" +
             "content : 5자에서 최대 500자까지 허용됩니다.<br>" +
             "deviceName : 최대 50자입니다. <br>version : 최대 50자입니다.")
-    fun saveReport(
+    suspend fun saveReport(
         @RequestHeader fcmToken: String,
         @RequestBody @Valid reportSaveRequest: ReportSaveRequest
     ): ResponseEntity<Api<Boolean>>
