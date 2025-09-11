@@ -19,7 +19,7 @@ class ReportOpenApiAdapter(
 ) : ReportOpenApiSwagger {
 
     @PostMapping
-    override fun saveReport(
+    override suspend fun saveReport(
         @RequestHeader fcmToken: String,
         @RequestBody @Valid reportSaveRequest: ReportSaveRequest
     ): ResponseEntity<Api<Boolean>> =

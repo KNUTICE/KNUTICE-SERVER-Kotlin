@@ -7,21 +7,48 @@ import com.fx.api.application.port.out.ReportPersistencePort
 import com.fx.api.domain.Report
 import com.fx.api.exception.FcmTokenException
 import com.fx.api.exception.errorcode.FcmTokenErrorCode
+import com.fx.global.application.port.out.WebhookPort
+import com.fx.global.domain.SlackMessage
+import com.fx.global.domain.SlackType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.springframework.stereotype.Service
 
 @Service
 class ReportCommandService(
     private val reportPersistencePort: ReportPersistencePort,
-    private val fcmTokenPersistencePort: FcmTokenPersistencePort
+    private val fcmTokenPersistencePort: FcmTokenPersistencePort,
+    private val webhookPort: WebhookPort
 ): ReportCommandUseCase {
 
-    override fun saveReport(reportSaveCommand: ReportSaveCommand): Boolean {
+    private val backgroundScope = CoroutineScope(Dispatchers.IO)
+
+    override suspend fun saveReport(reportSaveCommand: ReportSaveCommand): Boolean = coroutineScope {
         if (!fcmTokenPersistencePort.existsByFcmToken(reportSaveCommand.fcmToken)) {
             throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
         }
 
-        reportPersistencePort.saveReport(Report.createReport(reportSaveCommand))
-        return true
+        val savedReport = reportPersistencePort.saveReport(Report.createReport(reportSaveCommand))
+
+        backgroundScope.launch {
+            webhookPort.notifySlack(createSlackMessage(savedReport))
+        }
+
+        return@coroutineScope true
     }
+
+
+    private fun createSlackMessage(report: Report): SlackMessage =
+        SlackMessage.create(
+            """
+                *내용* : ${report.content}
+                *디바이스* : ${report.deviceName}
+                *버전* : ${report.version}
+                *날짜* : ${report.createdAt}
+            """.trimIndent(),
+            SlackType.REPORT
+        )
 
 }
