@@ -37,4 +37,16 @@ public class ReportDocument extends MongoBaseDocument {
             .build();
     }
 
+    public Report toDomain() {
+        return new Report(
+            this.id,
+            this.fcmToken,
+            this.content,
+            this.deviceName,
+            this.version,
+            this.createdAt,
+            this.updatedAt
+        );
+    }
+
 }
