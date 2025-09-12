@@ -41,6 +41,7 @@ services:
       - MONGO_URI
       - MONGO_DATABASE
       - FIREBASE_KEY_PATH
+      - WEBHOOK_SLACK_URL
       - TZ=Asia/Seoul
 
 networks:

@@ -3,21 +3,30 @@ package com.fx.crawler.appllication.service
 import com.fx.crawler.appllication.port.`in`.NoticeCrawlUseCase
 import com.fx.crawler.appllication.port.out.NoticeCrawlPort
 import com.fx.crawler.appllication.port.out.NoticePersistencePort
+import com.fx.global.application.port.out.WebhookPort
 import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.Notice
+import com.fx.global.domain.SlackMessage
+import com.fx.global.domain.SlackType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class NoticeCrawlService(
     private val noticeCrawlPort: NoticeCrawlPort,
-    private val noticePersistencePort: NoticePersistencePort
+    private val noticePersistencePort: NoticePersistencePort,
+    private val webhookPort: WebhookPort
 ): NoticeCrawlUseCase {
 
     private val log = LoggerFactory.getLogger(NoticeCrawlService::class.java)
+    private val backgroundScope = CoroutineScope(Dispatchers.IO)
+
 
     override suspend fun crawlAndSaveNotices(
         topics: List<CrawlableType>,
@@ -27,8 +36,16 @@ class NoticeCrawlService(
         val allSummariesDeferred = (1..page).flatMap { p ->
             topics.map { topic ->
                 async {
-                    log.info("Crawling page: {}, target: {}", p, topic)
-                    noticeCrawlPort.crawlNoticeSummaries(topic, p)
+                    try {
+                        log.info("Crawling page: {}, target: {}", p, topic)
+                        noticeCrawlPort.crawlNoticeSummaries(topic, p)
+                    } catch (e: Exception) {
+                        log.error("크롤링 실패 target={} page={} : {}", topic, p, e.message)
+                        backgroundScope.launch {
+                            webhookPort.notifySlack(createSlackMessage(topic, e))
+                        }
+                        emptyList()
+                    }
                 }
             }
         }
@@ -59,5 +76,14 @@ class NoticeCrawlService(
 
         return@coroutineScope detailedNotices
     }
+
+    private fun createSlackMessage(topic: CrawlableType, e: Exception): SlackMessage =
+        SlackMessage.create(
+            """
+                *Topic* : $topic
+                *Message* : ${e.message}
+            """.trimIndent(),
+            SlackType.CRAWL_ERROR
+        )
 
 }
