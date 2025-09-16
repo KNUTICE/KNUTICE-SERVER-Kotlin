@@ -3,22 +3,30 @@ package com.fx.crawler.adapter.out.message
 import com.fx.crawler.adapter.out.message.factory.MessageFactory
 import com.fx.crawler.appllication.port.out.FcmNotificationPort
 import com.fx.crawler.common.annotation.NotificationAdapter
+import com.fx.global.application.port.out.WebhookPort
 import com.fx.global.domain.FcmToken
 import com.fx.global.domain.Meal
 import com.fx.global.domain.Notice
+import com.fx.global.domain.SlackMessage
+import com.fx.global.domain.SlackType
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.MessagingErrorCode
 import com.google.firebase.messaging.MulticastMessage
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import kotlin.collections.plusAssign
 
 @NotificationAdapter
-class FcmNotificationAdapter : FcmNotificationPort {
+class FcmNotificationAdapter(
+    private val webhookPort: WebhookPort
+) : FcmNotificationPort {
 
     private val log = LoggerFactory.getLogger(FcmNotificationAdapter::class.java)
+    private val backgroundScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     /**
      * @return failedTokens
@@ -95,7 +103,10 @@ class FcmNotificationAdapter : FcmNotificationPort {
                             MessagingErrorCode.INTERNAL,
                             MessagingErrorCode.UNAVAILABLE,
                             MessagingErrorCode.QUOTA_EXCEEDED -> retryableTokens += currentTokens[index] // 재시도 대상
-                            else -> log.info("서버 오류로 전송할 수 없습니다. : {}", sendResponse.exception?.messagingErrorCode)
+                            else -> {
+                                log.info("서버 오류로 전송할 수 없습니다. : ${sendResponse.exception?.messagingErrorCode}")
+                                this.notifySlack("서버 오류로 전송할 수 없습니다. : ${sendResponse.exception?.messagingErrorCode}")
+                            }
                         }
                     }
                 }
@@ -108,13 +119,15 @@ class FcmNotificationAdapter : FcmNotificationPort {
                 waitTime *= 2
 
             } catch (e: Exception) {
-                log.error("FCM 전송 중 예외 발생: ${e.message}", e)
+                log.error("FCM 전송 중 예외 발생 : ${e.message}", e)
+                this.notifySlack("FCM 전송 중 예외 발생 : ${e.message}")
                 break
             }
 
         }
         if (currentTokens.isNotEmpty()) {
-            log.error("최종 실패 토큰 수(재시도 불가): ${currentTokens.size}")
+            log.error("최종 실패 토큰 수(재시도 불가) : ${currentTokens.size}")
+            this.notifySlack("최종 실패 토큰 수(재시도 불가) : ${currentTokens.size}")
         }
 
         return finalFailedTokens
@@ -128,6 +141,15 @@ class FcmNotificationAdapter : FcmNotificationPort {
         val header = "${meal.mealDate} ${meal.topic.category} 메뉴"
         val menuList = meal.menus.joinToString("\n")
         return "$header\n$menuList"
+    }
+
+    private fun notifySlack(content: String) {
+        backgroundScope.launch {
+            webhookPort.notifySlack(SlackMessage(
+                content = content,
+                type = SlackType.FCM_ERROR
+            ))
+        }
     }
 
 }
