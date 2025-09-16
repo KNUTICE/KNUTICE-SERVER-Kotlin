@@ -25,8 +25,8 @@ class TopicOpenApiAdapter(
         @RequestHeader fcmToken: String,
         @RequestParam type: TopicType
     ): ResponseEntity<Api<TopicResponse>> {
-        val myTopics = fcmTokenQueryUseCase.getMyTopics(fcmToken, type)
-        return Api.OK(TopicResponse.from(myTopics, type), "토픽 조회 성공")
+        val subscribedTopics = fcmTokenQueryUseCase.getMyTopics(fcmToken, type)
+        return Api.OK(TopicResponse.from(subscribedTopics), "토픽 조회 성공")
     }
 
     @PatchMapping
