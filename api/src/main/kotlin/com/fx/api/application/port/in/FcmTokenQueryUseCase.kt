@@ -5,6 +5,6 @@ import com.fx.global.domain.FcmToken
 
 interface FcmTokenQueryUseCase {
 
-    fun getMyTopics(fcmToken: String, type: TopicType): FcmToken
+    fun getMyTopics(fcmToken: String, type: TopicType): Set<String>
 
 }

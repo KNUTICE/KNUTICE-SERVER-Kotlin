@@ -39,7 +39,6 @@ object MessageFactory {
             .addAllTokens(fcmTokens)
             .build()
 
-
     private fun defaultData(notice: Notice): Map<String, String> =
         mapOf(
             "nttId" to notice.nttId.toString(),
@@ -103,4 +102,5 @@ object MessageFactory {
                     .build()
             )
             .build()
+
 }
