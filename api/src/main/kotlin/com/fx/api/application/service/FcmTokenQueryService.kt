@@ -13,13 +13,14 @@ class FcmTokenQueryService(
     private val fcmTokenPersistencePort: FcmTokenPersistencePort
 ): FcmTokenQueryUseCase {
 
-    override fun getMyTopics(fcmToken: String, type: TopicType): FcmToken {
+    override fun getMyTopics(fcmToken: String, type: TopicType): Set<String> {
         val token = findTokenOrThrow(fcmToken)
-        return when(type) {
-            TopicType.NOTICE -> token.copy(subscribedNoticeTopics = token.subscribedNoticeTopics)
-            TopicType.MAJOR -> token.copy(subscribedMajorTopics = token.subscribedMajorTopics)
-            TopicType.MEAL -> token.copy(subscribedMealTopics = token.subscribedMealTopics)
+        val subscribedTopics = when (type) {
+            TopicType.NOTICE -> token.subscribedNoticeTopics
+            TopicType.MAJOR -> token.subscribedMajorTopics
+            TopicType.MEAL -> token.subscribedMealTopics
         }
+        return subscribedTopics.map { it.name }.toSet()
     }
 
     private fun findTokenOrThrow(fcmToken: String): FcmToken =
