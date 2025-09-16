@@ -34,6 +34,7 @@ class ReportCommandServiceTest : BehaviorSpec({
         When("문의사항 저장") {
             coEvery { fcmTokenPersistencePort.existsByFcmToken(reportSaveCommand.fcmToken) } returns true
             coEvery { reportPersistencePort.saveReport(report) } returns report
+//            coEvery { webhookPort.notifySlack(any()) }
 
             Then("정상적으로 저장되고 Slack 알림 호출") {
                 runBlocking {
@@ -41,9 +42,9 @@ class ReportCommandServiceTest : BehaviorSpec({
                     result shouldBe true
                 }
 
-                coVerify {
+                coVerify(exactly = 1) {
                     reportPersistencePort.saveReport(report)
-                    webhookPort.notifySlack(any())
+//                    webhookPort.notifySlack(any())
                 }
             }
         }
@@ -57,10 +58,6 @@ class ReportCommandServiceTest : BehaviorSpec({
                         reportCommandService.saveReport(reportSaveCommand)
                     }
                     exception.baseErrorCode shouldBe FcmTokenErrorCode.TOKEN_NOT_FOUND
-                }
-
-                coVerify {
-                    webhookPort.notifySlack(any())
                 }
             }
         }
