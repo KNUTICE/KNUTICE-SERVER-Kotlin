@@ -94,6 +94,8 @@ jobs:
             
             cd ..
             rm -rf KNUTICE-SERVER-Kotlin
+            
+            docker restart nginx
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
