@@ -111,9 +111,12 @@ class FcmNotificationAdapter(
                     }
                 }
 
-                if (retryableTokens.isEmpty()) break
-
+                if (retryableTokens.isEmpty()) {
+                    currentTokens = emptyList()
+                    break
+                }
                 currentTokens = retryableTokens
+
                 log.warn("일시적 오류 발생, ${waitTime}초 후 재시도 ($attempt/$maxRetries)")
                 delay(waitTime * 1000)
                 waitTime *= 2
