@@ -12,9 +12,9 @@ object MessageFactory {
         bodyMessage: String
     ): MulticastMessage {
         return MulticastMessage.builder()
-            .putAllData(defaultData(notice))
+            .putAllData(deeplinkData(notice))
             .setNotification(defaultNotification(notice, bodyMessage))
-            .setApnsConfig(apnsConfig(notice))
+            .setApnsConfig(apnsConfig())
             .setAndroidConfig(androidConfig())
             .addAllTokens(tokens)
             .build()
@@ -26,6 +26,7 @@ object MessageFactory {
         bodyMessage: String
     ): MulticastMessage {
         return MulticastMessage.builder()
+            .putAllData(deeplinkData(meal))
             .setNotification(mealNotification(meal, bodyMessage))
             .setApnsConfig(apnsConfig())
             .setAndroidConfig(androidConfig())
@@ -39,10 +40,14 @@ object MessageFactory {
             .addAllTokens(fcmTokens)
             .build()
 
-    private fun defaultData(notice: Notice): Map<String, String> =
+    private fun deeplinkData(notice: Notice): Map<String, String> =
         mapOf(
-            "nttId" to notice.nttId.toString(),
-            "contentUrl" to notice.contentUrl
+            "deeplink" to "knutice://notice?nttId=${notice.nttId}&contentUrl=${notice.contentUrl}&FabVisible=true"
+        )
+
+    private fun deeplinkData(meal: Meal): Map<String, String> =
+        mapOf(
+            "deeplink" to "knutice://meal"
         )
 
     private fun defaultNotification(notice: Notice, body: String): Notification =
@@ -56,18 +61,6 @@ object MessageFactory {
         Notification.builder()
             .setTitle(meal.topic.category)
             .setBody(body)
-            .build()
-
-    private fun apnsConfig(notice: Notice): ApnsConfig =
-        ApnsConfig.builder()
-            .putHeader("apns-priority", "10")
-            .setAps(
-                Aps.builder()
-                    .setMutableContent(true)
-                    .setAlert(ApsAlert.builder().setLaunchImage(notice.contentImageUrl).build())
-                    .setSound("default")
-                    .build()
-            )
             .build()
 
     private fun apnsConfig(): ApnsConfig =
