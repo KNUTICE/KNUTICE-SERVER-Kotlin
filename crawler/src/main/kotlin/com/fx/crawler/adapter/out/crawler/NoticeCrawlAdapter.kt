@@ -7,7 +7,7 @@ import com.fx.global.domain.Notice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.coroutineScope
 import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -19,7 +19,7 @@ class NoticeCrawlAdapter: NoticeCrawlPort {
 
     private val log = LoggerFactory.getLogger(NoticeCrawlAdapter::class.java)
 
-    override suspend fun crawlNoticeSummaries(topic: CrawlableType, page: Int): List<Notice> = withContext(Dispatchers.IO) {
+    override suspend fun crawlNoticeSummaries(topic: CrawlableType, page: Int): List<Notice> = coroutineScope {
         val pageUrl = topic.getNoticeUrl() + "?pageIndex=$page"
         val document = Jsoup.connect(pageUrl).get()
         val rows = document.select("table.basic_table tbody tr")
@@ -77,14 +77,24 @@ class NoticeCrawlAdapter: NoticeCrawlPort {
         deferredList.awaitAll().filterNotNull()
     }
 
-    override suspend fun crawlNoticeDetails(notices: List<Notice>): List<Notice> = withContext(Dispatchers.IO) {
+    override suspend fun crawlNoticeDetails(notices: List<Notice>): List<Notice> = coroutineScope {
         val deferredList = notices.map { notice ->
             async(Dispatchers.IO) {
                 try {
                     val detailDocument = Jsoup.connect(notice.contentUrl).get()
-                    val firstImage = detailDocument.select("div.bbs_detail_content img").first()?.attr("src")
 
-                    notice.copy(contentImageUrl = firstImage)
+                    // 이미지 추출
+                    val contentFirstImageUrl = detailDocument
+                        .select("div.bbs_detail_content img")
+                        .first()
+                        ?.attr("src")
+
+                    val content = detailDocument
+                        .select("div.bbs_detail_content")
+                        .text()
+                        .trim()
+
+                    notice.withDetail(content, contentFirstImageUrl)
                 } catch (e: Exception) {
                     log.error("crawlNoticeDetails error for nttId=${notice.nttId}: ${e.message}", e)
                     notice
