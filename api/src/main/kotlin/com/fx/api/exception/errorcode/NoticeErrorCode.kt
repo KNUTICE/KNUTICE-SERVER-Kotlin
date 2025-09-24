@@ -8,7 +8,7 @@ enum class NoticeErrorCode(
     override val message: String
 ) : BaseErrorCode {
 
-    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다.")
-
+    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."),
+    SUMMARY_CONTENT_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글 요약 내용이 존재하지 않습니다.")
 
 }

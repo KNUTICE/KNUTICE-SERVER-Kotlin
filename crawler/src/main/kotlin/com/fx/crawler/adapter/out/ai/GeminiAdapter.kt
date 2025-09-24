@@ -42,7 +42,6 @@ class GeminiAdapter(
             attempt++
             try {
                 val contentSummary = chatClient.prompt(prompt).call().content()
-                log.info("완료")
                 return notice.copy(contentSummary = contentSummary)
             } catch (e: Exception) { // NonTransientAiException, TransientAiException
                 if (e.message?.contains("429", ignoreCase = true) == true &&

@@ -2,6 +2,7 @@ package com.fx.api.adapter.`in`.web.swagger
 
 import com.fx.api.adapter.`in`.web.dto.notice.NoticeResponse
 import com.fx.api.adapter.`in`.web.dto.notice.NoticeSearchParam
+import com.fx.api.adapter.`in`.web.dto.notice.NoticeSummaryResponse
 import com.fx.api.exception.errorcode.NoticeErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
@@ -50,5 +51,25 @@ interface NoticeOpenApiSwagger {
     )
     @Operation(summary = "단일 공지 조회", description = "nttId 로 공지를 조회합니다.")
     fun getNotice(@PathVariable nttId: Long): ResponseEntity<Api<NoticeResponse>>
+
+    @ApiResponseExplanations(
+        errors = [
+            ApiExceptionExplanation(
+                name = "공지 요약 조회 실패",
+                description = "서버에 해당하는 공지가 존재하지 않는 경우",
+                value = NoticeErrorCode::class,
+                constant = "NOTICE_NOT_FOUND"
+            ),
+            ApiExceptionExplanation(
+                name = "공지 요약 조회 실패",
+                description = "서버에 공지는 존재하지만 요약 내용이 없는 경우",
+                value = NoticeErrorCode::class,
+                constant = "SUMMARY_CONTENT_NOT_FOUND"
+            )
+        ]
+    )
+    @Operation(summary = "공지 요약 조회", description = "nttId 로 공지 요약을 조회합니다. <br>" +
+            "`contentSummary` 존재하지 않는 경우 예외가 발생됩니다.")
+    fun getNoticeSummary(@PathVariable nttId: Long): ResponseEntity<Api<NoticeSummaryResponse>>
 
 }
