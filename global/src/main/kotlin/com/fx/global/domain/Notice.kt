@@ -8,6 +8,8 @@ data class Notice(
     val title: String,
     val department: String,
     val contentUrl: String,
+    val content: String? = null,
+    val contentSummary: String? = null,
     val contentImageUrl: String? = null,
     val registrationDate: LocalDate,
     val isAttachment: Boolean,
@@ -15,4 +17,12 @@ data class Notice(
 
     val createdAt: LocalDateTime? = null, // nttId(@Id) 를 미리 지정한 경우 createdAt 생성 불가.
     val updatedAt: LocalDateTime? = null
-)
+) {
+
+    fun withDetail(content: String?, contentImageUrl: String?): Notice =
+        this.copy(
+            content = content,
+            contentImageUrl = contentImageUrl
+        )
+
+}

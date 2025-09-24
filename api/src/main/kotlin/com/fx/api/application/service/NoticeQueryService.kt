@@ -22,5 +22,17 @@ class NoticeQueryService(
     }
 
     override fun getNotice(nttId: Long): Notice =
-        noticePersistencePort.getNotice(nttId)?: throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)
+        noticePersistencePort.getNotice(nttId)
+            ?: throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)
+
+    override fun getNoticeSummary(nttId: Long): Notice {
+        val notice = noticePersistencePort.getNotice(nttId)
+            ?: throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)
+
+        if (notice.contentSummary.isNullOrBlank()) {
+            throw NoticeException(NoticeErrorCode.SUMMARY_CONTENT_NOT_FOUND)
+        }
+        return notice
+    }
+
 }

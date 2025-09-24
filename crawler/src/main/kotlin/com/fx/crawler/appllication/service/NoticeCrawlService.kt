@@ -3,6 +3,7 @@ package com.fx.crawler.appllication.service
 import com.fx.crawler.appllication.port.`in`.NoticeCrawlUseCase
 import com.fx.crawler.appllication.port.out.NoticeCrawlPort
 import com.fx.crawler.appllication.port.out.NoticePersistencePort
+import com.fx.crawler.appllication.port.out.NoticeSummaryPort
 import com.fx.global.application.port.out.WebhookPort
 import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.Notice
@@ -21,7 +22,8 @@ import org.springframework.stereotype.Service
 class NoticeCrawlService(
     private val noticeCrawlPort: NoticeCrawlPort,
     private val noticePersistencePort: NoticePersistencePort,
-    private val webhookPort: WebhookPort
+    private val webhookPort: WebhookPort,
+    private val noticeSummaryPort: NoticeSummaryPort
 ): NoticeCrawlUseCase {
 
     private val log = LoggerFactory.getLogger(NoticeCrawlService::class.java)
@@ -35,7 +37,7 @@ class NoticeCrawlService(
 
         val allSummariesDeferred = (1..page).flatMap { p ->
             topics.map { topic ->
-                async {
+                async(Dispatchers.IO) {
                     try {
                         log.info("Crawling page: {}, target: {}", p, topic)
                         noticeCrawlPort.crawlNoticeSummaries(topic, p)
@@ -67,14 +69,40 @@ class NoticeCrawlService(
             return@coroutineScope emptyList()
         }
 
-        // 3. 신규 공지의 상세 조회 - 이미지 URL 크롤링 작업
+        // 3. 신규 공지의 상세 조회
         val detailedNotices = noticeCrawlPort.crawlNoticeDetails(newNotices)
 
         // 4. DB 저장
         noticePersistencePort.saveAll(detailedNotices)
         log.info("Saved {} new notices from pages 1..{}", detailedNotices.size, page)
 
+        backgroundScope.launch {
+            summarizeAndNotifyFailures(detailedNotices)
+        }
+
         return@coroutineScope detailedNotices
+    }
+
+    private suspend fun summarizeAndNotifyFailures(detailedNotices: List<Notice>) {
+        val summarizeNotices = noticeSummaryPort.summarizeNotices(detailedNotices)
+        if (summarizeNotices.isNotEmpty()) {
+            noticePersistencePort.saveAll(summarizeNotices)
+        }
+
+        // 요약 실패한 notice 추출
+        val failedNotices = detailedNotices.filter { notice ->
+            summarizeNotices.none { it.nttId == notice.nttId }
+        }
+
+        if (failedNotices.isNotEmpty()) {
+            val failedTitles = failedNotices.joinToString("\n") { notice ->
+                "[nttId : ${notice.nttId}] [topic : ${notice.topic}] [title : ${notice.title}]"
+            }
+            backgroundScope.launch {
+                webhookPort.notifySlack(SlackMessage.create(failedTitles, SlackType.AI_ERROR))
+            }
+        }
+        log.info("Summarization completed for {} notices, failed: {}", summarizeNotices.size, failedNotices.size)
     }
 
     private fun createSlackMessage(topic: CrawlableType, e: Exception): SlackMessage =

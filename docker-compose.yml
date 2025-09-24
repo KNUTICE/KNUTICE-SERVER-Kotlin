@@ -42,6 +42,7 @@ services:
       - MONGO_DATABASE
       - FIREBASE_KEY_PATH
       - WEBHOOK_SLACK_URL
+      - GEMINI_API_KEY
       - TZ=Asia/Seoul
 
 networks:
