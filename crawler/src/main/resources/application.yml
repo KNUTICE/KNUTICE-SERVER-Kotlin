@@ -4,6 +4,15 @@ server:
 spring:
   application:
     name: crawler-service
+  ai:
+    openai:
+      api-key: ${GEMINI_API_KEY}  # https://aistudio.google.com/apikey
+      chat:
+        base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+        options:
+          model: gemini-2.0-flash-lite
+          temperature: 0
+        completions-path: /chat/completions
 
   data:
     mongodb:

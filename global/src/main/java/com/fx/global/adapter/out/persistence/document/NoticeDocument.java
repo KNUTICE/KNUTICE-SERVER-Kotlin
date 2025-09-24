@@ -28,6 +28,10 @@ public class NoticeDocument extends MongoBaseDocument {
 
     private String contentUrl;
 
+    private String content;
+
+    private String contentSummary;
+
     private String contentImageUrl;
 
     private LocalDate registrationDate;
@@ -42,6 +46,8 @@ public class NoticeDocument extends MongoBaseDocument {
             this.title,
             this.department,
             this.contentUrl,
+            this.content,
+            this.contentSummary,
             this.contentImageUrl,
             this.registrationDate,
             this.isAttachment,
@@ -57,6 +63,8 @@ public class NoticeDocument extends MongoBaseDocument {
             .title(notice.getTitle())
             .department(notice.getDepartment())
             .contentUrl(notice.getContentUrl())
+            .content(notice.getContent())
+            .contentSummary(notice.getContentSummary())
             .contentImageUrl(notice.getContentImageUrl())
             .registrationDate(notice.getRegistrationDate())
             .isAttachment(notice.isAttachment())

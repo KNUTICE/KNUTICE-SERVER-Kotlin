@@ -10,6 +10,7 @@ group = "com.fx"
 version = "0.0.1-SNAPSHOT"
 description = "KNUTICE is a platform that provides push notifications for official announcements from Korea National University of Transportation. By integrating a web crawler and real-time notification system, it ensures students receive timely updates without manually checking the university website."
 val queryDslVersion = "5.1.0"
+extra["springAiVersion"] = "1.0.2"
 
 java {
     toolchain {
@@ -42,6 +43,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
+    // Gemini
+    implementation("org.springframework.ai:spring-ai-starter-model-openai")
+
     // Coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
@@ -63,6 +67,12 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
+    }
 }
 
 kotlin {

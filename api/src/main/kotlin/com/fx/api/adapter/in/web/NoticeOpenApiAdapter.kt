@@ -2,6 +2,7 @@ package com.fx.api.adapter.`in`.web
 
 import com.fx.api.adapter.`in`.web.dto.notice.NoticeResponse
 import com.fx.api.adapter.`in`.web.dto.notice.NoticeSearchParam
+import com.fx.api.adapter.`in`.web.dto.notice.NoticeSummaryResponse
 import com.fx.api.adapter.`in`.web.swagger.NoticeOpenApiSwagger
 import com.fx.api.application.port.`in`.NoticeQueryUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
@@ -33,5 +34,9 @@ class NoticeOpenApiAdapter(
     @GetMapping("/{nttId}")
     override fun getNotice(@PathVariable nttId: Long): ResponseEntity<Api<NoticeResponse>> =
         Api.OK(NoticeResponse.from(noticeQueryUseCase.getNotice(nttId)))
+
+    @GetMapping("/summary/{nttId}")
+    override fun getNoticeSummary(@PathVariable nttId: Long): ResponseEntity<Api<NoticeSummaryResponse>> =
+        Api.OK(NoticeSummaryResponse.from(noticeQueryUseCase.getNoticeSummary(nttId)))
 
 }
