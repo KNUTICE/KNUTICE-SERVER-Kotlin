@@ -5,7 +5,7 @@ import com.fx.api.domain.ImageType
 import com.fx.api.exception.errorcode.ImageErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
-import com.fx.global.api.Api
+import io.github.seob7.Api
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity

@@ -4,8 +4,8 @@ import com.fx.api.adapter.`in`.web.dto.tip.TipResponse
 import com.fx.api.adapter.`in`.web.swagger.TipOpenApiSwagger
 import com.fx.api.application.port.`in`.TipQueryUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
-import com.fx.global.api.Api
 import com.fx.global.domain.DeviceType
+import io.github.seob7.Api
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping

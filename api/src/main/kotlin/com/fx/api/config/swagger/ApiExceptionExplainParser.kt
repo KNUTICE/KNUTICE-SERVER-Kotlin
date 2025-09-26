@@ -2,9 +2,9 @@ package com.fx.api.config.swagger
 
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
-import com.fx.global.api.Api
-import com.fx.global.api.BaseErrorCode
-import com.fx.global.api.MetaData
+import io.github.seob7.Api
+import io.github.seob7.BaseErrorCode
+import io.github.seob7.MetaData
 import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.examples.Example
 import io.swagger.v3.oas.models.media.Content
@@ -96,12 +96,12 @@ object ApiExceptionExplainParser {
                 description: String
             ): Example {
                 val response = Api(
-                    metaData = MetaData(
-                        success = false,
-                        code = errorCode.httpStatus.value(),
-                        message = errorCode.message,
+                    MetaData(
+                        false,
+                        errorCode.httpStatus.value(),
+                        errorCode.message,
                     ),
-                    data = null
+                    null
                 )
 
                 return Example().apply {

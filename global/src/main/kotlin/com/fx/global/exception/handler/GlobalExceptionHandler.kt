@@ -1,6 +1,6 @@
 package com.fx.global.exception.handler
 
-import com.fx.global.api.Api
+import io.github.seob7.Api
 import jakarta.validation.ConstraintViolationException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

@@ -24,6 +24,8 @@ repositories {
 
 dependencies {
 
+    implementation("io.github.seob7:common-api:0.0.1")
+
     // Mongo
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 

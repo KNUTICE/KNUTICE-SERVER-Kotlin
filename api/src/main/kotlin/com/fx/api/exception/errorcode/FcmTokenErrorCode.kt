@@ -1,13 +1,17 @@
 package com.fx.api.exception.errorcode
 
-import com.fx.global.api.BaseErrorCode
+import io.github.seob7.BaseErrorCode
 import org.springframework.http.HttpStatus
 
 enum class FcmTokenErrorCode(
-    override val httpStatus: HttpStatus,
-    override val message: String
+    private val httpStatus: HttpStatus,
+    private val message: String
 ) : BaseErrorCode {
 
     TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "Fcm token 이 존재하지 않습니다.")
+    ;
+
+    override fun getHttpStatus(): HttpStatus = httpStatus
+    override fun getMessage(): String = message
 
 }

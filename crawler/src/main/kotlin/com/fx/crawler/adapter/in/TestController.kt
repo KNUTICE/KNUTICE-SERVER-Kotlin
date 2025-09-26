@@ -5,6 +5,7 @@ import com.fx.crawler.adapter.out.crawler.NoticeCrawlAdapter
 import com.fx.crawler.adapter.out.persistence.repository.FcmTokenQueryRepository
 import com.fx.crawler.appllication.port.`in`.NoticeCrawlUseCase
 import com.fx.crawler.domain.FcmTokenQuery
+import com.fx.global.domain.MajorType
 import com.fx.global.domain.MealType
 import com.fx.global.domain.NoticeType
 import org.slf4j.LoggerFactory
@@ -57,7 +58,7 @@ class TestController(
 
     @GetMapping("/crawl")
     suspend fun crawlNotice() {
-        val crawlAndSaveNotices = noticeCrawlUseCase.crawlAndSaveNotices(NoticeType.entries)
+        val crawlAndSaveNotices = noticeCrawlUseCase.crawlAndSaveNotices(MajorType.entries)
         log.info("저장된 notice : {}", crawlAndSaveNotices)
     }
 
