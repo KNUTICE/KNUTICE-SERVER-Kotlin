@@ -13,7 +13,7 @@ class NotificationWebAdapter(
 
     override fun pushTestNotice(pushNotice: PushNotice): Boolean {
         val response = notificationFeignClient.pushTestNotice(pushNotice.fcmToken, createFeignRequestDto(pushNotice))
-        return response.body?.success ?: false
+        return response.body?.metaData?.success ?: false
     }
 
     private fun createFeignRequestDto(pushNotice: PushNotice): NoticeNotificationFeignRequest =

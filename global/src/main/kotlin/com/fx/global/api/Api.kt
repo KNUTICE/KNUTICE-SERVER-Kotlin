@@ -3,10 +3,14 @@ package com.fx.global.api
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
-class Api<T>(
+data class MetaData(
     val success: Boolean,
     val code: Int,
-    val message: String?,
+    val message: String?
+)
+
+class Api<T>(
+    val metaData: MetaData,
     val data: T?
 ) {
 
@@ -17,9 +21,11 @@ class Api<T>(
                 .status(HttpStatus.OK)
                 .body(
                     Api(
-                        success = true,
-                        code = HttpStatus.OK.value(),
-                        message = message,
+                        metaData = MetaData(
+                            success = true,
+                            code = HttpStatus.OK.value(),
+                            message = message,
+                        ),
                         data = data
                     )
                 )
@@ -30,9 +36,11 @@ class Api<T>(
                 .status(HttpStatus.OK)
                 .body(
                     Api(
-                        success = true,
-                        code = HttpStatus.OK.value(),
-                        message = null,
+                        metaData = MetaData(
+                            success = true,
+                            code = HttpStatus.OK.value(),
+                            message = null,
+                        ),
                         data = data
                     )
                 )
@@ -43,9 +51,11 @@ class Api<T>(
                 .status(httpStatus)
                 .body(
                     Api(
-                        success = true,
-                        code = httpStatus.value(),
-                        message = null,
+                        metaData = MetaData(
+                            success = true,
+                            code = httpStatus.value(),
+                            message = null,
+                        ),
                         data = data
                     )
                 )
@@ -56,9 +66,11 @@ class Api<T>(
                 .status(httpStatus)
                 .body(
                     Api(
-                        success = true,
-                        code = httpStatus.value(),
-                        message = message,
+                        metaData = MetaData(
+                            success = true,
+                            code = httpStatus.value(),
+                            message = message,
+                        ),
                         data = data
                     )
                 )
@@ -69,9 +81,11 @@ class Api<T>(
                 .status(baseErrorCode.httpStatus)
                 .body(
                     Api(
-                        success = false,
-                        code = baseErrorCode.httpStatus.value(),
-                        message = baseErrorCode.message,
+                        metaData = MetaData(
+                            success = false,
+                            code = baseErrorCode.httpStatus.value(),
+                            message = baseErrorCode.message,
+                        ),
                         data = null
                     )
                 )
@@ -82,9 +96,11 @@ class Api<T>(
                 .status(httpStatus)
                 .body(
                     Api(
-                        success = false,
-                        code = httpStatus.value(),
-                        message = message,
+                        metaData = MetaData(
+                            success = false,
+                            code = httpStatus.value(),
+                            message = message,
+                        ),
                         data = null
                     )
                 )
