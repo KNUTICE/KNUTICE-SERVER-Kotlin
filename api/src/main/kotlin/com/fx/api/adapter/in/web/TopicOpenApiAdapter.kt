@@ -8,7 +8,7 @@ import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase
 import com.fx.global.domain.TopicType
 import com.fx.global.annotation.hexagonal.WebInputAdapter
-import com.fx.global.api.Api
+import io.github.seob7.Api
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

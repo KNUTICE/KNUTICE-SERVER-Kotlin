@@ -4,11 +4,10 @@ import com.fx.api.adapter.`in`.web.dto.user.TokenResponse
 import com.fx.api.adapter.`in`.web.dto.user.UserIdResponse
 import com.fx.api.adapter.`in`.web.dto.user.UserLoginRequest
 import com.fx.api.adapter.`in`.web.dto.user.UserSignUpRequest
-import com.fx.api.exception.errorcode.FcmTokenErrorCode
 import com.fx.api.exception.errorcode.UserErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
-import com.fx.global.api.Api
+import io.github.seob7.Api
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid

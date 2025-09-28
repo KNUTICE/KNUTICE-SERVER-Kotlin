@@ -5,7 +5,7 @@ import com.fx.api.adapter.`in`.web.swagger.ImageApiSwagger
 import com.fx.api.application.port.`in`.ImageCommandUseCase
 import com.fx.api.domain.ImageType
 import com.fx.global.annotation.hexagonal.WebInputAdapter
-import com.fx.global.api.Api
+import io.github.seob7.Api
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping

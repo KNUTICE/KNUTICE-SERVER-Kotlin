@@ -4,7 +4,7 @@ import com.fx.api.adapter.`in`.web.dto.tip.TipSaveRequest
 import com.fx.api.adapter.`in`.web.swagger.TipApiSwagger
 import com.fx.api.application.port.`in`.TipCommandUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
-import com.fx.global.api.Api
+import io.github.seob7.Api
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping

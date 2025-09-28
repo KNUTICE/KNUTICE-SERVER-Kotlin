@@ -1,6 +1,6 @@
 package com.fx.global.annotation
 
-import com.fx.global.api.BaseErrorCode
+import io.github.seob7.BaseErrorCode
 import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.FUNCTION)

@@ -1,7 +1,7 @@
 package com.fx.api.adapter.out.web.client
 
 import com.fx.global.adapter.feign.NoticeNotificationFeignRequest
-import com.fx.global.api.Api
+import io.github.seob7.Api
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

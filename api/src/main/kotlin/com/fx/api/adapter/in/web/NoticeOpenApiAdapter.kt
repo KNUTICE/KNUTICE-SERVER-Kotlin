@@ -6,7 +6,7 @@ import com.fx.api.adapter.`in`.web.dto.notice.NoticeSummaryResponse
 import com.fx.api.adapter.`in`.web.swagger.NoticeOpenApiSwagger
 import com.fx.api.application.port.`in`.NoticeQueryUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
-import com.fx.global.api.Api
+import io.github.seob7.Api
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
