@@ -1,6 +1,7 @@
 package com.fx.crawler.adapter.`in`.scheduler
 
 import com.fx.crawler.appllication.port.`in`.NoticeCrawlUseCase
+import com.fx.crawler.appllication.port.`in`.NoticeSummaryUseCase
 import com.fx.crawler.appllication.port.`in`.NotificationUseCase
 import com.fx.crawler.common.annotation.ScheduleAdapter
 import com.fx.global.domain.CrawlableType
@@ -13,7 +14,8 @@ import org.springframework.scheduling.annotation.Scheduled
 @ScheduleAdapter
 class NoticeScheduler(
     private val noticeCrawlUseCase: NoticeCrawlUseCase,
-    private val notificationUseCase: NotificationUseCase
+    private val notificationUseCase: NotificationUseCase,
+    private val noticeSummaryUseCase: NoticeSummaryUseCase
 ) {
 
     private val log = LoggerFactory.getLogger(NoticeScheduler::class.java)
@@ -27,6 +29,11 @@ class NoticeScheduler(
     @Scheduled(cron = "0 10 16 * * *") // 매일 16시 10분마다
     fun crawlAndPushMajorNotices() = runBlocking {
         processCrawl(MajorType.entries, "major notice")
+    }
+
+    @Scheduled(cron = "0 0/40 * * * *")  // 매 40분마다
+    fun summarizeContent() = runBlocking {
+        noticeSummaryUseCase.summarizeNotice()
     }
 
     private suspend fun processCrawl(topics: List<CrawlableType>, label: String) {

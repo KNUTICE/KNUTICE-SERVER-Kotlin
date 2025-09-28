@@ -1,4 +1,5 @@
-package com.fx.api.config.converter
+
+package com.fx.global.config.converter
 
 import com.fx.global.domain.CrawlableType
 import org.springframework.core.convert.converter.Converter

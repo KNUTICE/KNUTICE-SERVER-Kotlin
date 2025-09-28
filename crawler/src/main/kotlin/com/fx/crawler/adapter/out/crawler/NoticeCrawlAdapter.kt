@@ -96,7 +96,7 @@ class NoticeCrawlAdapter: NoticeCrawlPort {
 
                     notice.withDetail(content, contentFirstImageUrl)
                 } catch (e: Exception) {
-                    log.error("crawlNoticeDetails error for nttId=${notice.nttId}: ${e.message}", e)
+                    log.error("crawlNoticeDetails error for nttId=${notice.nttId}")
                     notice
                 }
             }

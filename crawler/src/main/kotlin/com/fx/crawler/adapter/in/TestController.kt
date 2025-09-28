@@ -1,26 +1,25 @@
 package com.fx.crawler.adapter.`in`
 
 import com.fx.crawler.adapter.out.crawler.MealParseAdapter
-import com.fx.crawler.adapter.out.crawler.NoticeCrawlAdapter
 import com.fx.crawler.adapter.out.persistence.repository.FcmTokenQueryRepository
 import com.fx.crawler.appllication.port.`in`.NoticeCrawlUseCase
+import com.fx.crawler.appllication.service.NoticeSummaryService
 import com.fx.crawler.domain.FcmTokenQuery
 import com.fx.global.domain.MajorType
 import com.fx.global.domain.MealType
-import com.fx.global.domain.NoticeType
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
-import java.time.OffsetDateTime
 
 @RestController
 class TestController(
     private val fcmTokenQueryRepository: FcmTokenQueryRepository,
     private val mealParseAdapter: MealParseAdapter,
-    private val noticeCrawlUseCase: NoticeCrawlUseCase
+    private val noticeCrawlUseCase: NoticeCrawlUseCase,
+    private val noticeSummaryService: NoticeSummaryService
 ) {
 
     private val log = LoggerFactory.getLogger(TestController::class.java)
@@ -60,6 +59,11 @@ class TestController(
     suspend fun crawlNotice() {
         val crawlAndSaveNotices = noticeCrawlUseCase.crawlAndSaveNotices(MajorType.entries)
         log.info("저장된 notice : {}", crawlAndSaveNotices)
+    }
+
+    @GetMapping("/notice")
+    suspend fun getNotice() {
+        noticeSummaryService.summarizeNotice()
     }
 
 

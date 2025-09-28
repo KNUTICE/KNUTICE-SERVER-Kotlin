@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web.dto.notice
 
-import com.fx.api.domain.NoticeQuery
+import com.fx.global.domain.NoticeQuery
 import com.fx.global.domain.CrawlableType
 import org.springframework.data.domain.Pageable
 

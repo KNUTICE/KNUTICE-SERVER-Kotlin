@@ -23,7 +23,7 @@ class MealNotificationService(
 
     private val log = LoggerFactory.getLogger(MealNotificationService::class.java)
 
-    companion object {
+    private companion object {
         const val BATCH_SIZE = 500
     }
 
