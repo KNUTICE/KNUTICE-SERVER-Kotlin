@@ -4,10 +4,15 @@ import com.fx.crawler.appllication.port.out.NoticeCrawlPort
 import com.fx.crawler.common.annotation.CrawlAdapter
 import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.Notice
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.request.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -18,14 +23,21 @@ import java.time.format.DateTimeFormatter
 class NoticeCrawlAdapter: NoticeCrawlPort {
 
     private val log = LoggerFactory.getLogger(NoticeCrawlAdapter::class.java)
+    private val httpClient = HttpClient(CIO)
 
     override suspend fun crawlNoticeSummaries(topic: CrawlableType, page: Int): List<Notice> = coroutineScope {
         val pageUrl = topic.getNoticeUrl() + "?pageIndex=$page"
-        val document = Jsoup.connect(pageUrl).get()
+
+//        val document = Jsoup.connect(pageUrl).get() // Blocking
+        val html: String = httpClient.get(pageUrl).body()
+        val document = withContext(Dispatchers.Default) {
+            Jsoup.parse(html)
+        }
+
         val rows = document.select("table.basic_table tbody tr")
 
         val deferredList = rows.map { row ->
-            async(Dispatchers.IO) {
+            async(Dispatchers.Default) {
                 try {
                     val linkElement = row.selectFirst("td.left a") // [공지]
                     val formElement = row.selectFirst("td.left form") // 일반글
@@ -81,7 +93,12 @@ class NoticeCrawlAdapter: NoticeCrawlPort {
         val deferredList = notices.map { notice ->
             async(Dispatchers.IO) {
                 try {
-                    val detailDocument = Jsoup.connect(notice.contentUrl).get()
+//                    val detailDocument = Jsoup.connect(notice.contentUrl).get() // blocking
+                    val html: String = httpClient.get(notice.contentUrl).body()
+
+                    val detailDocument = withContext(Dispatchers.Default) {
+                        Jsoup.parse(html)
+                    }
 
                     // 이미지 추출
                     val contentFirstImageUrl = detailDocument
