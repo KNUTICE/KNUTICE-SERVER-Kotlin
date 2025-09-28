@@ -1,6 +1,7 @@
 package com.fx.api.exception
 
-import com.fx.global.api.BaseErrorCode
+import io.github.seob7.BaseErrorCode
+
 
 class JwtException (
     val baseErrorCode: BaseErrorCode,

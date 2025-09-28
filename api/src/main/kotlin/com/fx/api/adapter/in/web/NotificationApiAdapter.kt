@@ -5,7 +5,7 @@ import com.fx.api.adapter.`in`.web.swagger.NotificationApiSwagger
 import com.fx.api.application.port.`in`.NotificationUseCase
 import com.fx.global.domain.TopicType
 import com.fx.global.annotation.hexagonal.WebInputAdapter
-import com.fx.global.api.Api
+import io.github.seob7.Api
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

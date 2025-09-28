@@ -1,18 +1,14 @@
 package com.fx.api.adapter.`in`.web.swagger
 
 import com.fx.api.adapter.`in`.web.dto.image.ImageResponse
-import com.fx.api.adapter.`in`.web.dto.tip.TipSaveRequest
 import com.fx.api.domain.ImageType
 import com.fx.api.exception.errorcode.ImageErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
-import com.fx.global.api.Api
+import io.github.seob7.Api
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.multipart.MultipartFile
 

@@ -24,6 +24,11 @@ repositories {
 
 dependencies {
 
+    implementation("io.github.seob7:common-api:0.0.2")
+
+    // Ktor Client (논블로킹 HTTP)
+    implementation("io.ktor:ktor-client-cio:2.3.6")
+
     // Mongo
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 

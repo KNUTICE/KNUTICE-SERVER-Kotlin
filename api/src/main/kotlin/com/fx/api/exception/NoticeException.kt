@@ -1,6 +1,6 @@
 package com.fx.api.exception
 
-import com.fx.global.api.BaseErrorCode
+import io.github.seob7.BaseErrorCode
 import java.lang.RuntimeException
 
 class NoticeException(

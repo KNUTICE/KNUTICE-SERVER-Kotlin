@@ -1,7 +1,7 @@
 package com.fx.api.adapter.`in`.web.swagger
 
 import com.fx.api.adapter.`in`.web.dto.tip.TipSaveRequest
-import com.fx.global.api.Api
+import io.github.seob7.Api
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
