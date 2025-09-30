@@ -22,8 +22,10 @@ services:
       - URL_HOST
       - URL_SCHEME
       - WEBHOOK_SLACK_URL
+      - LOG_PATH=/logs
       - TZ=Asia/Seoul
     volumes:
+      - /home/ubuntu/knutice/logs/api:/logs
       - /home/ubuntu/knutice/images:/images
 
   crawler:
@@ -43,7 +45,10 @@ services:
       - FIREBASE_KEY_PATH
       - WEBHOOK_SLACK_URL
       - GEMINI_API_KEY
+      - LOG_PATH=/logs
       - TZ=Asia/Seoul
+    volumes:
+      - /home/ubuntu/knutice/logs/crawler:/logs
 
 networks:
   app-network:
