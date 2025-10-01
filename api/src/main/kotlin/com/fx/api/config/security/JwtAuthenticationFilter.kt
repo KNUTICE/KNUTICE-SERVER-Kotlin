@@ -21,6 +21,13 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+        val path = request.requestURI
+
+        if (!path.startsWith("/api/")) {
+            filterChain.doFilter(request, response)
+            return
+        }
+
         val header = request.getHeader("Authorization")
 
         if (!header.isNullOrEmpty() && header.startsWith("Bearer ")) {
