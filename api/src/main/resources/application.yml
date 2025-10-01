@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: api-service
+    name: KNUTICE-API
 
   data:
     mongodb:
@@ -29,3 +29,17 @@ file:
 url:
   scheme: ${URL_SCHEME}
   host: ${URL_HOST}
+
+logging:
+  level:
+    org:
+      springframework.web: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus, metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}

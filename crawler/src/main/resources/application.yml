@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: crawler-service
+    name: KNUTICE-CRAWLER
   ai:
     openai:
       api-key: ${GEMINI_API_KEY}  # https://aistudio.google.com/apikey
@@ -23,3 +23,17 @@ firebase:
   secret:
     key:
       path: ${FIREBASE_KEY_PATH}
+
+logging:
+  level:
+    org:
+      springframework.web: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus, metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}

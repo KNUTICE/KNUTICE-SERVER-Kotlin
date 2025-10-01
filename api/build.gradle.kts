@@ -64,6 +64,10 @@ dependencies {
 
     implementation(project(":global"))
 
+    // Prometheus
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+
     // QueryDSL
     implementation("com.querydsl:querydsl-mongodb:${queryDslVersion}") {
         exclude(group = "org.mongodb", module = "mongo-java-driver")
