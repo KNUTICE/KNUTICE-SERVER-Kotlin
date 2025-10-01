@@ -25,7 +25,7 @@ services:
       - LOG_PATH=/logs
       - TZ=Asia/Seoul
     volumes:
-      - /home/ubuntu/knutice/logs/api:/logs
+      - /home/ubuntu/knutice/logs/api:/app/logs
       - /home/ubuntu/knutice/images:/images
 
   crawler:
@@ -48,7 +48,7 @@ services:
       - LOG_PATH=/logs
       - TZ=Asia/Seoul
     volumes:
-      - /home/ubuntu/knutice/logs/crawler:/logs
+      - /home/ubuntu/knutice/logs/crawler:/app/logs
 
 networks:
   app-network:
