@@ -52,7 +52,7 @@ object MessageFactory {
 
     private fun defaultNotification(notice: Notice, body: String): Notification =
         Notification.builder()
-            .setTitle(notice.topic.category)
+            .setTitle("["+notice.topic.category+"]")
             .setBody(body)
             .setImage(notice.contentImageUrl)
             .build()
