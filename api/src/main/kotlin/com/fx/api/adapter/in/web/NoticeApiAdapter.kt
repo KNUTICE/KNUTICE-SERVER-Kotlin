@@ -1,10 +1,12 @@
 package com.fx.api.adapter.`in`.web
 
 import com.fx.api.adapter.`in`.web.dto.notice.NoticeRequest
+import com.fx.api.adapter.`in`.web.swagger.NoticeApiSwagger
 import com.fx.api.application.port.`in`.NoticeCommandUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import com.fx.global.domain.TopicType
 import io.github.seob7.Api
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -15,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam
 @RequestMapping("/api/v1/notices")
 class NoticeApiAdapter(
     private val noticeCommandUseCase: NoticeCommandUseCase
-) {
+) : NoticeApiSwagger {
 
     @PutMapping()
-    fun updateNotice(
-        @RequestBody noticeRequest: NoticeRequest,
+    override fun updateNotice(
+        @RequestBody @Valid noticeRequest: NoticeRequest,
         @RequestParam type: TopicType,
     ): ResponseEntity<Api<Boolean>> =
         Api.OK(

@@ -8,18 +8,37 @@ import com.fx.global.domain.MajorType
 import com.fx.global.domain.MealType
 import com.fx.global.domain.NoticeType
 import com.fx.global.domain.TopicType
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import org.hibernate.validator.constraints.URL
 import java.time.LocalDate
 
 data class NoticeRequest(
 
+    @field:NotNull
     val nttId: Long,
+
+    @field:NotBlank
     val title: String,
+
+    @field:NotBlank
+    @field:URL
     val contentUrl: String,
+
     val contentSummary: String? = null,
+
     val contentImageUrl: String? = null,
+
+    @field:NotBlank
     val department: String,
+
+    @field:NotNull
     val registrationDate: LocalDate,
+
+    @field:NotNull
     val isAttachment: Boolean,
+
+    @field:NotBlank
     val topic: String
 
 ) {
