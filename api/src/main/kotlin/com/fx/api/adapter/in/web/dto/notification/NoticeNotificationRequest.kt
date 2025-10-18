@@ -21,6 +21,7 @@ data class NoticeNotificationRequest(
 ) {
 
     fun toCommand(fcmToken: String, topicType: TopicType): NoticeNotificationCommand {
+        // TODO : Utils
         try {
             when (topicType) {
                 TopicType.NOTICE -> NoticeType.valueOf(this.topic)

@@ -7,5 +7,6 @@ interface NoticePersistencePort {
 
     fun getNotices(noticeQuery: NoticeQuery): List<Notice>
     fun getNotice(nttId: Long): Notice?
+    fun saveNotice(notice: Notice)
 
 }
