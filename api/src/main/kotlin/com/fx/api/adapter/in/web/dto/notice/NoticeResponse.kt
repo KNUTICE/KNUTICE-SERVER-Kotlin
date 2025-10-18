@@ -12,6 +12,7 @@ data class NoticeResponse(
     val contentImageUrl: String? = null,
     val department: String,
     val registrationDate: LocalDate,
+    val isAttachment: Boolean,
     val topic: CrawlableType
 
 ) {
@@ -26,6 +27,7 @@ data class NoticeResponse(
                 contentImageUrl = notice.contentImageUrl,
                 department = notice.department,
                 registrationDate = notice.registrationDate,
+                isAttachment = notice.isAttachment,
                 topic = notice.topic
             )
 

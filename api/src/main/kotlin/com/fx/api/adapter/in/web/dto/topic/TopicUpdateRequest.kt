@@ -17,6 +17,7 @@ data class TopicUpdateRequest (
 ) {
 
     fun toCommand(fcmToken: String, topicType: TopicType): TopicUpdateCommand {
+        // TODO : Utils
         val enumValue: CrawlableType = try {
             when (topicType) {
                 TopicType.NOTICE -> NoticeType.valueOf(topic)
