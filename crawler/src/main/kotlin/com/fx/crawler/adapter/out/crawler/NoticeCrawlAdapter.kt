@@ -101,10 +101,19 @@ class NoticeCrawlAdapter: NoticeCrawlPort {
                     }
 
                     // 이미지 추출
-                    val contentFirstImageUrl = detailDocument
+                    val rawImageUrl = detailDocument
                         .select("div.bbs_detail_content img")
                         .first()
                         ?.attr("src")
+
+                    // http 인 경우 알림에 이미지 포함이 안되는 경우 발생
+                    val contentFirstImageUrl = rawImageUrl?.let {
+                        if (it.startsWith("http://")) {
+                            "https://" + it.removePrefix("http://")
+                        } else {
+                            it
+                        }
+                    }
 
                     val content = detailDocument
                         .select("div.bbs_detail_content")
