@@ -4,7 +4,6 @@ import com.fx.api.application.port.`in`.dto.NoticeNotificationCommand
 import com.fx.global.domain.TopicType
 import com.fx.api.exception.TopicException
 import com.fx.api.exception.errorcode.TopicErrorCode
-import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.MajorType
 import com.fx.global.domain.NoticeType
 import java.time.LocalDate
