@@ -14,7 +14,7 @@ object MessageFactory {
         return MulticastMessage.builder()
             .putAllData(deeplinkData(notice))
             .setNotification(defaultNotification(notice, bodyMessage))
-            .setApnsConfig(apnsConfig(notice))
+            .setApnsConfig(apnsConfig())
             .setAndroidConfig(androidConfig())
             .addAllTokens(tokens)
             .build()
@@ -63,21 +63,7 @@ object MessageFactory {
             .setBody(body)
             .build()
 
-    private fun apnsConfig(notice: Notice): ApnsConfig =
-        ApnsConfig.builder()
-            .putHeader("apns-priority", "10")
-            .setFcmOptions(ApnsFcmOptions.builder() // iOS Image setting
-                .setImage(notice.contentImageUrl)
-                .build())
-            .setAps(
-                Aps.builder()
-                    .setMutableContent(true)
-                    .setSound("default")
-                    .build()
-            )
-            .build()
-
-    private fun apnsConfig(): ApnsConfig = // No image
+    private fun apnsConfig(): ApnsConfig =
         ApnsConfig.builder()
             .putHeader("apns-priority", "10")
             .setAps(
