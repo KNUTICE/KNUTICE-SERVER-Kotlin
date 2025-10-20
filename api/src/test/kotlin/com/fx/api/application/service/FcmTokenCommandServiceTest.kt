@@ -170,17 +170,18 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
                 }
             }
 
-            Then("STUDENT_CAFETERIA Topic 제거") {
-                val result = fcmTokenCommandService.updateTopic(mealTopicUpdateCommand)
-                result shouldBe true
-
-                verify(exactly = 1) {
-                    fcmTokenPersistencePort.saveFcmToken(match {
-                        it.fcmToken == mealTopicUpdateCommand.fcmToken && !it.subscribedMealTopics.contains(
-                            MealType.STUDENT_CAFETERIA)
-                    })
-                }
-            }
+            // TODO : 앱 기능 추가 후 활성화
+//            Then("STUDENT_CAFETERIA Topic 제거") {
+//                val result = fcmTokenCommandService.updateTopic(mealTopicUpdateCommand)
+//                result shouldBe true
+//
+//                verify(exactly = 1) {
+//                    fcmTokenPersistencePort.saveFcmToken(match {
+//                        it.fcmToken == mealTopicUpdateCommand.fcmToken && !it.subscribedMealTopics.contains(
+//                            MealType.STUDENT_CAFETERIA)
+//                    })
+//                }
+//            }
         }
     }
 

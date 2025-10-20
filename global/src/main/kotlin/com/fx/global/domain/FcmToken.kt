@@ -20,7 +20,7 @@ data class FcmToken(
             return FcmToken(
                 fcmToken = fcmToken,
                 subscribedNoticeTopics = NoticeType.entries.toSet(),
-                subscribedMealTopics = MealType.entries.toSet(),
+//                subscribedMealTopics = MealType.entries.toSet(), // TODO 나중에 활성화!!
                 deviceType = deviceType,
                 isActive = true,
                 createdAt = LocalDateTime.now()
