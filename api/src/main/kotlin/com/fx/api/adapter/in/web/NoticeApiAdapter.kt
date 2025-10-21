@@ -33,7 +33,7 @@ class NoticeApiAdapter(
 
 
     @DeleteMapping("/{nttId}")
-    fun deleteNotice(@PathVariable nttId: Long): ResponseEntity<Api<Boolean>> =
+    override fun deleteNotice(@PathVariable nttId: Long): ResponseEntity<Api<Boolean>> =
         Api.OK(noticeCommandUseCase.deleteNotice(nttId), "삭제되었습니다.")
 
 }
