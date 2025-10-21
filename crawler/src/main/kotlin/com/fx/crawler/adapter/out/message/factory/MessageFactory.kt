@@ -42,7 +42,12 @@ object MessageFactory {
 
     private fun deeplinkData(notice: Notice): Map<String, String> =
         mapOf(
-            "deeplink" to "knutice://notice?nttId=${notice.nttId}&contentUrl=${notice.contentUrl}&FabVisible=true"
+            // 1.6.x 이상 호환 Deeplink
+            "deeplink" to "knutice://notice?nttId=${notice.nttId}&contentUrl=${notice.contentUrl}&FabVisible=true",
+
+            // 1.5.x 이하 호환 Deeplink
+            "nttId" to "${notice.nttId}",
+            "contentUrl" to "${notice.contentUrl}"
         )
 
     private fun deeplinkData(meal: Meal): Map<String, String> =
