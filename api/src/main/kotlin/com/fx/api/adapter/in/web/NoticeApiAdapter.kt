@@ -10,6 +10,7 @@ import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,6 +22,17 @@ class NoticeApiAdapter(
     private val noticeCommandUseCase: NoticeCommandUseCase
 ) : NoticeApiSwagger {
 
+    @PostMapping
+    override fun saveNotice(
+        @RequestBody @Valid noticeRequest: NoticeRequest,
+        @RequestParam type: TopicType
+    ): ResponseEntity<Api<Boolean>> =
+        Api.OK(
+            noticeCommandUseCase.saveNotice(
+                noticeRequest.toCommand(type)
+            ), "저장되었습니다.")
+
+
     @PutMapping()
     override fun updateNotice(
         @RequestBody @Valid noticeRequest: NoticeRequest,
@@ -30,7 +42,6 @@ class NoticeApiAdapter(
             noticeCommandUseCase.updateNotice(
                 noticeRequest.toCommand(type)
             ), "수정되었습니다.")
-
 
     @DeleteMapping("/{nttId}")
     override fun deleteNotice(@PathVariable nttId: Long): ResponseEntity<Api<Boolean>> =

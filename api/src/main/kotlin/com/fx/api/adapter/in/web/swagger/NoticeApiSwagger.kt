@@ -20,6 +20,22 @@ interface NoticeApiSwagger {
     @ApiResponseExplanations(
         errors = [
             ApiExceptionExplanation(
+                name = "저장 실패",
+                description = "저장하려는 공지(nttId)가 존재하는 경우",
+                value = NoticeErrorCode::class,
+                constant = "ALREADY_EXISTS"
+            ),
+        ]
+    )
+    @Operation(summary = "공지 저장", description = "nttId 가 이미 존재하는 경우 예외 발생합니다.")
+    fun saveNotice(
+        @RequestBody @Valid noticeRequest: NoticeRequest,
+        @RequestParam type: TopicType
+    ): ResponseEntity<Api<Boolean>>
+
+    @ApiResponseExplanations(
+        errors = [
+            ApiExceptionExplanation(
                 name = "수정 실패",
                 description = "수정하려는 공지가 존재하지 않는 경우",
                 value = NoticeErrorCode::class,
