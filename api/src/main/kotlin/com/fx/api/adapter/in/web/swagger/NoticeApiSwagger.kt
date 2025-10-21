@@ -10,11 +10,28 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 
 @Tag(name = "공지 관리 API")
 interface NoticeApiSwagger {
+
+    @ApiResponseExplanations(
+        errors = [
+            ApiExceptionExplanation(
+                name = "저장 실패",
+                description = "저장하려는 공지(nttId)가 존재하는 경우",
+                value = NoticeErrorCode::class,
+                constant = "ALREADY_EXISTS"
+            ),
+        ]
+    )
+    @Operation(summary = "공지 저장", description = "nttId 가 이미 존재하는 경우 예외 발생합니다.")
+    fun saveNotice(
+        @RequestBody @Valid noticeRequest: NoticeRequest,
+        @RequestParam type: TopicType
+    ): ResponseEntity<Api<Boolean>>
 
     @ApiResponseExplanations(
         errors = [
@@ -32,4 +49,16 @@ interface NoticeApiSwagger {
         @RequestParam type: TopicType,
     ): ResponseEntity<Api<Boolean>>
 
+    @ApiResponseExplanations(
+        errors = [
+            ApiExceptionExplanation(
+                name = "삭제 실패",
+                description = "삭제하려는 공지가 존재하지 않는 경우",
+                value = NoticeErrorCode::class,
+                constant = "NOTICE_NOT_FOUND"
+            ),
+        ]
+    )
+    @Operation(summary = "공지 삭제", description = "영구삭제되며 복구 불가능합니다.")
+    fun deleteNotice(@PathVariable nttId: Long): ResponseEntity<Api<Boolean>>
 }

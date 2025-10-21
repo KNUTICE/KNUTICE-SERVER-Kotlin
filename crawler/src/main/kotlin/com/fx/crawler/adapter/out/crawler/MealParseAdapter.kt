@@ -6,10 +6,17 @@ import com.fx.crawler.appllication.port.out.MealParsePort
 import com.fx.crawler.common.annotation.CrawlAdapter
 import com.fx.global.domain.Meal
 import com.fx.global.domain.MealType
+import org.apache.commons.text.StringEscapeUtils
 import org.slf4j.LoggerFactory
 import org.springframework.web.reactive.function.client.WebClient
 import java.time.LocalDate
 
+/**
+ * 식단 정보 Crawl & Parse 어뎁터입니다.
+ *
+ * @author 이동섭
+ * @since 2025-10-21
+ */
 @CrawlAdapter
 class MealParseAdapter(
 ) : MealParsePort {
@@ -41,6 +48,7 @@ class MealParseAdapter(
             MealType.STUDENT_CAFETERIA -> todayMeal?.get("topFood")?.toString()
             MealType.STAFF_CAFETERIA -> todayMeal?.get("koreaFood")?.toString()
         }?.split("\r\n")
+            ?.map { StringEscapeUtils.unescapeHtml4(it) } // HTML 디코딩 (&lt; 와 같은 문자를 < 으로 표기하도록 함)
             ?.filter { it.isNotBlank() }
             ?: emptyList()
 

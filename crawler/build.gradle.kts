@@ -44,6 +44,9 @@ dependencies {
     // Jsoup (Crawler)
     implementation("org.jsoup:jsoup:1.21.2")
 
+    // Apache text
+    implementation("org.apache.commons:commons-text:1.14.0")
+
     // Kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
