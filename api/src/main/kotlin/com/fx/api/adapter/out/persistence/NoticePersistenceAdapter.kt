@@ -24,4 +24,12 @@ class NoticePersistenceAdapter(
         noticePersistenceRepository.save(NoticeDocument.from(notice))
     }
 
+    override fun deleteById(nttId: Long) {
+        noticePersistenceRepository.deleteById(nttId)
+    }
+
+    override fun existsById(nttId: Long): Boolean {
+        return noticePersistenceRepository.existsById(nttId)
+    }
+
 }

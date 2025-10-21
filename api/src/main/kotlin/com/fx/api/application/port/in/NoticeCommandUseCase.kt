@@ -6,4 +6,6 @@ interface NoticeCommandUseCase {
 
     fun updateNotice(noticeCommand: NoticeCommand): Boolean
 
+    fun deleteNotice(nttId: Long): Boolean
+
 }

@@ -8,6 +8,8 @@ import com.fx.global.domain.TopicType
 import io.github.seob7.Api
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -28,5 +30,10 @@ class NoticeApiAdapter(
             noticeCommandUseCase.updateNotice(
                 noticeRequest.toCommand(type)
             ), "수정되었습니다.")
+
+
+    @DeleteMapping("/{nttId}")
+    fun deleteNotice(@PathVariable nttId: Long): ResponseEntity<Api<Boolean>> =
+        Api.OK(noticeCommandUseCase.deleteNotice(nttId), "삭제되었습니다.")
 
 }

@@ -9,6 +9,12 @@ import com.fx.global.domain.Notice
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+/**
+ * Notice Command Service
+ *
+ * @author 이동섭
+ * @since 2025-10-21
+ */
 @Service
 class NoticeCommandService(
     private val noticePersistencePort: NoticePersistencePort
@@ -24,6 +30,14 @@ class NoticeCommandService(
         return true
     }
 
+    @Transactional
+    override fun deleteNotice(nttId: Long): Boolean {
+        if (!noticePersistencePort.existsById(nttId)) {
+            throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)
+        }
+        noticePersistencePort.deleteById(nttId)
+        return true
+    }
 
     private fun updateNotice(noticeCommand: NoticeCommand, noticeExists: Notice): Notice =
         Notice(
