@@ -2,15 +2,14 @@ package com.fx.api.application.service
 
 import com.fx.api.application.port.out.NoticePersistencePort
 import com.fx.api.domain.NoticeQuery
-import com.fx.api.exception.NoticeException
-import com.fx.api.exception.errorcode.NoticeErrorCode
 import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.Notice
 import com.fx.global.domain.NoticeType
+import com.fx.global.exception.NoticeException
+import com.fx.global.exception.errorcode.NoticeErrorCode
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.every
 import io.mockk.mockk
 import org.springframework.data.domain.PageRequest

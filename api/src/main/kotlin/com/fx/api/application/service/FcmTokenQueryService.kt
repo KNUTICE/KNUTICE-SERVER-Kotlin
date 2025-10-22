@@ -3,8 +3,8 @@ package com.fx.api.application.service
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.global.domain.TopicType
-import com.fx.api.exception.FcmTokenException
-import com.fx.api.exception.errorcode.FcmTokenErrorCode
+import com.fx.global.exception.FcmTokenException
+import com.fx.global.exception.errorcode.FcmTokenErrorCode
 import com.fx.global.domain.FcmToken
 import org.springframework.stereotype.Service
 

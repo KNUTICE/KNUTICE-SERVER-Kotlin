@@ -1,9 +1,9 @@
-package com.fx.api.exception
+package com.fx.global.exception
 
 import io.github.seob7.BaseErrorCode
 import java.lang.RuntimeException
 
-class FcmTokenException(
+class NoticeException(
     val baseErrorCode: BaseErrorCode,
     cause: Throwable? = null
 ) : RuntimeException(baseErrorCode.message, cause)

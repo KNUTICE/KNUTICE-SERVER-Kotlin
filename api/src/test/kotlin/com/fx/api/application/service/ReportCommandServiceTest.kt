@@ -4,9 +4,9 @@ import com.fx.api.application.port.`in`.dto.ReportSaveCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.ReportPersistencePort
 import com.fx.api.domain.Report
-import com.fx.api.exception.FcmTokenException
-import com.fx.api.exception.errorcode.FcmTokenErrorCode
 import com.fx.global.application.port.out.WebhookPort
+import com.fx.global.exception.FcmTokenException
+import com.fx.global.exception.errorcode.FcmTokenErrorCode
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.runBlocking
 import io.kotest.core.spec.style.BehaviorSpec
