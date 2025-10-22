@@ -3,7 +3,7 @@ package com.fx.api.adapter.`in`.web.swagger
 import com.fx.api.adapter.`in`.web.dto.notice.NoticeResponse
 import com.fx.api.adapter.`in`.web.dto.notice.NoticeSearchParam
 import com.fx.api.adapter.`in`.web.dto.notice.NoticeSummaryResponse
-import com.fx.api.exception.errorcode.NoticeErrorCode
+import com.fx.global.exception.errorcode.NoticeErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
 import io.github.seob7.Api

@@ -4,6 +4,7 @@ import com.fx.crawler.appllication.port.`in`.NotificationUseCase
 import com.fx.crawler.appllication.port.`in`.dto.NoticeCommand
 import com.fx.crawler.appllication.port.out.FcmNotificationPort
 import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort
+import com.fx.crawler.appllication.port.out.NoticePersistencePort
 import com.fx.global.domain.FcmToken
 import com.fx.crawler.domain.FcmTokenQuery
 import com.fx.global.domain.CrawlableType
@@ -11,6 +12,12 @@ import com.fx.global.domain.DeviceType
 import com.fx.global.domain.MajorType
 import com.fx.global.domain.Notice
 import com.fx.global.domain.NoticeType
+import com.fx.global.exception.FcmTokenException
+import com.fx.global.exception.NoticeException
+import com.fx.global.exception.NotificationException
+import com.fx.global.exception.errorcode.FcmTokenErrorCode
+import com.fx.global.exception.errorcode.NoticeErrorCode
+import com.fx.global.exception.errorcode.NotificationErrorCode
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -24,7 +31,8 @@ import java.time.LocalDateTime
 @Service
 class NotificationService(
     private val fcmTokenPersistencePort: FcmTokenPersistencePort,
-    private val fcmNotificationPort: FcmNotificationPort
+    private val fcmNotificationPort: FcmNotificationPort,
+    private val noticePersistencePort: NoticePersistencePort
 ): NotificationUseCase {
 
     private val log = LoggerFactory.getLogger(NotificationService::class.java)
@@ -104,29 +112,23 @@ class NotificationService(
         }
     }
 
-    override suspend fun sendNotification(fcmToken: String, noticeCommand: NoticeCommand) {
-        val fcmToken = fcmTokenPersistencePort.findByFcmToken(fcmToken)?: throw RuntimeException("토큰이 존재하지 않습니다.")
-        val failedTokens = fcmNotificationPort.sendNotification(
-            listOf(fcmToken),
-            listOf(createNotice(noticeCommand))
-        )
-        log.info("{} - 전송 실패 토큰 개수 : {}", noticeCommand.topic, failedTokens.size)
+    override suspend fun sendNotification(fcmToken: String, nttId: Long) {
+        val fcmToken = fcmTokenPersistencePort.findByFcmToken(fcmToken)?: throw FcmTokenException(
+            FcmTokenErrorCode.TOKEN_NOT_FOUND)
+        val notices = noticePersistencePort.findByNttIdIn(listOf(nttId))
+        if (notices.isEmpty()) {
+            throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)
+        }
+
+        val failedTokens = fcmNotificationPort.sendNotification(listOf(fcmToken), notices)
+        if (failedTokens.isNotEmpty()) {
+            log.info("{} - 전송 실패 토큰 개수 : {}", notices[0].topic, failedTokens.size)
+            throw NotificationException(NotificationErrorCode.NOTIFICATION_SEND_FAILED)
+        }
     }
 
     private fun handleFailedTokens(failedTokens: List<FcmToken>) {
         fcmTokenPersistencePort.saveAll(failedTokens.map { it.copy(isActive = false) })
     }
-
-    private fun createNotice(noticeCommand: NoticeCommand) =
-        Notice(
-            nttId = noticeCommand.nttId,
-            title = noticeCommand.title,
-            department = noticeCommand.department,
-            contentUrl = noticeCommand.contentUrl,
-            contentImageUrl = noticeCommand.contentImageUrl,
-            registrationDate = noticeCommand.registrationDate,
-            isAttachment = noticeCommand.isAttachment,
-            topic = noticeCommand.topic,
-        )
 
 }

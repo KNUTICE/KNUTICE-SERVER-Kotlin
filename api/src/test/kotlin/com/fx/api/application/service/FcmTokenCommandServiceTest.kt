@@ -4,8 +4,8 @@ import com.fx.api.application.port.`in`.dto.FcmTokenSaveCommand
 import com.fx.api.application.port.`in`.dto.FcmTokenUpdateCommand
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
-import com.fx.api.exception.FcmTokenException
-import com.fx.api.exception.errorcode.FcmTokenErrorCode
+import com.fx.global.exception.FcmTokenException
+import com.fx.global.exception.errorcode.FcmTokenErrorCode
 import com.fx.global.domain.*
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec

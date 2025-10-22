@@ -1,18 +1,15 @@
 package com.fx.api.adapter.`in`.web
 
-import com.fx.api.adapter.`in`.web.dto.notification.NoticeNotificationRequest
 import com.fx.api.adapter.`in`.web.swagger.NotificationApiSwagger
 import com.fx.api.application.port.`in`.NotificationUseCase
-import com.fx.global.domain.TopicType
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import io.github.seob7.Api
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 
 @WebInputAdapter
 @RequestMapping("/api/v1/notification")
@@ -22,14 +19,12 @@ class NotificationApiAdapter(
 
     private val log = LoggerFactory.getLogger(NoticeOpenApiAdapter::class.java)
 
-    @PostMapping("/notices")
-    override fun pushTestNotice(
+    @PostMapping("/notices/{nttId}")
+    override fun notifyNotice(
         @RequestHeader fcmToken: String,
-        @RequestParam type: TopicType,
-        @RequestBody notificationRequest: NoticeNotificationRequest
+        @PathVariable nttId: Long
     ): ResponseEntity<Api<Boolean>> =
-        Api.OK(notificationUseCase.pushTestNotice(
-            notificationRequest.toCommand(fcmToken, type))
+        Api.OK(notificationUseCase.notifyNotice(fcmToken, nttId)
             , "알림이 발송되었습니다.")
 
 

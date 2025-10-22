@@ -1,7 +1,7 @@
 package com.fx.api.adapter.`in`.web.swagger
 
 import com.fx.api.adapter.`in`.web.dto.notice.NoticeRequest
-import com.fx.api.exception.errorcode.NoticeErrorCode
+import com.fx.global.exception.errorcode.NoticeErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
 import com.fx.global.domain.TopicType
