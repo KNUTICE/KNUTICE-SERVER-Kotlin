@@ -21,6 +21,7 @@ services:
       - FILE_CONTEXT_PATH
       - URL_HOST
       - URL_SCHEME
+      - URL_ORIGIN
       - WEBHOOK_SLACK_URL
       - LOG_PATH=/logs
       - TZ=Asia/Seoul
