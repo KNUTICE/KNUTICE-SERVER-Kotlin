@@ -29,6 +29,9 @@ file:
 url:
   scheme: ${URL_SCHEME}
   host: ${URL_HOST}
+  allowed-origins:
+    - http://localhost:5173
+    - ${URL_ORIGIN}
 
 logging:
   level:

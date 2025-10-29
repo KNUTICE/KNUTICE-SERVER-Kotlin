@@ -1,6 +1,7 @@
 package com.fx.api.config.security
 
 import com.fx.api.application.port.out.JwtProviderPort
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -15,7 +16,9 @@ import org.springframework.web.filter.CorsFilter
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtProviderPort: JwtProviderPort
+    private val jwtProviderPort: JwtProviderPort,
+    @Value("\${url.allowed-origins[0]}") private val allowedOrigin0: String,
+    @Value("\${url.allowed-origins[1]}") private val allowedOrigin1: String,
 ) {
 
     private val WHITE_LIST = arrayOf(
@@ -48,9 +51,8 @@ class SecurityConfig(
     @Bean
     fun corsFilter(): CorsFilter {
         val config = CorsConfiguration()
-        config.allowedOriginPatterns = listOf(
-            "http://localhost:5173" // 개발용
-        )
+        val allowedOrigins = listOf(allowedOrigin0, allowedOrigin1)
+        config.allowedOriginPatterns = allowedOrigins
         config.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
         config.allowedHeaders = listOf("*")
         config.allowCredentials = true
