@@ -15,7 +15,8 @@ import org.springframework.web.method.HandlerMethod
 @Configuration
 class SwaggerConfig(
     @Value("\${url.scheme}") private val urlScheme: String,
-    @Value("\${url.host}") private val urlHost: String
+    @Value("\${url.host}") private val urlHost: String,
+    @Value("\${server.port}") private val port: String
 ) {
 
     @Bean
@@ -37,7 +38,13 @@ class SwaggerConfig(
 
         val securityRequirement = SecurityRequirement().addList("Bearer")
 
-        val serverUrl = "$urlScheme://$urlHost"
+        // localhost일 때만 포트 추가
+        val serverUrl = if (urlHost.equals("localhost", ignoreCase = true)) {
+            "$urlScheme://$urlHost:$port"
+        } else {
+            "$urlScheme://$urlHost"
+        }
+
         val server = Server().url(serverUrl).description("KNUTICE-API")
 
         return OpenAPI()
