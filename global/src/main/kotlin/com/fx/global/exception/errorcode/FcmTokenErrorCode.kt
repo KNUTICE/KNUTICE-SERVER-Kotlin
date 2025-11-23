@@ -8,7 +8,8 @@ enum class FcmTokenErrorCode(
     private val message: String
 ) : BaseErrorCode {
 
-    TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "Fcm token 이 존재하지 않습니다.")
+    TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "Fcm token 이 존재하지 않습니다."),
+    TOKEN_INVALID(HttpStatus.BAD_REQUEST, "Fcm token 형식이 올바르지 않습니다.")
     ;
 
     override fun getHttpStatus(): HttpStatus = httpStatus
