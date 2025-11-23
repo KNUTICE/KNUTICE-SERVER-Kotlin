@@ -40,6 +40,10 @@ class FcmTokenCommandService(
      */
     @Transactional
     override fun updateFcmToken(fcmTokenUpdateCommand: FcmTokenUpdateCommand): Boolean {
+        if (fcmTokenUpdateCommand.newFcmToken.isEmpty()) { // 헤더로 넘어온 빈 토큰 "   " 처리
+            throw FcmTokenException(FcmTokenErrorCode.TOKEN_INVALID)
+        }
+
         fcmTokenPersistencePort.findByFcmToken(fcmTokenUpdateCommand.oldFcmToken)
             ?.let { oldFcmToken ->
                 fcmTokenPersistencePort.saveFcmToken(oldFcmToken.copy(isActive = false))
