@@ -7,6 +7,7 @@ import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import io.github.seob7.Api
 import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 class FcmTokenOpenApiAdapter(
     private val fcmTokenCommandUseCase: FcmTokenCommandUseCase
 ) : FcmTokenOpenApiSwagger {
+
+    private val log = LoggerFactory.getLogger(FcmTokenOpenApiAdapter::class.java)
 
     @PostMapping
     override fun saveFcmToken(
@@ -35,6 +38,7 @@ class FcmTokenOpenApiAdapter(
         @RequestBody @Valid tokenUpdateRequest: FcmTokenUpdateRequest
     ): ResponseEntity<Api<Boolean>> {
         fcmTokenCommandUseCase.updateFcmToken(tokenUpdateRequest.toCommand(fcmToken))
+        log.info("FcmToken updated: old=${tokenUpdateRequest.oldFcmToken} -> new=$fcmToken")
         return Api.OK(true, "토큰이 업데이트되었습니다.")
     }
 
