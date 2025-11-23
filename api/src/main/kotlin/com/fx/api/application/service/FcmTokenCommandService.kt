@@ -18,6 +18,10 @@ class FcmTokenCommandService(
 ) : FcmTokenCommandUseCase {
 
     override fun saveFcmToken(fcmTokenSaveCommand: FcmTokenSaveCommand): Boolean {
+        if (fcmTokenSaveCommand.fcmToken.isBlank()) { // 빈 토큰 "   " 처리
+            throw FcmTokenException(FcmTokenErrorCode.TOKEN_INVALID)
+        }
+
         val fcmToken = fcmTokenPersistencePort.findByFcmToken(fcmTokenSaveCommand.fcmToken)
             ?.copy(isActive = true) // 존재하는 경우 isActive = true
             ?: FcmToken.createFcmToken( // 없으면 새로 생성
