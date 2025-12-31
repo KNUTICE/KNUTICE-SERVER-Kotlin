@@ -1,13 +1,9 @@
 package com.fx.api.adapter.`in`.web.dto.notice
 
 import com.fx.api.application.port.`in`.dto.NoticeCommand
-import com.fx.api.exception.TopicException
-import com.fx.api.exception.errorcode.TopicErrorCode
 import com.fx.global.domain.CrawlableType
-import com.fx.global.domain.MajorType
-import com.fx.global.domain.MealType
-import com.fx.global.domain.NoticeType
 import com.fx.global.domain.TopicType
+import com.fx.global.utils.TopicUtils
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import org.hibernate.validator.constraints.URL
@@ -43,16 +39,7 @@ data class NoticeRequest(
 
 ) {
     fun toCommand(topicType: TopicType): NoticeCommand {
-        // TODO : Utils
-        val enumValue: CrawlableType = try {
-            when (topicType) {
-                TopicType.NOTICE -> NoticeType.valueOf(topic)
-                TopicType.MAJOR -> MajorType.valueOf(topic)
-                TopicType.MEAL -> MealType.valueOf(topic)
-            }
-        } catch (e: IllegalArgumentException) {
-            throw TopicException(TopicErrorCode.TOPIC_NOT_FOUND)
-        }
+        val enumValue: CrawlableType = TopicUtils.parseToCrawlable(topic, topicType)
         return NoticeCommand(
             nttId = nttId,
             title = title,

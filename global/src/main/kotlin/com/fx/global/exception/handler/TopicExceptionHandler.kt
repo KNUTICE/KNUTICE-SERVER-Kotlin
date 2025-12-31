@@ -1,6 +1,6 @@
-package com.fx.api.exception.handler
+package com.fx.global.exception.handler
 
-import com.fx.api.exception.TopicException
+import com.fx.global.exception.TopicException
 import io.github.seob7.Api
 import io.github.seob7.BaseErrorCode
 import org.slf4j.LoggerFactory
