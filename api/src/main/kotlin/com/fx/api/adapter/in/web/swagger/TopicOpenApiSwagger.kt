@@ -5,7 +5,7 @@ import com.fx.api.adapter.`in`.web.dto.topic.TopicResponse
 import com.fx.api.adapter.`in`.web.dto.topic.TopicUpdateRequest
 import com.fx.global.domain.TopicType
 import com.fx.global.exception.errorcode.FcmTokenErrorCode
-import com.fx.api.exception.errorcode.TopicErrorCode
+import com.fx.global.exception.errorcode.TopicErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
 import io.github.seob7.Api

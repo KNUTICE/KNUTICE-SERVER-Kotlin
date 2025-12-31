@@ -1,13 +1,9 @@
 package com.fx.api.adapter.`in`.web.dto.topic
 
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
-import com.fx.global.domain.TopicType
-import com.fx.api.exception.TopicException
-import com.fx.api.exception.errorcode.TopicErrorCode
 import com.fx.global.domain.CrawlableType
-import com.fx.global.domain.MajorType
-import com.fx.global.domain.MealType
-import com.fx.global.domain.NoticeType
+import com.fx.global.domain.TopicType
+import com.fx.global.utils.TopicUtils
 
 data class TopicUpdateRequest (
 
@@ -17,16 +13,7 @@ data class TopicUpdateRequest (
 ) {
 
     fun toCommand(fcmToken: String, topicType: TopicType): TopicUpdateCommand {
-        // TODO : Utils
-        val enumValue: CrawlableType = try {
-            when (topicType) {
-                TopicType.NOTICE -> NoticeType.valueOf(topic)
-                TopicType.MAJOR -> MajorType.valueOf(topic)
-                TopicType.MEAL -> MealType.valueOf(topic)
-            }
-        } catch (e: IllegalArgumentException) {
-            throw TopicException(TopicErrorCode.TOPIC_NOT_FOUND)
-        }
+        val enumValue: CrawlableType = TopicUtils.parseToCrawlable(topic, topicType)
         return TopicUpdateCommand(
             fcmToken = fcmToken,
             topicType = topicType,
