@@ -4,6 +4,7 @@ import com.fx.api.application.port.`in`.NotificationUseCase
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.NoticePersistencePort
 import com.fx.api.application.port.out.NotificationWebPort
+import com.fx.global.domain.MealType
 import com.fx.global.exception.FcmTokenException
 import com.fx.global.exception.NoticeException
 import com.fx.global.exception.errorcode.FcmTokenErrorCode
@@ -41,4 +42,11 @@ class NotificationService(
         return notificationWebPort.notifyNotice(fcmToken, nttId)
     }
 
+    override fun notifyMeal(fcmToken: String, mealType: MealType): Boolean {
+        if (!fcmTokenPersistencePort.existsByFcmToken(fcmToken)) {
+            throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+        }
+
+        return notificationWebPort.notifyMeal(fcmToken, mealType)
+    }
 }

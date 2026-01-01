@@ -1,5 +1,7 @@
 package com.fx.api.application.port.`in`
 
+import com.fx.global.domain.MealType
+
 /**
  * 공지 알림 전송을 위한 Input Port 입니다.
  *
@@ -18,5 +20,15 @@ interface NotificationUseCase {
      * @return 알림 발송 성공 여부
      */
     fun notifyNotice(fcmToken: String, nttId: Long): Boolean
+
+
+    /**
+     * 특정 사용자에게 학식 알림을 발송합니다.
+     *
+     * @param fcmToken 대상 사용자의 FCM 토큰
+     * @param mealType 알림을 전송할 학식 종류
+     * @return 알림 발송 성공 여부
+     */
+    fun notifyMeal(fcmToken: String, mealType: MealType): Boolean
 
 }

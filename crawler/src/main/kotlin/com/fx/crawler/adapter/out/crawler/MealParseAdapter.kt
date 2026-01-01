@@ -24,7 +24,7 @@ class MealParseAdapter(
     private val log = LoggerFactory.getLogger(MealParseAdapter::class.java)
     private val mapper = jacksonObjectMapper()
 
-    override fun parseMeal(topic: MealType): Meal {
+    override fun parseMeal(topic: MealType): Meal? {
         val today = LocalDate.now()
 
         val jsonResponse = WebClient.create().post()
@@ -43,19 +43,48 @@ class MealParseAdapter(
 
         // 오늘 날짜 메뉴 가져오기
         val todayMeal = mealList.firstOrNull { it["mealDate"] == today.toString() }
+            ?: return null // 데이터가 없으면 즉시 null 반환하고 종료
 
-        val menus = when (topic) {
-            MealType.STUDENT_CAFETERIA -> todayMeal?.get("topFood")?.toString()
-            MealType.STAFF_CAFETERIA -> todayMeal?.get("koreaFood")?.toString()
-        }?.split("\r\n")
-            ?.map { StringEscapeUtils.unescapeHtml4(it) } // HTML 디코딩 (&lt; 와 같은 문자를 < 으로 표기하도록 함)
-            ?.filter { it.isNotBlank() }
-            ?: emptyList()
+        val combinedMenus = mutableListOf<String>() // 한식, 일품 처리를 위해 빈 리스트 생성
+
+        parseMenu(todayMeal["koreaFood"])?.let {
+            combinedMenus.add("[한식]")
+            combinedMenus.addAll(it)
+        }
+
+        parseMenu(todayMeal["topFood"])?.let {
+            // 만약 한식 메뉴가 이미 추가되어 있다면 구분을 위해 빈 줄 추가
+            if (combinedMenus.isNotEmpty()) {
+                combinedMenus.add("")
+            }
+            combinedMenus.add("[일품]")
+            combinedMenus.addAll(it)
+        }
+
+        if (combinedMenus.isEmpty()) {
+            log.info("{} - 식단 정보가 비어있습니다.", topic)
+            return null
+        }
 
         return Meal(
             mealDate = today,
-            menus = menus,
+            menus = combinedMenus,
             topic = topic
         )
+    }
+
+    // 문자열 식단 데이터를 리스트로 변환하는 로직
+    private fun parseMenu(rawContent: Any?): List<String>? {
+        val content = rawContent?.toString() ?: return null
+
+        // 데이터가 "null" 문자열이거나 비어있는 경우 처리
+        if (content.isBlank() || content.equals("null", ignoreCase = true)) {
+            return null
+        }
+
+        return content.split("\r\n")
+            .map { StringEscapeUtils.unescapeHtml4(it).trim() } // HTML 디코딩 (&lt; 와 같은 문자를 < 으로 표기하도록 함)
+            .filter { it.isNotBlank() }
+            .takeIf { it.isNotEmpty() }
     }
 }
