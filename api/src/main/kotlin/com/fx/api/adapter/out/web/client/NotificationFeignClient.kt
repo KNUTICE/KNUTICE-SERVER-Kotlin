@@ -1,5 +1,6 @@
 package com.fx.api.adapter.out.web.client
 
+import com.fx.global.domain.MealType
 import io.github.seob7.Api
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.ResponseEntity
@@ -27,6 +28,19 @@ interface NotificationFeignClient {
     fun notifyNotice(
         @RequestHeader fcmToken: String,
         @PathVariable nttId: Long
+    ): ResponseEntity<Api<Boolean>>
+
+    /**
+     * 특정 학식에 대해 대상 사용자(fcmToken)에게 푸시 알림을 전송합니다.
+     *
+     * @param fcmToken 대상 사용자의 FCM 토큰
+     * @param mealType 알림을 전송할 학식 종류
+     * @return Api<Boolean> - 전송 성공 여부
+     */
+    @PostMapping("/open-api/v1/notification/meal/{mealType}")
+    fun notifyMeal(
+        @RequestHeader fcmToken: String,
+        @PathVariable mealType: MealType
     ): ResponseEntity<Api<Boolean>>
 
 }
