@@ -7,4 +7,6 @@ interface MealParseUseCase {
 
     suspend fun parseMeals(topics: List<MealType>): List<Meal>
 
+    suspend fun parseMeal(topic: MealType): Meal?
+
 }

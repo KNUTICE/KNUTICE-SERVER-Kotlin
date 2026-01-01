@@ -30,12 +30,11 @@ class NotificationApiAdapter(
 
 
     @PostMapping("/meals/{mealType}")
-    fun notifyMeal(
+    override fun notifyMeal(
         @RequestHeader fcmToken: String,
         @PathVariable mealType: MealType
-    ) {
-        notificationUseCase.notifyMeal(fcmToken, mealType)
-    }
-
+    ): ResponseEntity<Api<Boolean>> =
+        Api.OK(notificationUseCase.notifyMeal(fcmToken, mealType)
+            , "알림이 발송되었습니다.")
 
 }

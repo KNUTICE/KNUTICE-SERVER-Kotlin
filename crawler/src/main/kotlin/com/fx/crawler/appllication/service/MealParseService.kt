@@ -20,15 +20,23 @@ class MealParseService(
     override suspend fun parseMeals(topics: List<MealType>): List<Meal> = supervisorScope {
         topics.map {
             async {
-                log.info("Parse target: {}", it)
-                try {
-                    mealParsePort.parseMeal(it)
-                } catch (e: Exception) {
-                    log.info("{} 파싱 실패 : {}", it, e.message)
-                    null
-                }
+                executeParse(it)
             }
         }.awaitAll().filterNotNull()
+    }
+
+    override suspend fun parseMeal(topic: MealType): Meal? {
+        return executeParse(topic)
+    }
+
+    private fun executeParse(topic: MealType): Meal? {
+        log.info("Parse target: {}", topic)
+        return try {
+            mealParsePort.parseMeal(topic)
+        } catch (e: Exception) {
+            log.error("{} 파싱 중 오류 발생: {}", topic, e.message, e)
+            null
+        }
     }
 
 }

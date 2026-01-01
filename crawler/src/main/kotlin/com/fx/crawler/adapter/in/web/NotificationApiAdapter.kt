@@ -9,6 +9,8 @@ import com.fx.global.domain.MajorType
 import com.fx.global.domain.MealType
 import com.fx.global.domain.NoticeType
 import com.fx.global.domain.TopicType
+import com.fx.global.exception.NotificationException
+import com.fx.global.exception.errorcode.NotificationErrorCode
 import io.github.seob7.Api
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -43,8 +45,12 @@ class NotificationApiAdapter(
         @PathVariable mealType: MealType
     ): ResponseEntity<Api<Boolean>> {
         log.info("알림 발송 대상 fcmToken : {}", fcmToken)
-        val meals = mealParseUseCase.parseMeals(listOf(mealType))
-        mealNotificationUseCase.sendNotification(meals);
+        val meal = mealParseUseCase.parseMeal(mealType)
+        meal?.let { // 급식 정보가 존재할 때만 알림 발송
+            mealNotificationUseCase.sendNotification(fcmToken, meal);
+        } ?: run {
+            throw NotificationException(NotificationErrorCode.NOTIFICATION_SEND_FAILED)
+        }
         return Api.OK(true)
     }
 
