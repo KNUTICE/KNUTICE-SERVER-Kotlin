@@ -6,6 +6,10 @@ import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort
 import com.fx.crawler.domain.FcmTokenQuery
 import com.fx.global.domain.FcmToken
 import com.fx.global.domain.Meal
+import com.fx.global.exception.FcmTokenException
+import com.fx.global.exception.NotificationException
+import com.fx.global.exception.errorcode.FcmTokenErrorCode
+import com.fx.global.exception.errorcode.NotificationErrorCode
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -58,6 +62,17 @@ class MealNotificationService(
                 }
             }
         }.awaitAll()
+    }
+
+    override suspend fun sendNotification(fcmToken: String, meal: Meal) {
+        val fcmToken = fcmTokenPersistencePort.findByFcmToken(fcmToken)?: throw FcmTokenException(
+            FcmTokenErrorCode.TOKEN_NOT_FOUND)
+
+        val failedTokens = fcmNotificationPort.sendNotification(listOf(fcmToken), meal)
+        if (failedTokens.isNotEmpty()) {
+            log.info("{} - 전송 실패 토큰 개수 : {}", meal.topic, failedTokens.size)
+            throw NotificationException(NotificationErrorCode.NOTIFICATION_SEND_FAILED)
+        }
     }
 
     private fun handleFailedTokens(failedTokens: List<FcmToken>) {
