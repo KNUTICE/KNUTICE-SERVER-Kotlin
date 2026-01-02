@@ -1,6 +1,7 @@
 package com.fx.api.config.security
 
 import com.fx.api.application.port.out.JwtProviderPort
+import jakarta.servlet.DispatcherType
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -37,6 +38,7 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
                 auth
+                    .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
                     .requestMatchers(*WHITE_LIST).permitAll()
                     .requestMatchers("/api/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
