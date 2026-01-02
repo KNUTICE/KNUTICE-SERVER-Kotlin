@@ -10,5 +10,7 @@ interface NoticePersistencePort {
     fun saveNotice(notice: Notice)
     fun deleteById(nttId: Long)
     fun existsById(nttId: Long): Boolean
+    fun count(): Long
+    fun countByContentSummaryExists(exists: Boolean): Long
 
 }

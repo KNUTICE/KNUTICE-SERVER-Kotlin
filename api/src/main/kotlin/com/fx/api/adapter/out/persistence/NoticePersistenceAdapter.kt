@@ -28,8 +28,13 @@ class NoticePersistenceAdapter(
         noticePersistenceRepository.deleteById(nttId)
     }
 
-    override fun existsById(nttId: Long): Boolean {
-        return noticePersistenceRepository.existsById(nttId)
-    }
+    override fun existsById(nttId: Long): Boolean =
+        noticePersistenceRepository.existsById(nttId)
+
+    override fun count(): Long =
+        noticePersistenceRepository.count()
+
+    override fun countByContentSummaryExists(exists: Boolean): Long =
+        noticePersistenceRepository.countByContentSummaryExists(exists);
 
 }
