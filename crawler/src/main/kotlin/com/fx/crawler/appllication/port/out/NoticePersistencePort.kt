@@ -6,5 +6,6 @@ interface NoticePersistencePort {
 
     fun findByNttIdIn(nttIds: List<Long>): List<Notice>
     fun saveAll(notices: List<Notice>)
+    fun findByContentSummaryIsNullOrderByCreatedAtDesc(limit: Int): List<Notice>
 
 }

@@ -1,4 +1,4 @@
-package com.fx.api.config.converter
+package com.fx.global.config.converter
 
 import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.MajorType

@@ -4,6 +4,7 @@ import com.fx.crawler.adapter.out.crawler.MealParseAdapter
 import com.fx.crawler.adapter.out.crawler.NoticeCrawlAdapter
 import com.fx.crawler.adapter.out.persistence.repository.FcmTokenQueryRepository
 import com.fx.crawler.appllication.port.`in`.NoticeCrawlUseCase
+import com.fx.crawler.appllication.service.NoticeSummaryService
 import com.fx.crawler.domain.FcmTokenQuery
 import com.fx.global.domain.MajorType
 import com.fx.global.domain.MealType
@@ -20,7 +21,8 @@ import java.time.OffsetDateTime
 class TestController(
     private val fcmTokenQueryRepository: FcmTokenQueryRepository,
     private val mealParseAdapter: MealParseAdapter,
-    private val noticeCrawlUseCase: NoticeCrawlUseCase
+    private val noticeCrawlUseCase: NoticeCrawlUseCase,
+    private val noticeSummaryService: NoticeSummaryService
 ) {
 
     private val log = LoggerFactory.getLogger(TestController::class.java)
@@ -60,6 +62,12 @@ class TestController(
     suspend fun crawlNotice() {
         val crawlAndSaveNotices = noticeCrawlUseCase.crawlAndSaveNotices(MajorType.entries)
         log.info("저장된 notice : {}", crawlAndSaveNotices)
+    }
+
+    @GetMapping("/notice-summary-batch")
+    suspend fun summaryNotice() {
+        noticeSummaryService.summarizeAllMissing()
+        log.info("완료")
     }
 
 
