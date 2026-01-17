@@ -80,8 +80,8 @@ class ReadingRoomRemoteAdapter(
             ReadingRoomSeat(
                 roomId = item.room_no,
                 seatId = item.number,
-                xPosition = item.x_pos,
-                yPosition = item.y_pos,
+                row = item.y_pos,
+                column = item.x_pos,
                 isAvailable = item.use_type == 0,
                 userMaskedName = item.user_name,
                 returnAt = Instant.ofEpochMilli(item.seat_return)

@@ -6,8 +6,9 @@ data class ReadingRoomSeat(
 
     val roomId: Int, // 열람실 번호
     val seatId: Int, // 좌석 번호
-    val xPosition: Int, // X 좌표
-    val yPosition: Int, // Y 좌표
+
+    val row: Int,    // 세로 위치
+    val column: Int, // 가로 위치
 
     val isAvailable: Boolean, // 사용 가능 여부
     val userMaskedName: String? = null, // 사용자 마스킹 이름

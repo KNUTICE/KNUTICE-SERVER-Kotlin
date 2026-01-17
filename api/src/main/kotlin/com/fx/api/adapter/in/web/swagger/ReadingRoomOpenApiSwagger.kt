@@ -43,7 +43,9 @@ interface ReadingRoomOpenApiSwagger {
     )
     @Operation(summary = "열람실 좌석 조회", description = "각 열람실의 좌석 정보를 조회합니다. <br>" +
             "각 좌석의 이용여부가 응답되며, 사용중인 경우 사용자의 마스킹된 이름이 제공됩니다. <br>" +
-            "**사용중이 아닌 경우 사용자 이름은 null 값이 반환됩니다.**")
+            "**사용중이 아닌 경우 사용자 이름은 null 값이 반환됩니다.** <br>" +
+            "X: colume (열) <br>" +
+            "Y: row (행)")
     suspend fun getReadingRoomSeats(
         @RequestHeader fcmToken: String,
         @PathVariable roomId: Int
