@@ -2,7 +2,8 @@ package com.fx.api.adapter.out.web
 
 import com.fx.api.adapter.out.web.dto.ReadingRoomRemoteResponse
 import com.fx.api.application.port.out.ReadingRoomRemotePort
-import com.fx.api.domain.ReadingRoom
+import com.fx.api.domain.ReadingRoomSeat
+import com.fx.api.domain.ReadingRoomStatus
 import com.fx.global.annotation.hexagonal.WebOutputAdapter
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -40,7 +41,11 @@ class ReadingRoomRemoteAdapter(
             ?: throw IllegalStateException("CSRF 토큰을 찾을 수 없습니다.")
     }
 
-    override suspend fun getReadingRooms(roomId: Int, csrfToken: String): List<ReadingRoom> = coroutineScope {
+    override suspend fun getReadingRoomStatus(csrfToken: String): List<ReadingRoomStatus> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getReadingRoomSeats(roomId: Int, csrfToken: String): List<ReadingRoomSeat> = coroutineScope {
         val response: ReadingRoomRemoteResponse = httpClient.post("$rootUrl$seatsEndpoint") {
             header("x-csrf-token", csrfToken)
             setBody(FormDataContent(Parameters.build {
@@ -50,7 +55,7 @@ class ReadingRoomRemoteAdapter(
         }.body()
 
         response.result.items.map { item ->
-            ReadingRoom(
+            ReadingRoomSeat(
                 roomId = item.room_no,
                 seatId = item.number,
                 xPosition = item.x_pos,

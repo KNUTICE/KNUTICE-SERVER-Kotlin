@@ -2,7 +2,7 @@ package com.fx.api.domain
 
 import java.time.LocalDateTime
 
-data class ReadingRoom(
+data class ReadingRoomSeat(
 
     val roomId: Int, // 열람실 번호
     val seatId: Int, // 좌석 번호

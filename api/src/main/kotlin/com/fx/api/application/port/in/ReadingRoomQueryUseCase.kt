@@ -1,6 +1,7 @@
 package com.fx.api.application.port.`in`
 
-import com.fx.api.domain.ReadingRoom
+import com.fx.api.domain.ReadingRoomSeat
+import com.fx.api.domain.ReadingRoomStatus
 
 /**
  * 열람실 관련 조회를 위한 Input Port 입니다.
@@ -10,6 +11,8 @@ import com.fx.api.domain.ReadingRoom
  */
 interface ReadingRoomQueryUseCase {
 
-    suspend fun getReadingRooms(fcmToken: String, roomId: Int): List<ReadingRoom>
+    suspend fun getReadingRoomStatus(fcmToken: String): List<ReadingRoomStatus>
+
+    suspend fun getReadingRoomSeats(fcmToken: String, roomId: Int): List<ReadingRoomSeat>
 
 }
