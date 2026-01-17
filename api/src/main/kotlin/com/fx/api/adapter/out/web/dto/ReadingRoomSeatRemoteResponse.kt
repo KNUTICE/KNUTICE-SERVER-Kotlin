@@ -1,15 +1,15 @@
 package com.fx.api.adapter.out.web.dto
 
-data class ReadingRoomRemoteResponse(
-    val result: ResultData
+data class ReadingRoomSeatRemoteResponse(
+    val result: SeatData
 )
 
-data class ResultData(
+data class SeatData(
     val CODE: String,
-    val items: List<SeatItemDto> = emptyList()
+    val items: List<SeatItem> = emptyList()
 )
 
-data class SeatItemDto(
+data class SeatItem(
     val room_no: Int,
     val number: Int,
     val x_pos: Int,

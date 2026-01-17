@@ -7,7 +7,7 @@ interface ReadingRoomRemotePort {
 
     suspend fun getCsrfToken(): String
 
-    suspend fun getReadingRoomStatus(csrfToken: String): List<ReadingRoomStatus>
+    suspend fun getReadingRoomStatus(): List<ReadingRoomStatus>
 
     suspend fun getReadingRoomSeats(roomId: Int, csrfToken: String): List<ReadingRoomSeat>
 

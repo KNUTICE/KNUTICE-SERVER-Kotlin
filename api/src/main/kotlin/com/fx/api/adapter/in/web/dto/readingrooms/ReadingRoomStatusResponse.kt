@@ -16,6 +16,10 @@ data class ReadingRoomStatusResponse(
     val availableSeat: Int, // 잔여 좌석 수
     val occupiedSeat: Int, // 사용 중 좌석 수
 
+    // 행/열 정보
+    val rowCount: Int,
+    val columnCount: Int
+
 ) {
     companion object {
 
@@ -25,7 +29,9 @@ data class ReadingRoomStatusResponse(
                 roomName = readingRoomStatus.roomName,
                 totalSeat = readingRoomStatus.totalSeat,
                 availableSeat = readingRoomStatus.availableSeat,
-                occupiedSeat = readingRoomStatus.occupiedSeat
+                occupiedSeat = readingRoomStatus.occupiedSeat,
+                rowCount = readingRoomStatus.rowCount,
+                columnCount = readingRoomStatus.columnCount
             )
 
         fun from(readingRoomStatus: List<ReadingRoomStatus>): List<ReadingRoomStatusResponse> =

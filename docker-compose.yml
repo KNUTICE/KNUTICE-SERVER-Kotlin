@@ -21,9 +21,10 @@ services:
       - FILE_CONTEXT_PATH
       - URL_HOST
       - URL_SCHEME
-      - URL_ORIGIN,
-      - READING_ROOM_ROOT_URL,
+      - URL_ORIGIN
+      - READING_ROOM_ROOT_URL
       - READING_ROOM_SEATS_ENDPOINT
+      - READING_ROOM_STATUS_ENDPOINT
       - WEBHOOK_SLACK_URL
       - LOG_PATH=/logs
       - TZ=Asia/Seoul

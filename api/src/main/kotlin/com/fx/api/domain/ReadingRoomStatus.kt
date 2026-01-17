@@ -8,4 +8,8 @@ data class ReadingRoomStatus(
     val availableSeat: Int, // 잔여 좌석 수
     val occupiedSeat: Int, // 사용 중 좌석 수
 
+    // 행/열 정보
+    val rowCount: Int,
+    val columnCount: Int
+
 )

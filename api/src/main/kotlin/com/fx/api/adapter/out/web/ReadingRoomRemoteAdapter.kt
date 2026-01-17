@@ -1,6 +1,7 @@
 package com.fx.api.adapter.out.web
 
-import com.fx.api.adapter.out.web.dto.ReadingRoomRemoteResponse
+import com.fx.api.adapter.out.web.dto.ReadingRoomSeatRemoteResponse
+import com.fx.api.adapter.out.web.dto.ReadingRoomStatusRemoteResponse
 import com.fx.api.application.port.out.ReadingRoomRemotePort
 import com.fx.api.domain.ReadingRoomSeat
 import com.fx.api.domain.ReadingRoomStatus
@@ -24,6 +25,7 @@ class ReadingRoomRemoteAdapter(
     private val httpClient: HttpClient, // 위에서 설정한 HttpCookies가 설치된 빈
     @Value("\${reading-room.root-url}") private val rootUrl: String,
     @Value("\${reading-room.endpoints.seats}") private val seatsEndpoint: String,
+    @Value("\${reading-room.endpoints.status}") private val statusEndpoint: String,
     ) : ReadingRoomRemotePort {
 
     private val log = LoggerFactory.getLogger(ReadingRoomRemoteAdapter::class.java)
@@ -41,12 +43,32 @@ class ReadingRoomRemoteAdapter(
             ?: throw IllegalStateException("CSRF 토큰을 찾을 수 없습니다.")
     }
 
-    override suspend fun getReadingRoomStatus(csrfToken: String): List<ReadingRoomStatus> {
-        TODO("Not yet implemented")
+    /**
+     * 열람실별 전체 현황(요약 정보) 조회
+     */
+    override suspend fun getReadingRoomStatus(): List<ReadingRoomStatus> = coroutineScope {
+        val response: ReadingRoomStatusRemoteResponse = httpClient.get("$rootUrl$statusEndpoint") {
+            parameter("caller", "nicom")
+        }.body()
+
+        response.result.items.map { item ->
+            ReadingRoomStatus(
+                roomId = item.room_no,
+                roomName = item.name,
+                totalSeat = item.total_count,
+                availableSeat = item.remain_count,
+                occupiedSeat = item.usage_count,
+                rowCount = item.rows,
+                columnCount = item.cols
+            )
+        }
     }
 
+    /**
+     * 특정 열람실의 상세 좌석 정보 조회
+     */
     override suspend fun getReadingRoomSeats(roomId: Int, csrfToken: String): List<ReadingRoomSeat> = coroutineScope {
-        val response: ReadingRoomRemoteResponse = httpClient.post("$rootUrl$seatsEndpoint") {
+        val response: ReadingRoomSeatRemoteResponse = httpClient.post("$rootUrl$seatsEndpoint") {
             header("x-csrf-token", csrfToken)
             setBody(FormDataContent(Parameters.build {
                 append("caller", "nicom")
