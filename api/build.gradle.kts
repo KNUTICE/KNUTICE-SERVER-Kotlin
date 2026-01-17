@@ -27,6 +27,13 @@ dependencies {
 
     implementation("io.github.seob7:common-api:0.0.2")
 
+    // Ktor Client (논블로킹 HTTP)
+    implementation("io.ktor:ktor-client-cio:2.3.6")
+
+    // Ktor JSON Serialization
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.13")
+    implementation("io.ktor:ktor-serialization-jackson:2.3.13")
+
     // Mongo
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
@@ -35,6 +42,9 @@ dependencies {
 
     // Web
     implementation("org.springframework.boot:spring-boot-starter-web")
+
+    // Jsoup (Crawler)
+    implementation("org.jsoup:jsoup:1.21.2")
 
     // Security
     implementation("org.springframework.boot:spring-boot-starter-security")
