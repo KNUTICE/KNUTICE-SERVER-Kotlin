@@ -22,8 +22,20 @@ data class ReadingRoomResponse(
 
 ) {
     companion object {
-        fun from(readingRooms: List<ReadingRoom>): List<ReadingRoomResponse> {
-            TODO("Not yet implemented")
-        }
+
+        fun from(readingRoom: ReadingRoom): ReadingRoomResponse =
+            ReadingRoomResponse(
+                roomId = readingRoom.roomId,
+                seatId = readingRoom.seatId,
+                xPosition = readingRoom.xPosition,
+                yPosition = readingRoom.yPosition,
+                isAvailable = readingRoom.isAvailable,
+                userMaskedName = readingRoom.userMaskedName,
+                returnAt = readingRoom.returnAt
+            )
+
+        fun from(readingRooms: List<ReadingRoom>): List<ReadingRoomResponse> =
+            readingRooms.map { this.from(it) }
+
     }
 }

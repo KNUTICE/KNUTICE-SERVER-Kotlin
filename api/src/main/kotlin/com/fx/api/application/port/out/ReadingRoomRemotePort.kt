@@ -4,6 +4,8 @@ import com.fx.api.domain.ReadingRoom
 
 interface ReadingRoomRemotePort {
 
-    suspend fun getReadingRooms(roomId: Int): List<ReadingRoom>
+    suspend fun getCsrfToken(): String
+
+    suspend fun getReadingRooms(roomId: Int, csrfToken: String): List<ReadingRoom>
 
 }
