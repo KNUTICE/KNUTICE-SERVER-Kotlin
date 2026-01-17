@@ -2,6 +2,7 @@ package com.fx.api.adapter.`in`.web
 
 import com.fx.api.adapter.`in`.web.dto.readingrooms.ReadingRoomSeatResponse
 import com.fx.api.adapter.`in`.web.dto.readingrooms.ReadingRoomStatusResponse
+import com.fx.api.adapter.`in`.web.swagger.ReadingRoomOpenApiSwagger
 import com.fx.api.application.port.`in`.ReadingRoomQueryUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import io.github.seob7.Api
@@ -15,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 @RequestMapping("/open-api/v1/reading-rooms")
 class ReadingRoomOpenApiAdapter(
     private val readingRoomQueryUseCase: ReadingRoomQueryUseCase
-) {
+) : ReadingRoomOpenApiSwagger {
 
     @GetMapping("/status")
-    suspend fun getReadingRoomStatus(
+    override suspend fun getReadingRoomStatus(
         @RequestHeader fcmToken: String
     ): ResponseEntity<Api<List<ReadingRoomStatusResponse>>> =
         Api.OK(ReadingRoomStatusResponse.from(
@@ -26,7 +27,7 @@ class ReadingRoomOpenApiAdapter(
         ))
 
     @GetMapping("/{roomId}")
-    suspend fun getReadingRoomSeats(
+    override suspend fun getReadingRoomSeats(
         @RequestHeader fcmToken: String,
         @PathVariable roomId: Int
     ): ResponseEntity<Api<List<ReadingRoomSeatResponse>>> =
