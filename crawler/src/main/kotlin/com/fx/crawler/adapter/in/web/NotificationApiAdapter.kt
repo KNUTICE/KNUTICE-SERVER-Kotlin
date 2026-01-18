@@ -29,7 +29,7 @@ class NotificationApiAdapter(
 
     private val log = LoggerFactory.getLogger(NotificationApiAdapter::class.java)
 
-    @PostMapping("|/notice/{nttId}")
+    @PostMapping("/notice/{nttId}")
     suspend fun pushTestNotice(
         @RequestHeader fcmToken: String,
         @PathVariable nttId: Long
