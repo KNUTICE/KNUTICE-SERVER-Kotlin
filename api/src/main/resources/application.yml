@@ -33,6 +33,12 @@ url:
     - http://localhost:5173
     - ${URL_ORIGIN}
 
+reading-room:
+  root-url: ${READING_ROOM_ROOT_URL}
+  endpoints:
+    seats: ${READING_ROOM_SEATS_ENDPOINT}
+    status: ${READING_ROOM_STATUS_ENDPOINT}
+
 logging:
   level:
     org:
