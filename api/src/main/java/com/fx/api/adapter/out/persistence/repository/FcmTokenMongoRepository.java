@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface FcmTokenMongoRepository extends MongoRepository<FcmTokenDocument, String> {
 
-    Long countByIsActiveTrueAndDeviceType(DeviceType deviceType);
+    Long countByIsActiveAndDeviceType(Boolean isActive, DeviceType deviceType);
 
 }

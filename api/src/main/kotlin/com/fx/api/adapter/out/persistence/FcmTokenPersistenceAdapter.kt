@@ -9,23 +9,20 @@ import com.fx.global.domain.FcmToken
 
 @PersistenceAdapter
 class FcmTokenPersistenceAdapter(
-    private val fcmTokenRepository: FcmTokenMongoRepository
+    private val fcmTokenMongoRepository: FcmTokenMongoRepository
 ): FcmTokenPersistencePort {
 
     override fun saveFcmToken(fcmToken: FcmToken) {
-        fcmTokenRepository.save(FcmTokenDocument.from(fcmToken))
+        fcmTokenMongoRepository.save(FcmTokenDocument.from(fcmToken))
     }
 
     override fun findByFcmToken(fcmToken: String): FcmToken? =
-        fcmTokenRepository.findById(fcmToken).orElse(null)?.toDomain()
+        fcmTokenMongoRepository.findById(fcmToken).orElse(null)?.toDomain()
 
     override fun existsByFcmToken(fcmToken: String): Boolean =
-        fcmTokenRepository.existsById(fcmToken)
+        fcmTokenMongoRepository.existsById(fcmToken)
 
-    override fun count(): Long =
-        fcmTokenRepository.count()
-
-    override fun countByIsActiveTrueAndDeviceType(deviceType: DeviceType): Long =
-        fcmTokenRepository.countByIsActiveTrueAndDeviceType(deviceType)
+    override fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long =
+        fcmTokenMongoRepository.countByIsActiveAndDeviceType(isActive, deviceType)
 
 }

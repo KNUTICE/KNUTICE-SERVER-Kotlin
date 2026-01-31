@@ -1,9 +1,10 @@
 package com.fx.api.application.port.`in`
 
-import com.fx.api.domain.Statistics
+import com.fx.global.domain.DailyStatistics
+import java.time.LocalDate
 
 interface StatisticsQueryUseCase {
 
-    suspend fun getStatistics(): Statistics
+    suspend fun getDailyStatistics(cursorDate: LocalDate?, size: Int): List<DailyStatistics>
 
 }
