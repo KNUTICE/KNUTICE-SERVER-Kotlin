@@ -2,6 +2,7 @@ package com.fx.crawler.appllication.port.out
 
 import com.fx.global.domain.FcmToken
 import com.fx.crawler.domain.FcmTokenQuery
+import com.fx.global.domain.DeviceType
 
 interface FcmTokenPersistencePort {
 
@@ -13,4 +14,6 @@ interface FcmTokenPersistencePort {
 
     fun saveAll(fcmTokens: List<FcmToken>)
 
- }
+    fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long
+
+}

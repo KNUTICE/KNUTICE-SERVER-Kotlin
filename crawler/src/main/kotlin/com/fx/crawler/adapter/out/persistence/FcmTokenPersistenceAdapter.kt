@@ -7,6 +7,7 @@ import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort
 import com.fx.global.domain.FcmToken
 import com.fx.crawler.domain.FcmTokenQuery
 import com.fx.global.annotation.PersistenceAdapter
+import com.fx.global.domain.DeviceType
 
 @PersistenceAdapter
 class FcmTokenPersistenceAdapter(
@@ -22,12 +23,13 @@ class FcmTokenPersistenceAdapter(
         fcmTokenMongoRepository.saveAll(FcmTokenDocument.from(fcmTokens))
     }
 
-    override fun findByFcmToken(fcmToken: String): FcmToken?  {
-        return fcmTokenMongoRepository.findById(fcmToken).orElse(null)?.toDomain()
-    }
+    override fun findByFcmToken(fcmToken: String): FcmToken?  =
+        fcmTokenMongoRepository.findById(fcmToken).orElse(null)?.toDomain()
 
     override fun findByCreatedAtAndIsActive(fcmTokenQuery: FcmTokenQuery): List<FcmToken> =
         fcmTokenQueryRepository.findByCreatedAtAndIsActive(fcmTokenQuery).map { it.toDomain() };
 
+    override fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long =
+        fcmTokenMongoRepository.countByIsActiveAndDeviceType(isActive, deviceType)
 
 }
