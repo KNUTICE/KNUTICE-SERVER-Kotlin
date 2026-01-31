@@ -15,7 +15,7 @@ class StatisticsScheduler(
     private val log = LoggerFactory.getLogger(StatisticsScheduler::class.java)
 
     // 매일 00:05 분에 전날 데이터를 집계해 저장합니다.
-    @Scheduled(cron = "0 5 0 * * *")
+    @Scheduled(cron = "0 30 0 * * *")
     fun aggregateDailyStatistics() = runBlocking {
         val yesterday = LocalDate.now().minusDays(1)
         log.info("---------- Starting scheduled daily statistics for $yesterday ----------")
