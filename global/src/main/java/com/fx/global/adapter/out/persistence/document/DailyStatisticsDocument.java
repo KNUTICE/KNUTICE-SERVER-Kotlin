@@ -27,10 +27,6 @@ public class DailyStatisticsDocument extends MongoBaseDocument {
     @Builder.Default
     private Long noticeSummaryCount = 0L; // AI 요약된 공지 수
 
-    // 리포트
-    @Builder.Default
-    private Long reportCount = 0L; // 전체 리포트 수
-
     // FCM 활성 토큰
     @Builder.Default
     private Long fcmTokenActiveCount = 0L;
@@ -52,7 +48,6 @@ public class DailyStatisticsDocument extends MongoBaseDocument {
             this.statisticsDate,
             this.noticeCount,
             this.noticeSummaryCount,
-            this.reportCount,
             this.fcmTokenActiveCount,
             this.fcmTokenActiveAosCount,
             this.fcmTokenActiveIosCount,
@@ -69,7 +64,6 @@ public class DailyStatisticsDocument extends MongoBaseDocument {
             .statisticsDate(dailyStatistics.getStatisticsDate())
             .noticeCount(dailyStatistics.getNoticeCount())
             .noticeSummaryCount(dailyStatistics.getNoticeSummaryCount())
-            .reportCount(dailyStatistics.getReportCount())
             .fcmTokenActiveCount(dailyStatistics.getFcmTokenActiveCount())
             .fcmTokenActiveAosCount(dailyStatistics.getFcmTokenActiveAosCount())
             .fcmTokenActiveIosCount(dailyStatistics.getFcmTokenActiveIosCount())

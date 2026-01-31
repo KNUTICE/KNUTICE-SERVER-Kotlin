@@ -12,9 +12,6 @@ data class DailyStatistics (
     val noticeCount: Long,
     val noticeSummaryCount: Long,
 
-    // 리포트
-    val reportCount: Long,
-
     // FCM 활성 토큰
     val fcmTokenActiveCount: Long,
     val fcmTokenActiveAosCount: Long,
