@@ -8,15 +8,20 @@ import io.github.seob7.Api
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import java.time.LocalDate
 
 @WebInputAdapter
 @RequestMapping("/api/v1/statistics")
 class StatisticsApiAdapter(
     private val statisticsQueryUseCase: StatisticsQueryUseCase
-): StatisticsApiSwagger {
+) : StatisticsApiSwagger {
 
     @GetMapping()
-    override suspend fun getStatistics(): ResponseEntity<Api<StatisticsResponse>> =
-        Api.OK(StatisticsResponse.from(statisticsQueryUseCase.getStatistics()))
+    override suspend fun getDailyStatistics(
+        @RequestParam(required = false) cursorDate: LocalDate?,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<Api<List<StatisticsResponse>>> =
+        Api.OK(StatisticsResponse.from(statisticsQueryUseCase.getDailyStatistics(cursorDate, size)))
 
 }

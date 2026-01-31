@@ -11,8 +11,6 @@ interface FcmTokenPersistencePort {
 
     fun existsByFcmToken(fcmToken: String): Boolean
 
-    fun count(): Long
-
-    fun countByIsActiveTrueAndDeviceType(deviceType: DeviceType): Long
+    fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long
 
 }
