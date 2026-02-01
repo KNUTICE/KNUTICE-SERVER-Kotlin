@@ -6,8 +6,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface NoticeMongoRepository extends MongoRepository<NoticeDocument, Long> {
 
-    Long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    long countByCreatedAtLessThanEqual(LocalDateTime dateTime);
 
-    Long countByCreatedAtBetweenAndContentSummaryIsNotNull(LocalDateTime start, LocalDateTime end);
-
+    long countByCreatedAtLessThanEqualAndContentSummaryIsNotNull(LocalDateTime dateTime);
+    
 }

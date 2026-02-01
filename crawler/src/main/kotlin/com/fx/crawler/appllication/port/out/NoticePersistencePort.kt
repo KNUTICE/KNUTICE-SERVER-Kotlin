@@ -8,7 +8,7 @@ interface NoticePersistencePort {
     fun findByNttIdIn(nttIds: List<Long>): List<Notice>
     fun saveAll(notices: List<Notice>)
 
-    fun countByCreatedAtBetween(start: LocalDateTime, end: LocalDateTime): Long
-    fun countByCreatedAtBetweenAndHasSummary(start: LocalDateTime, end: LocalDateTime): Long
+    fun countByCreatedAtLessThanEqual(dateTime: LocalDateTime): Long
+    fun countByCreatedAtLessThanEqualAndHasSummary(dateTime: LocalDateTime): Long
 
 }

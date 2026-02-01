@@ -32,10 +32,10 @@ class NoticePersistenceAdapter(
     override fun existsById(nttId: Long): Boolean =
         noticeMongoRepository.existsById(nttId)
 
-    override fun countByCreatedAtBetween(start: LocalDateTime, end: LocalDateTime): Long =
-        noticeMongoRepository.countByCreatedAtBetween(start, end)
+    override fun countByCreatedAtLessThanEqual(dateTime: LocalDateTime): Long =
+        noticeMongoRepository.countByCreatedAtLessThanEqual(dateTime)
 
-    override fun countByCreatedAtBetweenAndHasSummary(start: LocalDateTime, end: LocalDateTime): Long =
-        noticeMongoRepository.countByCreatedAtBetweenAndContentSummaryIsNotNull(start, end)
+    override fun countByCreatedAtLessThanEqualAndHasSummary(dateTime: LocalDateTime): Long =
+        noticeMongoRepository.countByCreatedAtLessThanEqualAndContentSummaryIsNotNull(dateTime)
 
 }

@@ -47,14 +47,13 @@ class StatisticsService(
     }
 
     private suspend fun calculateTodayStatistics(today: LocalDate): DailyStatistics = withContext(Dispatchers.IO) {
-        val startOfDay = today.atStartOfDay()
         val endOfDay = LocalDateTime.now() // 현재 시간까지만
 
         val noticeCount = async {
-            noticePersistencePort.countByCreatedAtBetween(startOfDay, endOfDay)
+            noticePersistencePort.countByCreatedAtLessThanEqual(endOfDay)
         }
         val noticeSummaryCount = async {
-            noticePersistencePort.countByCreatedAtBetweenAndHasSummary(startOfDay, endOfDay)
+            noticePersistencePort.countByCreatedAtLessThanEqualAndHasSummary(endOfDay)
         }
 
         val activeAos = async {

@@ -12,8 +12,7 @@ interface NoticePersistencePort {
     fun deleteById(nttId: Long)
     fun existsById(nttId: Long): Boolean
 
-    fun countByCreatedAtBetween(start: LocalDateTime, end: LocalDateTime): Long
-    fun countByCreatedAtBetweenAndHasSummary(start: LocalDateTime, end: LocalDateTime): Long
-
+    fun countByCreatedAtLessThanEqual(dateTime: LocalDateTime): Long
+    fun countByCreatedAtLessThanEqualAndHasSummary(dateTime: LocalDateTime): Long
 
 }

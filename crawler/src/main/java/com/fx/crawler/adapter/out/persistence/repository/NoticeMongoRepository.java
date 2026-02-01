@@ -9,8 +9,8 @@ public interface NoticeMongoRepository extends MongoRepository<NoticeDocument, L
 
     List<NoticeDocument> findByNttIdIn(List<Long> nttIds);
 
-    Long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    long countByCreatedAtLessThanEqual(LocalDateTime dateTime);
 
-    Long countByCreatedAtBetweenAndContentSummaryIsNotNull(LocalDateTime start, LocalDateTime end);
+    long countByCreatedAtLessThanEqualAndContentSummaryIsNotNull(LocalDateTime dateTime);
 
 }

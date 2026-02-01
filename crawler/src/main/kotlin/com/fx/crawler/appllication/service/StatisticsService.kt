@@ -33,14 +33,13 @@ class StatisticsService(
      */
     override suspend fun aggregateDailyStatistics() = withContext(Dispatchers.IO) {
         val yesterday = LocalDate.now().minusDays(1)
-        val startOfDay = yesterday.atStartOfDay()
         val endOfDay = yesterday.atTime(LocalTime.MAX)
 
         val noticeCount = async {
-            noticePersistencePort.countByCreatedAtBetween(startOfDay, endOfDay)
+            noticePersistencePort.countByCreatedAtLessThanEqual(endOfDay)
         }
         val noticeSummaryCount = async {
-            noticePersistencePort.countByCreatedAtBetweenAndHasSummary(startOfDay, endOfDay)
+            noticePersistencePort.countByCreatedAtLessThanEqualAndHasSummary(endOfDay)
         }
 
         // 2. FCM 토큰 데이터 집계 (현재 시점의 누적 상태)
