@@ -1,10 +1,6 @@
-package com.fx.api.domain
+package com.fx.api.application.port.`in`.dto
 
-import java.time.LocalDateTime
-
-data class ApiLog (
-
-    val id: String? = null,
+data class ApiLogSaveCommand(
 
     val urlPattern: String,
 
@@ -20,10 +16,6 @@ data class ApiLog (
 
     val statusCode: Int,
 
-    val executionTime: Long,
-
-    val createdAt: LocalDateTime? = null,
-
-    val updatedAt: LocalDateTime? = null
+    val executionTime: Long
 
 )
