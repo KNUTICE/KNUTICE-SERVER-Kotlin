@@ -30,6 +30,7 @@ class ApiLogCommandService(
                 queryParameters = apiLogSaveCommand.queryParameters,
                 fcmToken = apiLogSaveCommand.fcmToken,
                 clientIp = apiLogSaveCommand.clientIp,
+                deviceType = apiLogSaveCommand.deviceType,
                 statusCode = apiLogSaveCommand.statusCode,
                 executionTime = apiLogSaveCommand.executionTime
             ))

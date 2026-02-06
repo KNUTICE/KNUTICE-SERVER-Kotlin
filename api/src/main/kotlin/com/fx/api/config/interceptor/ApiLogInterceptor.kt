@@ -2,6 +2,7 @@ package com.fx.api.config.interceptor
 
 import com.fx.api.application.port.`in`.ApiLogCommandUseCase
 import com.fx.api.application.port.`in`.dto.ApiLogSaveCommand
+import com.fx.global.domain.DeviceType
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Component
@@ -47,7 +48,6 @@ class ApiLogInterceptor(
             .takeIf { it.isNotEmpty() }
         val fcmToken = request.getHeader("fcmToken")
 
-        val clientIp = getClientIp(request)
 
         val apiLogSaveCommand = ApiLogSaveCommand(
             urlPattern = urlPattern,
@@ -55,7 +55,8 @@ class ApiLogInterceptor(
             method = request.method,
             queryParameters = queryParameter,
             fcmToken = fcmToken,
-            clientIp = clientIp,
+            clientIp = getClientIp(request),
+            deviceType = getDeviceType(request),
             statusCode = response.status,
             executionTime = executionTime
         )
@@ -65,5 +66,14 @@ class ApiLogInterceptor(
 
     private fun getClientIp(request: HttpServletRequest): String =
         request.getHeader("X-Forwarded-For")?.substringBefore(",") ?: request.remoteAddr
+
+    private fun getDeviceType(request: HttpServletRequest): DeviceType {
+        val userAgent = request.getHeader("User-Agent")?.lowercase() ?: ""
+        return when {
+            userAgent.contains("iphone") || userAgent.contains("ipad") -> DeviceType.iOS
+            userAgent.contains("android") -> DeviceType.AOS
+            else -> DeviceType.UNKNOWN
+        }
+    }
 
 }
