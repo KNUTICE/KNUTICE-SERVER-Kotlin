@@ -12,6 +12,7 @@ import com.fx.global.domain.SlackMessage
 import com.fx.global.domain.SlackType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.springframework.stereotype.Service
@@ -23,7 +24,7 @@ class ReportCommandService(
     private val webhookPort: WebhookPort
 ): ReportCommandUseCase {
 
-    private val backgroundScope = CoroutineScope(Dispatchers.IO)
+    private val backgroundScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override suspend fun saveReport(reportSaveCommand: ReportSaveCommand): Boolean = coroutineScope {
         if (!fcmTokenPersistencePort.existsByFcmToken(reportSaveCommand.fcmToken)) {

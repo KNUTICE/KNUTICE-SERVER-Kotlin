@@ -14,6 +14,7 @@ import com.google.firebase.messaging.MessagingErrorCode
 import com.google.firebase.messaging.MulticastMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,7 +27,7 @@ class FcmNotificationAdapter(
 ) : FcmNotificationPort {
 
     private val log = LoggerFactory.getLogger(FcmNotificationAdapter::class.java)
-    private val backgroundScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val backgroundScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     /**
      * @return failedTokens
