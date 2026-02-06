@@ -1,5 +1,8 @@
 package com.fx.api.config.interceptor
 
+import com.fx.api.adapter.out.persistence.ApiLogPersistenceAdapter
+import com.fx.api.application.port.`in`.ApiLogCommandUseCase
+import com.fx.api.application.port.`in`.dto.ApiLogSaveCommand
 import com.fx.api.domain.ApiLog
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -18,7 +21,7 @@ import java.lang.Exception
  */
 @Component
 class ApiLogInterceptor(
-//    private val ApiLogPersistenceAdapter: ApiLogPersistenceAdapter
+    private val apiLogCommandUseCase: ApiLogCommandUseCase
 ) : HandlerInterceptor {
 
     private val log = LoggerFactory.getLogger(ApiLogInterceptor::class.java)
@@ -50,7 +53,7 @@ class ApiLogInterceptor(
 
         val clientIp = getClientIp(request)
 
-        val apiLog = ApiLog(
+        val apiLogSaveCommand = ApiLogSaveCommand(
             urlPattern = urlPattern,
             url = request.requestURI,
             method = request.method,
@@ -61,7 +64,7 @@ class ApiLogInterceptor(
             executionTime = executionTime
         )
 
-        // ApiLogPersistenceAdapter.save(apiLog)
+        apiLogCommandUseCase.recordApiLog(apiLogSaveCommand)
     }
 
     private fun getClientIp(request: HttpServletRequest): String =
