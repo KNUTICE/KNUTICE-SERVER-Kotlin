@@ -1,5 +1,7 @@
 package com.fx.api.application.port.`in`.dto
 
+import com.fx.global.domain.DeviceType
+
 data class ApiLogSaveCommand(
 
     val urlPattern: String,
@@ -13,6 +15,8 @@ data class ApiLogSaveCommand(
     val fcmToken: String? = null,
 
     val clientIp: String,
+
+    val deviceType: DeviceType,
 
     val statusCode: Int,
 

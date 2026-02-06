@@ -2,6 +2,7 @@ package com.fx.api.adapter.out.persistence.document;
 
 import com.fx.api.domain.ApiLog;
 import com.fx.global.adapter.out.persistence.base.MongoBaseDocument;
+import com.fx.global.domain.DeviceType;
 import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,8 @@ public class ApiLogDocument extends MongoBaseDocument {
 
     private String clientIp;
 
+    private DeviceType deviceType;
+
     private Integer statusCode;
 
     private Long executionTime;
@@ -43,6 +46,7 @@ public class ApiLogDocument extends MongoBaseDocument {
             .queryParameters(apiLog.getQueryParameters())
             .fcmToken(apiLog.getFcmToken())
             .clientIp(apiLog.getClientIp())
+            .deviceType(apiLog.getDeviceType())
             .statusCode(apiLog.getStatusCode())
             .executionTime(apiLog.getExecutionTime())
             .build();
@@ -57,6 +61,7 @@ public class ApiLogDocument extends MongoBaseDocument {
             this.queryParameters,
             this.fcmToken,
             this.clientIp,
+            this.deviceType,
             this.statusCode,
             this.executionTime,
             this.createdAt,
