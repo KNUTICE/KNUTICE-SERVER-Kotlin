@@ -1,6 +1,5 @@
 package com.fx.api.adapter.out.persistence.document;
 
-import com.fx.api.domain.Report;
 import com.fx.api.domain.User;
 import com.fx.api.domain.UserRole;
 import com.fx.global.adapter.out.persistence.base.MongoBaseDocument;
