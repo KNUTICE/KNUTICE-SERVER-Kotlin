@@ -1,12 +1,9 @@
 package com.fx.api.config.interceptor
 
-import com.fx.api.adapter.out.persistence.ApiLogPersistenceAdapter
 import com.fx.api.application.port.`in`.ApiLogCommandUseCase
 import com.fx.api.application.port.`in`.dto.ApiLogSaveCommand
-import com.fx.api.domain.ApiLog
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
@@ -23,8 +20,6 @@ import java.lang.Exception
 class ApiLogInterceptor(
     private val apiLogCommandUseCase: ApiLogCommandUseCase
 ) : HandlerInterceptor {
-
-    private val log = LoggerFactory.getLogger(ApiLogInterceptor::class.java)
 
     override fun preHandle(
         request: HttpServletRequest,
@@ -49,6 +44,7 @@ class ApiLogInterceptor(
 
         val urlPattern = request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE).toString();
         val queryParameter = request.parameterMap.mapValues { it.value.joinToString(",") }
+            .takeIf { it.isNotEmpty() }
         val fcmToken = request.getHeader("fcmToken")
 
         val clientIp = getClientIp(request)
@@ -57,7 +53,7 @@ class ApiLogInterceptor(
             urlPattern = urlPattern,
             url = request.requestURI,
             method = request.method,
-            queryParameters = queryParameter.toMutableMap(),
+            queryParameters = queryParameter,
             fcmToken = fcmToken,
             clientIp = clientIp,
             statusCode = response.status,
