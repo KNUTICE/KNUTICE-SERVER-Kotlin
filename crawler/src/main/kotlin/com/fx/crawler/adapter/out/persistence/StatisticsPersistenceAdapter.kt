@@ -8,11 +8,11 @@ import com.fx.global.domain.DailyStatistics
 
 @PersistenceAdapter
 class StatisticsPersistenceAdapter(
-    private val dailyStatisticsRepository: StatisticsMongoRepository
+    private val statisticsMongoRepository: StatisticsMongoRepository
 ): StatisticsPersistencePort {
 
     override fun save(dailyStatistics: DailyStatistics) {
-        dailyStatisticsRepository.save(DailyStatisticsDocument.from(dailyStatistics))
+        statisticsMongoRepository.save(DailyStatisticsDocument.from(dailyStatistics))
     }
 
 }

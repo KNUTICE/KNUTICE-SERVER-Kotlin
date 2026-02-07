@@ -1,6 +1,5 @@
-package com.fx.api.domain
+package com.fx.global.domain
 
-import com.fx.global.domain.DeviceType
 import java.time.LocalDateTime
 
 data class ApiLog (

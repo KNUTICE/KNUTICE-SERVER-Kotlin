@@ -3,7 +3,7 @@ package com.fx.api.application.service
 import com.fx.api.application.port.`in`.ApiLogCommandUseCase
 import com.fx.api.application.port.`in`.dto.ApiLogSaveCommand
 import com.fx.api.application.port.out.ApiLogPersistencePort
-import com.fx.api.domain.ApiLog
+import com.fx.global.domain.ApiLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
