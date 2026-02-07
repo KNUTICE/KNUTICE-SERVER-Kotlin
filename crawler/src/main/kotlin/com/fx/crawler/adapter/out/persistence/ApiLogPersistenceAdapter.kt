@@ -23,8 +23,8 @@ class ApiLogPersistenceAdapter(
             // 1. 해당 날짜 로그만
             Aggregation.match(
                 Criteria.where("createdAt")
-                    .gte(date.atStartOfDay().minusHours(9)) // KST → UTC
-                    .lte(date.atTime(LocalTime.MAX).minusHours(9))
+                    .gte(date.atStartOfDay())
+                    .lte(date.atTime(LocalTime.MAX))
             ),
 
             // 2. urlPattern + method 별 통계
