@@ -74,21 +74,7 @@ class StatisticsService(
 
         val apiLogStatistics = async {
             runCatching {
-                val result = apiLogPersistencePort.aggregateDailyStatistics(yesterday)
-
-                log.info("📊 API 로그 집계 결과 건수: ${result.size}")
-                result.forEach {
-                    log.info(
-                        " - urlPattern=${it.urlPattern}, " +
-                                "method=${it.method}, " +
-                                "total=${it.totalCount}, " +
-                                "error=${it.errorCount}, " +
-                                "avg=${it.averageExecutionTime}"
-                    )
-                }
-
-                result
-
+                apiLogPersistencePort.aggregateDailyStatistics(yesterday)
             }.getOrElse { ex ->
                 log.error("API 로그 집계 실패", ex)
                 notifySlackAsync("API 로그 집계 실패: ${ex.message}")
