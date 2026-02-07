@@ -1,10 +1,12 @@
 package com.fx.api.application.service
 
 import com.fx.api.application.port.`in`.StatisticsQueryUseCase
+import com.fx.api.application.port.out.ApiLogPersistencePort
 import com.fx.api.application.port.out.ApiLogStatisticsPersistencePort
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.NoticePersistencePort
 import com.fx.api.application.port.out.StatisticsPersistencePort
+import com.fx.api.domain.DailyTopicCount
 import com.fx.global.domain.DailyApiLogStatistics
 import com.fx.global.domain.DailyStatistics
 import com.fx.global.domain.DeviceType
@@ -16,13 +18,15 @@ import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 @Service
 class StatisticsService(
     private val statisticsPersistencePort: StatisticsPersistencePort,
     private val noticePersistencePort: NoticePersistencePort,
     private val fcmTokenPersistencePort: FcmTokenPersistencePort,
-    private val apiLogStatisticsPersistencePort: ApiLogStatisticsPersistencePort
+    private val apiLogStatisticsPersistencePort: ApiLogStatisticsPersistencePort,
+    private val apiLogPersistencePort: ApiLogPersistencePort
 ) : StatisticsQueryUseCase {
 
     override suspend fun getDailyStatistics(cursorDate: LocalDate?, size: Int): List<DailyStatistics> {
@@ -56,6 +60,16 @@ class StatisticsService(
         val pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "statisticsDate"))
 
         apiLogStatisticsPersistencePort.findAllByDateLessThan(startingCursor, pageable)
+    }
+
+    override suspend fun getTopicStatistics(cursorDate: LocalDate?, size: Int): List<DailyTopicCount> {
+        val today = LocalDate.now()
+        val startingCursor = cursorDate ?: today
+
+        val end = startingCursor.atTime(LocalTime.MAX)
+        val start = startingCursor.minusDays(size.toLong() - 1).atStartOfDay()
+
+        return apiLogPersistencePort.aggregateDailyTopicStatistics(start, end)
     }
 
     private suspend fun calculateTodayStatistics(today: LocalDate): DailyStatistics = withContext(Dispatchers.IO) {

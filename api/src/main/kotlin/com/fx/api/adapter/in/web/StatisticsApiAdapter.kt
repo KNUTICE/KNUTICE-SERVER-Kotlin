@@ -2,6 +2,7 @@ package com.fx.api.adapter.`in`.web
 
 import com.fx.api.adapter.`in`.web.dto.statistics.ApiLogStatisticsResponse
 import com.fx.api.adapter.`in`.web.dto.statistics.StatisticsResponse
+import com.fx.api.adapter.`in`.web.dto.statistics.TopicCountStatisticsResponse
 import com.fx.api.adapter.`in`.web.swagger.StatisticsApiSwagger
 import com.fx.api.application.port.`in`.StatisticsQueryUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
@@ -32,5 +33,16 @@ class StatisticsApiAdapter(
         @RequestParam(defaultValue = "7") size: Int
     ): ResponseEntity<Api<List<ApiLogStatisticsResponse>>> =
         Api.OK(ApiLogStatisticsResponse.from(statisticsQueryUseCase.getApiLogStatistics(cursorDate, size)))
+
+    @GetMapping("/topics")
+    suspend fun getTopicStatistics(
+        @RequestParam(required = false) cursorDate: LocalDate?,
+        @RequestParam(defaultValue = "7") size: Int
+    ): ResponseEntity<Api<List<TopicCountStatisticsResponse>>> =
+        Api.OK(
+            TopicCountStatisticsResponse.from(
+                statisticsQueryUseCase.getTopicStatistics(cursorDate, size)
+            )
+        )
 
 }

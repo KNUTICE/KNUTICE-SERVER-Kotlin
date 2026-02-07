@@ -18,15 +18,13 @@ class ApiLogPersistenceAdapter(
 ) : ApiLogPersistencePort {
 
     override fun aggregateDailyStatistics(date: LocalDate): List<DailyApiLogStatistics> {
-
-        val start = date.atStartOfDay()
-        val end = date.atTime(LocalTime.MAX)
-
         val aggregation = Aggregation.newAggregation(
 
             // 1. 해당 날짜 로그만
             Aggregation.match(
-                Criteria.where("createdAt").gte(start).lte(end)
+                Criteria.where("createdAt")
+                    .gte(date.atStartOfDay().minusHours(9)) // KST → UTC
+                    .lte(date.atTime(LocalTime.MAX).minusHours(9))
             ),
 
             // 2. urlPattern + method 별 통계
