@@ -1,5 +1,6 @@
 package com.fx.api.adapter.`in`.web
 
+import com.fx.api.adapter.`in`.web.dto.statistics.ApiLogStatisticsResponse
 import com.fx.api.adapter.`in`.web.dto.statistics.StatisticsResponse
 import com.fx.api.adapter.`in`.web.swagger.StatisticsApiSwagger
 import com.fx.api.application.port.`in`.StatisticsQueryUseCase
@@ -23,5 +24,13 @@ class StatisticsApiAdapter(
         @RequestParam(defaultValue = "10") size: Int
     ): ResponseEntity<Api<List<StatisticsResponse>>> =
         Api.OK(StatisticsResponse.from(statisticsQueryUseCase.getDailyStatistics(cursorDate, size)))
+
+    // TODO : Swagger 문서화
+    @GetMapping("/api-logs")
+    suspend fun getApiLogStatistics(
+        @RequestParam(required = false) cursorDate: LocalDate?,
+        @RequestParam(defaultValue = "7") size: Int
+    ): ResponseEntity<Api<List<ApiLogStatisticsResponse>>> =
+        Api.OK(ApiLogStatisticsResponse.from(statisticsQueryUseCase.getApiLogStatistics(cursorDate, size)))
 
 }

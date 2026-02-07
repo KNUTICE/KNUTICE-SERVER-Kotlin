@@ -2,10 +2,8 @@ package com.fx.global.adapter.out.persistence.document;
 
 import com.fx.global.adapter.out.persistence.base.MongoBaseDocument;
 import com.fx.global.domain.DailyApiLogStatistics;
-import com.fx.global.domain.DailyStatistics;
 import com.querydsl.core.annotations.QueryEntity;
 import java.time.LocalDate;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -48,10 +46,10 @@ public class DailyApiLogStatisticsDocument extends MongoBaseDocument {
             .build();
     }
 
-    public DailyApiLogStatistics toDomain(LocalDate statisticsDate) {
+    public DailyApiLogStatistics toDomain() {
         return new DailyApiLogStatistics(
             this.id,
-            statisticsDate,
+            this.statisticsDate,
             this.urlPattern,
             this.method,
             this.totalCount,

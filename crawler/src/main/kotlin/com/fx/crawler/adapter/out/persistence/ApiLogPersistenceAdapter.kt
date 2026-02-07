@@ -50,6 +50,8 @@ class ApiLogPersistenceAdapter(
                 .and("_id.urlPattern").`as`("urlPattern")
                 .and("_id.method").`as`("method")
                 .andInclude("totalCount", "averageExecutionTime", "errorCount")
+                .and(AggregationExpression { Document("\$literal", date) })
+                .`as`("statisticsDate")
         )
 
         val results = mongoTemplate.aggregate(
@@ -59,7 +61,7 @@ class ApiLogPersistenceAdapter(
         )
 
         return results.mappedResults.map { doc ->
-            doc.toDomain(date).copy(
+            doc.toDomain().copy(
                 id = "${date}_${doc.urlPattern}_${doc.method}",
             )
         }

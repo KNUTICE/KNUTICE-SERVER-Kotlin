@@ -1,9 +1,11 @@
 package com.fx.api.application.service
 
 import com.fx.api.application.port.`in`.StatisticsQueryUseCase
+import com.fx.api.application.port.out.ApiLogStatisticsPersistencePort
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.NoticePersistencePort
 import com.fx.api.application.port.out.StatisticsPersistencePort
+import com.fx.global.domain.DailyApiLogStatistics
 import com.fx.global.domain.DailyStatistics
 import com.fx.global.domain.DeviceType
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +21,8 @@ import java.time.LocalDateTime
 class StatisticsService(
     private val statisticsPersistencePort: StatisticsPersistencePort,
     private val noticePersistencePort: NoticePersistencePort,
-    private val fcmTokenPersistencePort: FcmTokenPersistencePort
+    private val fcmTokenPersistencePort: FcmTokenPersistencePort,
+    private val apiLogStatisticsPersistencePort: ApiLogStatisticsPersistencePort
 ) : StatisticsQueryUseCase {
 
     override suspend fun getDailyStatistics(cursorDate: LocalDate?, size: Int): List<DailyStatistics> {
@@ -44,6 +47,15 @@ class StatisticsService(
         }
 
         return resultList
+    }
+
+    override suspend fun getApiLogStatistics(cursorDate: LocalDate?, size: Int): List<DailyApiLogStatistics> = withContext(Dispatchers.IO) {
+
+        val startingCursor = cursorDate ?: LocalDate.now()
+
+        val pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "statisticsDate"))
+
+        apiLogStatisticsPersistencePort.findAllByDateLessThan(startingCursor, pageable)
     }
 
     private suspend fun calculateTodayStatistics(today: LocalDate): DailyStatistics = withContext(Dispatchers.IO) {
