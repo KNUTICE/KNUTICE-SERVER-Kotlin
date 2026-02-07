@@ -26,18 +26,17 @@ class StatisticsApiAdapter(
     ): ResponseEntity<Api<List<StatisticsResponse>>> =
         Api.OK(StatisticsResponse.from(statisticsQueryUseCase.getDailyStatistics(cursorDate, size)))
 
-    // TODO : Swagger 문서화
     @GetMapping("/api-logs")
-    suspend fun getApiLogStatistics(
+    override suspend fun getApiLogStatistics(
         @RequestParam(required = false) cursorDate: LocalDate?,
-        @RequestParam(defaultValue = "7") size: Int
+        @RequestParam(defaultValue = "10") size: Int
     ): ResponseEntity<Api<List<ApiLogStatisticsResponse>>> =
         Api.OK(ApiLogStatisticsResponse.from(statisticsQueryUseCase.getApiLogStatistics(cursorDate, size)))
 
     @GetMapping("/topics")
-    suspend fun getTopicStatistics(
+    override suspend fun getTopicStatistics(
         @RequestParam(required = false) cursorDate: LocalDate?,
-        @RequestParam(defaultValue = "7") size: Int
+        @RequestParam(defaultValue = "10") size: Int
     ): ResponseEntity<Api<List<TopicCountStatisticsResponse>>> =
         Api.OK(
             TopicCountStatisticsResponse.from(
