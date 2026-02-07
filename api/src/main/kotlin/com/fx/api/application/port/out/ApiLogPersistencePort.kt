@@ -1,6 +1,6 @@
 package com.fx.api.application.port.out
 
-import com.fx.api.domain.ApiLog
+import com.fx.global.domain.ApiLog
 
 interface ApiLogPersistencePort {
 

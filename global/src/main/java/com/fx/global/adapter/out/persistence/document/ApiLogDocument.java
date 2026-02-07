@@ -1,7 +1,7 @@
-package com.fx.api.adapter.out.persistence.document;
+package com.fx.global.adapter.out.persistence.document;
 
-import com.fx.api.domain.ApiLog;
 import com.fx.global.adapter.out.persistence.base.MongoBaseDocument;
+import com.fx.global.domain.ApiLog;
 import com.fx.global.domain.DeviceType;
 import java.util.Map;
 import lombok.Getter;
