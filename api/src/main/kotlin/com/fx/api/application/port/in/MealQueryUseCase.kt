@@ -5,6 +5,6 @@ import com.fx.global.domain.MealType
 
 interface MealQueryUseCase {
 
-    suspend fun getMeals(mealType: MealType): List<Meal>
+    suspend fun getMeals(type: MealType): List<Meal>
 
 }
