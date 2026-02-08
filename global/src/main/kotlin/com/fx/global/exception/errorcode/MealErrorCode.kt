@@ -8,7 +8,7 @@ enum class MealErrorCode(
     private val message: String
 ) : BaseErrorCode {
 
-    MEAL_NOT_FOUND(HttpStatus.NOT_FOUND, "학식 정보를 조회할 수 없습닌다.")
+    MEAL_NOT_FOUND(HttpStatus.NOT_FOUND, "학식 정보를 조회할 수 없습니다.")
     ;
 
     override fun getHttpStatus(): HttpStatus = httpStatus
