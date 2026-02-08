@@ -64,7 +64,12 @@ class StatisticsService(
 
     override suspend fun getTopicStatistics(cursorDate: LocalDate?, size: Int): List<DailyTopicCount> {
         val today = LocalDate.now()
-        val startingCursor = cursorDate ?: today
+
+        /**
+         * dslee (2026-02-07) : 커서 날짜 이전 부터 조회해야 중복이 없음
+         * 예: 커서가 2026-02-07 이면, 2026-02-06 부터 조회 시작
+         */
+        val startingCursor = cursorDate?.minusDays(1) ?: today
 
         val end = startingCursor.atTime(LocalTime.MAX)
         val start = startingCursor.minusDays(size.toLong() - 1).atStartOfDay()
