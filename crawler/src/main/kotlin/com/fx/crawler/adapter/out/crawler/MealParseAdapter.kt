@@ -45,30 +45,17 @@ class MealParseAdapter(
         val todayMeal = mealList.firstOrNull { it["mealDate"] == today.toString() }
             ?: return null // 데이터가 없으면 즉시 null 반환하고 종료
 
-        val combinedMenus = mutableListOf<String>() // 한식, 일품 처리를 위해 빈 리스트 생성
+        val koreaMenus = parseMenu(todayMeal["koreaFood"])
+        val topMenus = parseMenu(todayMeal["topFood"])
 
-        parseMenu(todayMeal["koreaFood"])?.let {
-            combinedMenus.add("[한식]")
-            combinedMenus.addAll(it)
-        }
-
-        parseMenu(todayMeal["topFood"])?.let {
-            // 만약 한식 메뉴가 이미 추가되어 있다면 구분을 위해 빈 줄 추가
-            if (combinedMenus.isNotEmpty()) {
-                combinedMenus.add("")
-            }
-            combinedMenus.add("[일품]")
-            combinedMenus.addAll(it)
-        }
-
-        if (combinedMenus.isEmpty()) {
-            log.info("{} - 식단 정보가 비어있습니다.", topic)
+        if (koreaMenus.isNullOrEmpty() && topMenus.isNullOrEmpty()) {
             return null
         }
 
         return Meal(
             mealDate = today,
-            menus = combinedMenus,
+            koreaMenus = koreaMenus,
+            topMenus = topMenus,
             topic = topic
         )
     }

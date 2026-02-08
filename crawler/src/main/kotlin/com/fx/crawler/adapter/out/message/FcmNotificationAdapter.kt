@@ -143,8 +143,25 @@ class FcmNotificationAdapter(
 
     private fun buildMessage(meal: Meal): String {
         val header = "${meal.mealDate} ${meal.topic.category} 메뉴"
-        val menuList = meal.menus.joinToString("\n")
-        return "$header\n$menuList"
+        val lines = mutableListOf<String>()
+
+        meal.koreaMenus?.takeIf { it.isNotEmpty() }?.let {
+            lines += "[한식]"
+            lines += it
+        }
+
+        meal.topMenus?.takeIf { it.isNotEmpty() }?.let {
+            if (lines.isNotEmpty()) lines += ""
+            lines += "[일품]"
+            lines += it
+        }
+
+        val menuText = if (lines.isEmpty()) {
+            "등록된 식단 정보가 없습니다."
+        } else {
+            lines.joinToString("\n")
+        }
+        return "$header\n$menuText"
     }
 
     private fun notifySlack(content: String) {
