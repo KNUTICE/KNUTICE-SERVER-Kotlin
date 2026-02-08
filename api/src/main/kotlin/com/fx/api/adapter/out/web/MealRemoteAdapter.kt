@@ -36,7 +36,6 @@ class MealRemoteAdapter(
 
         return Meal(
             mealDate = date,
-            menus = emptyList(), // TODO: 일단 임의로 emptyList 처리, 추후 Crawler 로직과 함께 제거해 분리 예정
             koreaMenus = koreaMenus,
             topMenus = topMenus,
             topic = type
