@@ -2,15 +2,13 @@ package com.fx.api.config.ktor
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fx.global.exception.ConnectionException
-import com.fx.global.exception.NoticeException
 import com.fx.global.exception.errorcode.ConnectionErrorCode
-import com.fx.global.exception.errorcode.NoticeErrorCode
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.HttpResponseValidator
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.cookies.HttpCookies
-import io.ktor.serialization.jackson.jackson
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.cookies.*
+import io.ktor.serialization.jackson.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
