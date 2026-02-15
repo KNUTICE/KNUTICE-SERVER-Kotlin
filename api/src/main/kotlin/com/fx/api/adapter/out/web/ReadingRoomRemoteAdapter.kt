@@ -6,6 +6,7 @@ import com.fx.api.application.port.out.ReadingRoomRemotePort
 import com.fx.api.domain.ReadingRoomSeat
 import com.fx.api.domain.ReadingRoomStatus
 import com.fx.global.annotation.hexagonal.WebOutputAdapter
+import com.fx.global.domain.readingroom.ReadingRoom
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -53,7 +54,7 @@ class ReadingRoomRemoteAdapter(
 
         response.result.items.map { item ->
             ReadingRoomStatus(
-                roomId = item.room_no,
+                roomId = ReadingRoom.from(item.room_no),
                 roomName = item.name,
                 totalSeat = item.total_count,
                 availableSeat = item.remain_count,
@@ -67,19 +68,19 @@ class ReadingRoomRemoteAdapter(
     /**
      * 특정 열람실의 상세 좌석 정보 조회
      */
-    override suspend fun getReadingRoomSeats(roomId: Int, csrfToken: String): List<ReadingRoomSeat> = coroutineScope {
+    override suspend fun getReadingRoomSeats(readingRoom: ReadingRoom, csrfToken: String): List<ReadingRoomSeat> = coroutineScope {
         val response: ReadingRoomSeatRemoteResponse = httpClient.post("$rootUrl$seatsEndpoint") {
             header("x-csrf-token", csrfToken)
             setBody(FormDataContent(Parameters.build {
                 append("caller", "nicom")
-                append("room_no", roomId.toString())
+                append("room_no", readingRoom.roomId.toString())
             }))
         }.body()
 
         response.result.items.map { item ->
             ReadingRoomSeat(
-                roomId = item.room_no,
-                seatId = item.number,
+                roomId = ReadingRoom.from(item.room_no),
+                seatNumber = item.number,
                 row = item.y_pos,
                 column = item.x_pos,
                 isAvailable = item.use_type == 0,

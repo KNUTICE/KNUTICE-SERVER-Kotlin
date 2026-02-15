@@ -1,6 +1,7 @@
 package com.fx.api.adapter.`in`.web.dto.readingrooms
 
 import com.fx.api.domain.ReadingRoomStatus
+import com.fx.global.domain.readingroom.ReadingRoom
 
 /**
  * 열람실 정보 응답 DTO
@@ -10,7 +11,7 @@ import com.fx.api.domain.ReadingRoomStatus
  */
 data class ReadingRoomStatusResponse(
 
-    val roomId: Int, // 열람실 번호
+    val roomId: ReadingRoom, // 열람실 번호
     val roomName: String, // 열람실 이름
     val totalSeat: Int, // 총 좌석 수
     val availableSeat: Int, // 잔여 좌석 수
