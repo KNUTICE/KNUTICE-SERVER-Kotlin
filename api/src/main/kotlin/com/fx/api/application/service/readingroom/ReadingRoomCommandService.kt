@@ -31,9 +31,9 @@ class ReadingRoomCommandService(
 
         // 2. 열람실 좌석 정보 조회
         val seat = readingRoomRemotePort.getReadingRoomSeats(
-            seatAlertCommand.readingRoom.roomId,
+            seatAlertCommand.readingRoom,
             readingRoomRemotePort.getCsrfToken()
-        ).find { it.seatId == seatAlertCommand.seatNumber }
+        ).find { it.seatNumber == seatAlertCommand.seatNumber }
             ?: throw ReadingRoomException(ReadingRoomErrorCode.SEAT_NOT_FOUND)
 
         // 3. 좌석이 비어있는 경우 알림 등록하지 않음

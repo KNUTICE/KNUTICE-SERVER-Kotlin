@@ -8,6 +8,7 @@ import com.fx.api.adapter.`in`.web.swagger.ReadingRoomOpenApiSwagger
 import com.fx.api.application.port.`in`.readingroom.ReadingRoomCommandUseCase
 import com.fx.api.application.port.`in`.readingroom.ReadingRoomQueryUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
+import com.fx.global.domain.readingroom.ReadingRoom
 import com.fx.global.domain.readingroom.SeatAlert
 import io.github.seob7.Api
 import org.springframework.http.ResponseEntity
@@ -33,13 +34,13 @@ class ReadingRoomOpenApiAdapter(
             readingRoomQueryUseCase.getReadingRoomStatus(fcmToken)
         ))
 
-    @GetMapping("/{roomId}")
+    @GetMapping("/{readingRoom}")
     override suspend fun getReadingRoomSeats(
         @RequestHeader fcmToken: String,
-        @PathVariable roomId: Int
+        @PathVariable readingRoom: ReadingRoom
     ): ResponseEntity<Api<List<ReadingRoomSeatResponse>>> =
         Api.OK(ReadingRoomSeatResponse.from(
-            readingRoomQueryUseCase.getReadingRoomSeats(fcmToken, roomId)
+            readingRoomQueryUseCase.getReadingRoomSeats(fcmToken, readingRoom)
         ))
 
     @PostMapping("/seat-alerts")

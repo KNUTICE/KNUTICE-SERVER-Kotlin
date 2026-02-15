@@ -34,12 +34,4 @@ data class SeatAlert(
         CANCELLED
     }
 
-    enum class ReadingRoom(
-        val roomId: Int,
-    ) {
-        ROOM1(1),
-        ROOM2(2),
-        ROOM3(3)
-    }
-
 }

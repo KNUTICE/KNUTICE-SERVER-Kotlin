@@ -5,6 +5,7 @@ import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.ReadingRoomRemotePort
 import com.fx.api.domain.ReadingRoomSeat
 import com.fx.api.domain.ReadingRoomStatus
+import com.fx.global.domain.readingroom.ReadingRoom
 import com.fx.global.exception.FcmTokenException
 import com.fx.global.exception.errorcode.FcmTokenErrorCode
 import org.slf4j.LoggerFactory
@@ -24,11 +25,11 @@ class ReadingRoomQueryService(
 
         return readingRoomRemotePort.getReadingRoomStatus()
     }
-    override suspend fun getReadingRoomSeats(fcmToken: String, roomId: Int): List<ReadingRoomSeat> {
+    override suspend fun getReadingRoomSeats(fcmToken: String, readingRoom: ReadingRoom): List<ReadingRoomSeat> {
         fcmTokenPersistencePort.findByFcmToken(fcmToken)
             ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
 
-        return readingRoomRemotePort.getReadingRoomSeats(roomId, readingRoomRemotePort.getCsrfToken())
+        return readingRoomRemotePort.getReadingRoomSeats(readingRoom, readingRoomRemotePort.getCsrfToken())
     }
 
 }
