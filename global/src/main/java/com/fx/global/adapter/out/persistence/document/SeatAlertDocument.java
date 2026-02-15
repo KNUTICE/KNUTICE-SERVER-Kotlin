@@ -9,12 +9,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Document(collection = "seat_alert")
 @SuperBuilder
 @NoArgsConstructor
+@CompoundIndexes({
+    @CompoundIndex(
+        name = "unique_active_alert",
+        def = "{'fcmToken': 1, 'readingRoom': 1, 'seatNumber': 1, 'status': 1}",
+        unique = true
+    )
+})
 public class SeatAlertDocument extends MongoBaseDocument {
 
     @Id
@@ -24,7 +33,7 @@ public class SeatAlertDocument extends MongoBaseDocument {
 
     private ReadingRoom readingRoom;
 
-    private String seatNumber;
+    private int seatNumber;
 
     private SeatAlertStatus status;
 

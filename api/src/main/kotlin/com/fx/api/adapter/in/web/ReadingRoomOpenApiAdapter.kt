@@ -3,10 +3,12 @@ package com.fx.api.adapter.`in`.web
 import com.fx.api.adapter.`in`.web.dto.readingrooms.CreateSeatAlertRequest
 import com.fx.api.adapter.`in`.web.dto.readingrooms.ReadingRoomSeatResponse
 import com.fx.api.adapter.`in`.web.dto.readingrooms.ReadingRoomStatusResponse
+import com.fx.api.adapter.`in`.web.dto.readingrooms.SeatAlertResponse
 import com.fx.api.adapter.`in`.web.swagger.ReadingRoomOpenApiSwagger
 import com.fx.api.application.port.`in`.readingroom.ReadingRoomCommandUseCase
 import com.fx.api.application.port.`in`.readingroom.ReadingRoomQueryUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
+import com.fx.global.domain.readingroom.SeatAlert
 import io.github.seob7.Api
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -44,9 +46,9 @@ class ReadingRoomOpenApiAdapter(
     suspend fun createSeatAlert(
         @RequestHeader fcmToken: String,
         @RequestBody createSeatAlertRequest: CreateSeatAlertRequest
-    ): ResponseEntity<Api<String>> =
-        Api.OK(
+    ): ResponseEntity<Api<SeatAlertResponse>> =
+        Api.OK(SeatAlertResponse.from(
             readingRoomCommandUseCase.createSeatAlert(createSeatAlertRequest.toCommand(fcmToken))
-        )
+        ))
 
 }

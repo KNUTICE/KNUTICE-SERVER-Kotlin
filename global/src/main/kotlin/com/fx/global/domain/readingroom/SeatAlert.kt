@@ -1,12 +1,12 @@
 package com.fx.global.domain.readingroom
-
 import java.time.LocalDateTime
+
 data class SeatAlert(
 
     val id: String?,
     val fcmToken: String,
     val readingRoom: ReadingRoom,
-    val seatNumber: String,
+    val seatNumber: Int,
     val status: SeatAlertStatus,
     val notifiedAt: LocalDateTime? = null,
     val expiresAt: LocalDateTime,
@@ -15,16 +15,31 @@ data class SeatAlert(
 
 ) {
 
+    companion object {
+        fun createSeatAlert(fcmToken: String, readingRoom: ReadingRoom, seatNumber: Int): SeatAlert {
+            return SeatAlert(
+                id = null,
+                fcmToken = fcmToken,
+                readingRoom = readingRoom,
+                seatNumber = seatNumber,
+                status = SeatAlertStatus.ACTIVE,
+                expiresAt = LocalDateTime.now().plusHours(12)
+            )
+        }
+    }
+
     enum class SeatAlertStatus {
         ACTIVE,
         TRIGGERED,
         CANCELLED
     }
 
-    enum class ReadingRoom(val displayName: String) {
-        ROOM1("제1집중 학습 ZONE (콘센트)"),
-        ROOM2("제2집중 학습 ZONE"),
-        ROOM3("제3협업 학습 ZONE (콘센트)")
+    enum class ReadingRoom(
+        val roomId: Int,
+    ) {
+        ROOM1(1),
+        ROOM2(2),
+        ROOM3(3)
     }
 
 }
