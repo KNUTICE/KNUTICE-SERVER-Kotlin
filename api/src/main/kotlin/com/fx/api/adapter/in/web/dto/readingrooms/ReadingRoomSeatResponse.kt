@@ -1,6 +1,7 @@
 package com.fx.api.adapter.`in`.web.dto.readingrooms
 
 import com.fx.api.domain.ReadingRoomSeat
+import com.fx.global.domain.readingroom.ReadingRoom
 import java.time.LocalDateTime
 
 /**
@@ -11,8 +12,8 @@ import java.time.LocalDateTime
  */
 data class ReadingRoomSeatResponse(
 
-    val roomId: Int, // 열람실 번호
-    val seatId: Int, // 좌석 번호
+    val roomId: ReadingRoom, // 열람실 번호
+    val seatNumber: Int, // 좌석 번호
 
     val row: Int,    // 세로 위치
     val column: Int, // 가로 위치
@@ -27,7 +28,7 @@ data class ReadingRoomSeatResponse(
         fun from(readingRoomSeat: ReadingRoomSeat): ReadingRoomSeatResponse =
             ReadingRoomSeatResponse(
                 roomId = readingRoomSeat.roomId,
-                seatId = readingRoomSeat.seatId,
+                seatNumber = readingRoomSeat.seatNumber,
                 row = readingRoomSeat.row,
                 column = readingRoomSeat.column,
                 isAvailable = readingRoomSeat.isAvailable,

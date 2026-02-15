@@ -1,8 +1,10 @@
 package com.fx.api.domain
 
+import com.fx.global.domain.readingroom.ReadingRoom
+
 data class ReadingRoomStatus(
 
-    val roomId: Int, // 열람실 번호
+    val roomId: ReadingRoom, // 열람실 번호
     val roomName: String, // 열람실 이름
     val totalSeat: Int, // 총 좌석 수
     val availableSeat: Int, // 잔여 좌석 수

@@ -1,11 +1,12 @@
 package com.fx.api.domain
 
+import com.fx.global.domain.readingroom.ReadingRoom
 import java.time.LocalDateTime
 
 data class ReadingRoomSeat(
 
-    val roomId: Int, // 열람실 번호
-    val seatId: Int, // 좌석 번호
+    val roomId: ReadingRoom, // 열람실 번호
+    val seatNumber: Int, // 좌석 번호
 
     val row: Int,    // 세로 위치
     val column: Int, // 가로 위치
