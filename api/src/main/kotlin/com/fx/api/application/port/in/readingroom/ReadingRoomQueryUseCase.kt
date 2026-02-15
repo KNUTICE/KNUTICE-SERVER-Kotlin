@@ -1,4 +1,4 @@
-package com.fx.api.application.port.`in`
+package com.fx.api.application.port.`in`.readingroom
 
 import com.fx.api.domain.ReadingRoomSeat
 import com.fx.api.domain.ReadingRoomStatus

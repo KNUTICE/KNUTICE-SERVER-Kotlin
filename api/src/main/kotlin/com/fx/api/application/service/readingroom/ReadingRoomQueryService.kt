@@ -1,6 +1,6 @@
-package com.fx.api.application.service
+package com.fx.api.application.service.readingroom
 
-import com.fx.api.application.port.`in`.ReadingRoomQueryUseCase
+import com.fx.api.application.port.`in`.readingroom.ReadingRoomQueryUseCase
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.ReadingRoomRemotePort
 import com.fx.api.domain.ReadingRoomSeat
