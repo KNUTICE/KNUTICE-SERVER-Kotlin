@@ -1,9 +1,9 @@
-package com.fx.global.adapter.out.persistence.document;
+package com.fx.readingroom.adapter.out.persistence.document;
 
 import com.fx.global.adapter.out.persistence.base.MongoBaseDocument;
-import com.fx.global.domain.readingroom.ReadingRoom;
-import com.fx.global.domain.readingroom.SeatAlert;
-import com.fx.global.domain.readingroom.SeatAlert.SeatAlertStatus;
+import com.fx.readingroom.domain.ReadingRoom;
+import com.fx.readingroom.domain.SeatAlert;
+import com.fx.readingroom.domain.SeatAlert.SeatAlertStatus;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

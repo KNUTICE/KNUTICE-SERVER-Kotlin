@@ -1,4 +1,4 @@
-package com.fx.api.adapter.out.web.dto
+package com.fx.readingroom.adapter.out.web.dto
 
 data class ReadingRoomStatusRemoteResponse(
     val result: StatusData

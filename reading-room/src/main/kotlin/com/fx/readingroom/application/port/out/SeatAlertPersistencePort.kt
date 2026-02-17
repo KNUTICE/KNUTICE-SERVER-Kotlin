@@ -1,7 +1,7 @@
-package com.fx.api.application.port.out.readingroom
+package com.fx.readingroom.application.port.out
 
-import com.fx.global.domain.readingroom.SeatAlert
-import com.fx.global.domain.readingroom.SeatAlert.SeatAlertStatus
+import com.fx.readingroom.domain.SeatAlert
+import com.fx.readingroom.domain.SeatAlert.SeatAlertStatus
 
 interface SeatAlertPersistencePort {
 

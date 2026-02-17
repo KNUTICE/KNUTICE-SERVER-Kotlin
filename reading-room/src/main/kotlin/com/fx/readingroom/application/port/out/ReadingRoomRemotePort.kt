@@ -1,8 +1,8 @@
-package com.fx.api.application.port.out
+package com.fx.readingroom.application.port.out
 
-import com.fx.api.domain.ReadingRoomSeat
-import com.fx.api.domain.ReadingRoomStatus
-import com.fx.global.domain.readingroom.ReadingRoom
+import com.fx.readingroom.domain.ReadingRoom
+import com.fx.readingroom.domain.ReadingRoomSeat
+import com.fx.readingroom.domain.ReadingRoomStatus
 
 interface ReadingRoomRemotePort {
 

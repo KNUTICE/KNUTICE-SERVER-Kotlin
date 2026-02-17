@@ -1,10 +1,9 @@
 package com.fx.api.application.port.`in`.readingroom
 
-import com.fx.api.domain.ReadingRoomSeat
-import com.fx.api.domain.ReadingRoomStatus
-import com.fx.global.domain.FcmToken
-import com.fx.global.domain.readingroom.ReadingRoom
-import com.fx.global.domain.readingroom.SeatAlert
+import com.fx.readingroom.domain.ReadingRoomSeat
+import com.fx.readingroom.domain.ReadingRoomStatus
+import com.fx.readingroom.domain.ReadingRoom
+import com.fx.readingroom.domain.SeatAlert
 
 /**
  * 열람실 관련 조회를 위한 Input Port 입니다.

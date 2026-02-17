@@ -11,8 +11,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableFeignClients
 @EnableScheduling
 @EnableMongoAuditing
-@EnableMongoRepositories(basePackages = ["com.fx.api.adapter.out.persistence.repository"])
-@ComponentScan(basePackages = ["com.fx.api", "com.fx.api.adapter", "com.fx.global"])
+@EnableMongoRepositories(basePackages = ["com.fx"])
+@ComponentScan(basePackages = ["com.fx.api", "com.fx.api.adapter", "com.fx.global", "com.fx.readingroom"])
 @SpringBootApplication
 class ApiApplication
 

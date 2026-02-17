@@ -1,4 +1,4 @@
-package com.fx.global.domain.readingroom
+package com.fx.readingroom.domain
 
 enum class ReadingRoom(val roomId: Int) {
     ROOM1(1),

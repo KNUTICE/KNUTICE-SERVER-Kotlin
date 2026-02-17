@@ -8,8 +8,7 @@ import com.fx.api.adapter.`in`.web.swagger.ReadingRoomOpenApiSwagger
 import com.fx.api.application.port.`in`.readingroom.ReadingRoomCommandUseCase
 import com.fx.api.application.port.`in`.readingroom.ReadingRoomQueryUseCase
 import com.fx.global.annotation.hexagonal.WebInputAdapter
-import com.fx.global.domain.readingroom.ReadingRoom
-import com.fx.global.domain.readingroom.SeatAlert
+import com.fx.readingroom.domain.ReadingRoom
 import io.github.seob7.Api
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping

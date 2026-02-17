@@ -1,6 +1,6 @@
 package com.fx.api.application.port.`in`.dto
 
-import com.fx.global.domain.readingroom.ReadingRoom
+import com.fx.readingroom.domain.ReadingRoom
 
 data class CreateSeatAlertCommand(
 

@@ -4,7 +4,7 @@ import com.fx.api.adapter.`in`.web.dto.readingrooms.ReadingRoomSeatResponse
 import com.fx.api.adapter.`in`.web.dto.readingrooms.ReadingRoomStatusResponse
 import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
-import com.fx.global.domain.readingroom.ReadingRoom
+import com.fx.readingroom.domain.ReadingRoom
 import com.fx.global.exception.errorcode.FcmTokenErrorCode
 import io.github.seob7.Api
 import io.swagger.v3.oas.annotations.Operation

@@ -1,7 +1,7 @@
 package com.fx.api.adapter.`in`.web.dto.readingrooms
 
-import com.fx.api.domain.ReadingRoomStatus
-import com.fx.global.domain.readingroom.ReadingRoom
+import com.fx.readingroom.domain.ReadingRoomStatus
+import com.fx.readingroom.domain.ReadingRoom
 
 /**
  * 열람실 정보 응답 DTO

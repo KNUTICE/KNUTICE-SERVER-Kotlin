@@ -1,6 +1,5 @@
-package com.fx.api.domain
+package com.fx.readingroom.domain
 
-import com.fx.global.domain.readingroom.ReadingRoom
 import java.time.LocalDateTime
 
 data class ReadingRoomSeat(

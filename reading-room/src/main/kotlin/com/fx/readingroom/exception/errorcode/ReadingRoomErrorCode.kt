@@ -1,4 +1,4 @@
-package com.fx.global.exception.errorcode
+package com.fx.readingroom.exception.errorcode
 
 import io.github.seob7.BaseErrorCode
 import org.springframework.http.HttpStatus

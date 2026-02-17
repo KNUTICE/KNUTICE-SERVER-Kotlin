@@ -73,6 +73,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
     implementation(project(":global"))
+    implementation(project(":reading-room"))
 
     // Prometheus
     implementation("org.springframework.boot:spring-boot-starter-actuator")

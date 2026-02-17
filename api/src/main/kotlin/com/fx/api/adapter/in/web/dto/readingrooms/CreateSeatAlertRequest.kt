@@ -1,7 +1,7 @@
 package com.fx.api.adapter.`in`.web.dto.readingrooms
 
 import com.fx.api.application.port.`in`.dto.CreateSeatAlertCommand
-import com.fx.global.domain.readingroom.ReadingRoom
+import com.fx.readingroom.domain.ReadingRoom
 
 /**
  * 열람실 좌석 알림 요청 DTO
