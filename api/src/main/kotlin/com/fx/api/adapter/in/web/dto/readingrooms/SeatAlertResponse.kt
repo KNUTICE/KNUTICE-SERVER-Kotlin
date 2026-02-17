@@ -13,6 +13,7 @@ import java.time.LocalDateTime
  */
 data class SeatAlertResponse(
 
+    val alertId: String, // 알림 ID
     val readingRoom: ReadingRoom,
     val seatNumber: Int, // 좌석 번호
     val status: SeatAlertStatus, // 알림 상태
@@ -22,11 +23,15 @@ data class SeatAlertResponse(
     companion object {
         fun from(seatAlert: SeatAlert): SeatAlertResponse =
             SeatAlertResponse(
+                alertId = seatAlert.id!!,
                 readingRoom = seatAlert.readingRoom,
                 seatNumber = seatAlert.seatNumber,
                 status = seatAlert.status,
-                createdAt = seatAlert.createdAt ?: LocalDateTime.now()
+                createdAt = seatAlert.createdAt!!
             )
+
+        fun from(seatAlerts: List<SeatAlert>): List<SeatAlertResponse> =
+            seatAlerts.map { from(it) }
     }
 
 }

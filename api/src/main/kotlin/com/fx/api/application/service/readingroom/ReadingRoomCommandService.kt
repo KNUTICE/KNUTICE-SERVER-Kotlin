@@ -72,4 +72,14 @@ class ReadingRoomCommandService(
         }
     }
 
+    override fun deleteSeatAlert(fcmToken: String, alertId: String): Boolean {
+        if (!fcmTokenPersistencePort.existsByFcmToken(fcmToken)) {
+            throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+        }
+        if (!seatAlertPersistencePort.deleteByFcmTokenAndAlertId(fcmToken, alertId)) {
+            throw ReadingRoomException(ReadingRoomErrorCode.SEAT_NOT_FOUND)
+        }
+        return true
+    }
+
 }

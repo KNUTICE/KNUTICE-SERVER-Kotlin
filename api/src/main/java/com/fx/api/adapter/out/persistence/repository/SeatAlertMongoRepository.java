@@ -7,6 +7,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface SeatAlertMongoRepository extends MongoRepository<SeatAlertDocument, String> {
 
-    List<SeatAlertDocument> findByFcmTokenAndStatus(String fcmToken, SeatAlertStatus seatAlertStatus);
+    List<SeatAlertDocument> findByFcmTokenAndStatusOrderByCreatedAtDesc(
+        String fcmToken,
+        SeatAlertStatus seatAlertStatus
+    );
+
+    int deleteByFcmTokenAndId(String fcmToken, String id);
 
 }

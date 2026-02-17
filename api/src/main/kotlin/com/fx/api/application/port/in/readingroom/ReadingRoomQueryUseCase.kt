@@ -2,7 +2,9 @@ package com.fx.api.application.port.`in`.readingroom
 
 import com.fx.api.domain.ReadingRoomSeat
 import com.fx.api.domain.ReadingRoomStatus
+import com.fx.global.domain.FcmToken
 import com.fx.global.domain.readingroom.ReadingRoom
+import com.fx.global.domain.readingroom.SeatAlert
 
 /**
  * 열람실 관련 조회를 위한 Input Port 입니다.
@@ -15,5 +17,7 @@ interface ReadingRoomQueryUseCase {
     suspend fun getReadingRoomStatus(fcmToken: String): List<ReadingRoomStatus>
 
     suspend fun getReadingRoomSeats(fcmToken: String, readingRoom: ReadingRoom): List<ReadingRoomSeat>
+
+    fun getSeatAlerts(fcmToken: String): List<SeatAlert>
 
 }

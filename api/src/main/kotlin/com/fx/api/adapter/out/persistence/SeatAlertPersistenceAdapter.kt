@@ -16,7 +16,11 @@ class SeatAlertPersistenceAdapter(
         seatAlertMongoRepository.save(SeatAlertDocument.from(seatAlert)).toDomain()
 
     override fun findByFcmTokenAndStatus(fcmToken: String, seatAlertStatus: SeatAlertStatus): List<SeatAlert> =
-        seatAlertMongoRepository.findByFcmTokenAndStatus(fcmToken, seatAlertStatus)
+        seatAlertMongoRepository.findByFcmTokenAndStatusOrderByCreatedAtDesc(fcmToken, seatAlertStatus)
             .map { it.toDomain() }
+
+    override fun deleteByFcmTokenAndAlertId(fcmToken: String, alertId: String): Boolean {
+        return seatAlertMongoRepository.deleteByFcmTokenAndId(fcmToken, alertId) > 0
+    }
 
 }
