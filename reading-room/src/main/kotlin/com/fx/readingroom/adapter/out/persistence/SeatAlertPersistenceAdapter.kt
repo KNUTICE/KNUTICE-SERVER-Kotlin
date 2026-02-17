@@ -1,11 +1,11 @@
-package com.fx.api.adapter.out.persistence
+package com.fx.readingroom.adapter.out.persistence
 
-import com.fx.api.adapter.out.persistence.repository.SeatAlertMongoRepository
-import com.fx.api.application.port.out.readingroom.SeatAlertPersistencePort
-import com.fx.global.adapter.out.persistence.document.SeatAlertDocument
 import com.fx.global.annotation.PersistenceAdapter
-import com.fx.global.domain.readingroom.SeatAlert
-import com.fx.global.domain.readingroom.SeatAlert.SeatAlertStatus
+import com.fx.readingroom.adapter.out.persistence.document.SeatAlertDocument
+import com.fx.readingroom.adapter.out.persistence.repository.SeatAlertMongoRepository
+import com.fx.readingroom.application.port.out.SeatAlertPersistencePort
+import com.fx.readingroom.domain.SeatAlert
+import com.fx.readingroom.domain.SeatAlert.SeatAlertStatus
 
 @PersistenceAdapter
 class SeatAlertPersistenceAdapter(

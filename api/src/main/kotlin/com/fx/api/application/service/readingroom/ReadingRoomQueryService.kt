@@ -2,12 +2,12 @@ package com.fx.api.application.service.readingroom
 
 import com.fx.api.application.port.`in`.readingroom.ReadingRoomQueryUseCase
 import com.fx.api.application.port.out.FcmTokenPersistencePort
-import com.fx.api.application.port.out.ReadingRoomRemotePort
-import com.fx.api.application.port.out.readingroom.SeatAlertPersistencePort
-import com.fx.api.domain.ReadingRoomSeat
-import com.fx.api.domain.ReadingRoomStatus
-import com.fx.global.domain.readingroom.ReadingRoom
-import com.fx.global.domain.readingroom.SeatAlert
+import com.fx.readingroom.application.port.out.ReadingRoomRemotePort
+import com.fx.readingroom.application.port.out.SeatAlertPersistencePort
+import com.fx.readingroom.domain.ReadingRoomSeat
+import com.fx.readingroom.domain.ReadingRoomStatus
+import com.fx.readingroom.domain.ReadingRoom
+import com.fx.readingroom.domain.SeatAlert
 import com.fx.global.exception.FcmTokenException
 import com.fx.global.exception.errorcode.FcmTokenErrorCode
 import org.slf4j.LoggerFactory

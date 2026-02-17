@@ -1,6 +1,4 @@
-package com.fx.api.domain
-
-import com.fx.global.domain.readingroom.ReadingRoom
+package com.fx.readingroom.domain
 
 data class ReadingRoomStatus(
 

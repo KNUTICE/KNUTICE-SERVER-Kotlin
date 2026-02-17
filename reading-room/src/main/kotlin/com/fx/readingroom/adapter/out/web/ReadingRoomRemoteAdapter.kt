@@ -1,17 +1,21 @@
-package com.fx.api.adapter.out.web
+package com.fx.readingroom.adapter.out.web
 
-import com.fx.api.adapter.out.web.dto.ReadingRoomSeatRemoteResponse
-import com.fx.api.adapter.out.web.dto.ReadingRoomStatusRemoteResponse
-import com.fx.api.application.port.out.ReadingRoomRemotePort
-import com.fx.api.domain.ReadingRoomSeat
-import com.fx.api.domain.ReadingRoomStatus
 import com.fx.global.annotation.hexagonal.WebOutputAdapter
-import com.fx.global.domain.readingroom.ReadingRoom
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
-import io.ktor.http.*
+import com.fx.readingroom.adapter.out.web.dto.ReadingRoomSeatRemoteResponse
+import com.fx.readingroom.adapter.out.web.dto.ReadingRoomStatusRemoteResponse
+import com.fx.readingroom.application.port.out.ReadingRoomRemotePort
+import com.fx.readingroom.domain.ReadingRoom
+import com.fx.readingroom.domain.ReadingRoomSeat
+import com.fx.readingroom.domain.ReadingRoomStatus
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.forms.FormDataContent
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.Parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
@@ -54,7 +58,7 @@ class ReadingRoomRemoteAdapter(
 
         response.result.items.map { item ->
             ReadingRoomStatus(
-                roomId = ReadingRoom.from(item.room_no),
+                roomId = ReadingRoom.Companion.from(item.room_no),
                 roomName = item.name,
                 totalSeat = item.total_count,
                 availableSeat = item.remain_count,
@@ -68,28 +72,30 @@ class ReadingRoomRemoteAdapter(
     /**
      * 특정 열람실의 상세 좌석 정보 조회
      */
-    override suspend fun getReadingRoomSeats(readingRoom: ReadingRoom, csrfToken: String): List<ReadingRoomSeat> = coroutineScope {
-        val response: ReadingRoomSeatRemoteResponse = httpClient.post("$rootUrl$seatsEndpoint") {
-            header("x-csrf-token", csrfToken)
-            setBody(FormDataContent(Parameters.build {
-                append("caller", "nicom")
-                append("room_no", readingRoom.roomId.toString())
-            }))
-        }.body()
+    override suspend fun getReadingRoomSeats(readingRoom: ReadingRoom, csrfToken: String): List<ReadingRoomSeat> =
+        coroutineScope {
+            val response: ReadingRoomSeatRemoteResponse =
+                httpClient.post("$rootUrl$seatsEndpoint") {
+                    header("x-csrf-token", csrfToken)
+                    setBody(FormDataContent(Parameters.Companion.build {
+                        append("caller", "nicom")
+                        append("room_no", readingRoom.roomId.toString())
+                    }))
+                }.body()
 
-        response.result.items.map { item ->
-            ReadingRoomSeat(
-                roomId = ReadingRoom.from(item.room_no),
-                seatNumber = item.number,
-                row = item.y_pos,
-                column = item.x_pos,
-                isAvailable = item.use_type == 0,
-                userMaskedName = item.user_name,
-                returnAt = Instant.ofEpochMilli(item.seat_return)
-                    .atZone(ZoneId.of("Asia/Seoul"))
-                    .toLocalDateTime()
-            )
+            response.result.items.map { item ->
+                ReadingRoomSeat(
+                    roomId = ReadingRoom.Companion.from(item.room_no),
+                    seatNumber = item.number,
+                    row = item.y_pos,
+                    column = item.x_pos,
+                    isAvailable = item.use_type == 0,
+                    userMaskedName = item.user_name,
+                    returnAt = Instant.ofEpochMilli(item.seat_return)
+                        .atZone(ZoneId.of("Asia/Seoul"))
+                        .toLocalDateTime()
+                )
+            }
         }
-    }
 
 }

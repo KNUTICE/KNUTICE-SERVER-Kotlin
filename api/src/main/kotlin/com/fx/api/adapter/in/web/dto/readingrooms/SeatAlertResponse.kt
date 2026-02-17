@@ -1,8 +1,8 @@
 package com.fx.api.adapter.`in`.web.dto.readingrooms
 
-import com.fx.global.domain.readingroom.ReadingRoom
-import com.fx.global.domain.readingroom.SeatAlert
-import com.fx.global.domain.readingroom.SeatAlert.SeatAlertStatus
+import com.fx.readingroom.domain.ReadingRoom
+import com.fx.readingroom.domain.SeatAlert
+import com.fx.readingroom.domain.SeatAlert.SeatAlertStatus
 import java.time.LocalDateTime
 
 /**

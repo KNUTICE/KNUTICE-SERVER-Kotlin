@@ -1,7 +1,7 @@
-package com.fx.api.adapter.out.persistence.repository;
+package com.fx.readingroom.adapter.out.persistence.repository;
 
-import com.fx.global.adapter.out.persistence.document.SeatAlertDocument;
-import com.fx.global.domain.readingroom.SeatAlert.SeatAlertStatus;
+import com.fx.readingroom.adapter.out.persistence.document.SeatAlertDocument;
+import com.fx.readingroom.domain.SeatAlert.SeatAlertStatus;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
