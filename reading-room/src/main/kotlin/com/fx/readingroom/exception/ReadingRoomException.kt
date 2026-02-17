@@ -1,4 +1,4 @@
-package com.fx.global.exception
+package com.fx.readingroom.exception
 
 import io.github.seob7.BaseErrorCode
 import java.lang.RuntimeException

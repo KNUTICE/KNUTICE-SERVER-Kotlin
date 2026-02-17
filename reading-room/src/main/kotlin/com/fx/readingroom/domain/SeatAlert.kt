@@ -1,4 +1,4 @@
-package com.fx.global.domain.readingroom
+package com.fx.readingroom.domain
 import java.time.LocalDateTime
 
 data class SeatAlert(

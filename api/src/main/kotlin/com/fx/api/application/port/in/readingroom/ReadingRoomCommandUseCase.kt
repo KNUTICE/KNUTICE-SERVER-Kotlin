@@ -1,8 +1,7 @@
 package com.fx.api.application.port.`in`.readingroom
 
 import com.fx.api.application.port.`in`.dto.CreateSeatAlertCommand
-import com.fx.global.domain.FcmToken
-import com.fx.global.domain.readingroom.SeatAlert
+import com.fx.readingroom.domain.SeatAlert
 
 interface ReadingRoomCommandUseCase {
 
