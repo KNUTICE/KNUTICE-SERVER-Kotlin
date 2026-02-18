@@ -28,6 +28,7 @@ data class SeatAlert(
         }
     }
 
+    // dslee (2026-02-18) : 좌석 알림이 발송되거나 취소 시 바로 DB 삭제를 하므로 현재는 ACTIVE 만 사용함
     enum class SeatAlertStatus {
         ACTIVE,
         TRIGGERED,

@@ -23,4 +23,11 @@ class SeatAlertPersistenceAdapter(
         return seatAlertMongoRepository.deleteByFcmTokenAndId(fcmToken, alertId) > 0
     }
 
+    override fun delete(alertId: String) {
+        seatAlertMongoRepository.deleteById(alertId)
+    }
+
+    override fun findByAlertStatus(seatAlertStatus: SeatAlertStatus): List<SeatAlert> =
+        seatAlertMongoRepository.findByStatus(seatAlertStatus).map { it.toDomain() }
+
 }

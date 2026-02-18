@@ -29,6 +29,10 @@ dependencies {
     // Ktor Client (논블로킹 HTTP)
     implementation("io.ktor:ktor-client-cio:2.3.6")
 
+    // Ktor JSON Serialization
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.13")
+    implementation("io.ktor:ktor-serialization-jackson:2.3.13")
+
     // Mongo
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
@@ -63,6 +67,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
     implementation(project(":global"))
+    implementation(project(":reading-room"))
 
     // Prometheus
     implementation("org.springframework.boot:spring-boot-starter-actuator")
