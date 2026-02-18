@@ -72,7 +72,7 @@ object MessageFactory {
 
     private fun deeplinkData(alert: SeatAlert): Map<String, String> =
         mapOf(
-            "deeplink" to "knutice://reading-room?room=${alert.readingRoom.roomName}&seat=${alert.seatNumber}",
+            "deeplink" to "knutice://reading-room?roomId=${alert.readingRoom.name}&seat=${alert.seatNumber}",
         )
 
     private fun defaultNotification(notice: Notice, body: String): Notification =
