@@ -13,7 +13,7 @@ object MessageFactory {
         bodyMessage: String
     ): MulticastMessage {
         return MulticastMessage.builder()
-            .putAllData(deeplinkData(notice))
+            .putAllData(deeplinkData(notice, bodyMessage))
             .setNotification(defaultNotification(notice, bodyMessage))
             .setApnsConfig(apnsConfig())
             .setAndroidConfig(androidConfig())
@@ -55,19 +55,26 @@ object MessageFactory {
             .build()
     }
 
-    private fun deeplinkData(notice: Notice): Map<String, String> =
+    private fun deeplinkData(notice: Notice, bodyMessage: String): Map<String, String> =
         mapOf(
             // 1.6.x 이상 호환 Deeplink
             "deeplink" to "knutice://notice?nttId=${notice.nttId}&contentUrl=${notice.contentUrl}&FabVisible=true",
 
             // 1.5.x 이하 호환 Deeplink
             "nttId" to "${notice.nttId}",
-            "contentUrl" to "${notice.contentUrl}"
+            "contentUrl" to "${notice.contentUrl}",
+
+            // dslee (2026-02-18) : Android background 에서 Notification 못받는 경우 대비
+            "title" to notice.topic.category,
+            "body" to bodyMessage,
+            "image" to (notice.contentImageUrl ?: "")
         )
 
     private fun deeplinkData(meal: Meal): Map<String, String> =
         mapOf(
-            "deeplink" to "knutice://meal"
+            "deeplink" to "knutice://meal?topic=${meal.topic.name}",
+
+            "topic" to meal.topic.name
         )
 
     private fun deeplinkData(alert: SeatAlert): Map<String, String> =
@@ -77,7 +84,7 @@ object MessageFactory {
 
     private fun defaultNotification(notice: Notice, body: String): Notification =
         Notification.builder()
-            .setTitle("["+notice.topic.category+"]")
+            .setTitle(notice.topic.category)
             .setBody(body)
             .setImage(notice.contentImageUrl)
             .build()
