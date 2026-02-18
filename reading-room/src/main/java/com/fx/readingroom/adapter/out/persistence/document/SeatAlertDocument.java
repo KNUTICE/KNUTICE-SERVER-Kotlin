@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -39,6 +40,7 @@ public class SeatAlertDocument extends MongoBaseDocument {
 
     private LocalDateTime notifiedAt;
 
+    @Indexed(expireAfter = "0s") // 시간은 SeatAlert 도메인에서 결정함
     private LocalDateTime expiresAt;
 
     public static SeatAlertDocument from(SeatAlert seatAlert) {

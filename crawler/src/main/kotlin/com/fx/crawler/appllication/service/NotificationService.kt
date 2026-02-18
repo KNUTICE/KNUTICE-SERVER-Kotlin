@@ -18,6 +18,7 @@ import com.fx.global.exception.NotificationException
 import com.fx.global.exception.errorcode.FcmTokenErrorCode
 import com.fx.global.exception.errorcode.NoticeErrorCode
 import com.fx.global.exception.errorcode.NotificationErrorCode
+import com.fx.readingroom.domain.SeatAlert
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -125,6 +126,10 @@ class NotificationService(
             log.info("{} - 전송 실패 토큰 개수 : {}", notices[0].topic, failedTokens.size)
             throw NotificationException(NotificationErrorCode.NOTIFICATION_SEND_FAILED)
         }
+    }
+
+    override suspend fun sendSeatAlert(alert: SeatAlert) {
+        fcmNotificationPort.sendSeatAlert(alert)
     }
 
     private fun handleFailedTokens(failedTokens: List<FcmToken>) {

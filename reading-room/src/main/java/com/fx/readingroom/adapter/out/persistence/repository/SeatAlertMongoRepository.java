@@ -14,4 +14,6 @@ public interface SeatAlertMongoRepository extends MongoRepository<SeatAlertDocum
 
     int deleteByFcmTokenAndId(String fcmToken, String id);
 
+    List<SeatAlertDocument> findByStatus(SeatAlertStatus seatAlertStatus);
+
 }

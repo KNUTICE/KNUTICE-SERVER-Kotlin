@@ -49,6 +49,9 @@ services:
       - FIREBASE_KEY_PATH
       - WEBHOOK_SLACK_URL
       - GEMINI_API_KEY
+      - READING_ROOM_ROOT_URL
+      - READING_ROOM_SEATS_ENDPOINT
+      - READING_ROOM_STATUS_ENDPOINT
       - LOG_PATH=/logs
       - TZ=Asia/Seoul
     volumes:

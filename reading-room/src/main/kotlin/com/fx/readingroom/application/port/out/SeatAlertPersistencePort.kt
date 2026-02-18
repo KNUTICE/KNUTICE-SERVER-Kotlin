@@ -11,4 +11,8 @@ interface SeatAlertPersistencePort {
 
     fun deleteByFcmTokenAndAlertId(fcmToken: String, alertId: String): Boolean
 
+    fun delete(alertId: String)
+
+    fun findByAlertStatus(seatAlertStatus: SeatAlertStatus): List<SeatAlert>
+
 }
