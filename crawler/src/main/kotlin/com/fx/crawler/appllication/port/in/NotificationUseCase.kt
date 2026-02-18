@@ -1,6 +1,7 @@
 package com.fx.crawler.appllication.port.`in`
 
 import com.fx.global.domain.Notice
+import com.fx.readingroom.domain.SeatAlert
 
 interface NotificationUseCase {
 
@@ -9,5 +10,7 @@ interface NotificationUseCase {
     suspend fun sendNotification(fcmToken: String, nttId: Long)
 
     suspend fun sendSilentPushNotification()
+
+    suspend fun sendSeatAlert(alert: SeatAlert)
 
 }

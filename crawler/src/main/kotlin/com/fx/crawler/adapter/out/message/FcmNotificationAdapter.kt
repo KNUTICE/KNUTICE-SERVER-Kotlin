@@ -4,11 +4,13 @@ import com.fx.crawler.adapter.out.message.factory.MessageFactory
 import com.fx.crawler.appllication.port.out.FcmNotificationPort
 import com.fx.crawler.common.annotation.NotificationAdapter
 import com.fx.global.application.port.out.WebhookPort
+import com.fx.global.domain.DeviceType
 import com.fx.global.domain.FcmToken
 import com.fx.global.domain.Meal
 import com.fx.global.domain.Notice
 import com.fx.global.domain.SlackMessage
 import com.fx.global.domain.SlackType
+import com.fx.readingroom.domain.SeatAlert
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.MessagingErrorCode
 import com.google.firebase.messaging.MulticastMessage
@@ -75,6 +77,16 @@ class FcmNotificationAdapter(
 
             sendWithRetry(fcmTokens) { tokens ->
                 MessageFactory.createSilentPush(tokens)
+            }
+        }
+    }
+
+    override suspend fun sendSeatAlert(alert: SeatAlert) {
+        withContext(Dispatchers.IO) {
+            val bodyMessage = "${alert.readingRoom.roomName} ${alert.seatNumber}번 좌석이 비었습니다!"
+            // 임의로 더미 FcmToken 객체로 만들어서 전송
+            sendWithRetry(listOf(FcmToken.createFcmToken(alert.fcmToken, DeviceType.UNKNOWN))) { tokens ->
+                MessageFactory.create(tokens, alert, bodyMessage)
             }
         }
     }

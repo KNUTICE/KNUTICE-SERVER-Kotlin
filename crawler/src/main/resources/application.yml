@@ -24,6 +24,12 @@ firebase:
     key:
       path: ${FIREBASE_KEY_PATH}
 
+reading-room:
+  root-url: ${READING_ROOM_ROOT_URL}
+  endpoints:
+    seats: ${READING_ROOM_SEATS_ENDPOINT}
+    status: ${READING_ROOM_STATUS_ENDPOINT}
+
 logging:
   level:
     org:

@@ -2,6 +2,7 @@ package com.fx.crawler.adapter.out.message.factory
 
 import com.fx.global.domain.Meal
 import com.fx.global.domain.Notice
+import com.fx.readingroom.domain.SeatAlert
 import com.google.firebase.messaging.*
 
 object MessageFactory {
@@ -40,6 +41,20 @@ object MessageFactory {
             .addAllTokens(fcmTokens)
             .build()
 
+    fun create(
+        tokens: List<String>,
+        alert: SeatAlert,
+        bodyMessage: String
+    ): MulticastMessage {
+        return MulticastMessage.builder()
+            .putAllData(deeplinkData(alert))
+            .setNotification(seatAlertNotification(bodyMessage))
+            .setApnsConfig(apnsConfig())
+            .setAndroidConfig(androidConfig())
+            .addAllTokens(tokens)
+            .build()
+    }
+
     private fun deeplinkData(notice: Notice): Map<String, String> =
         mapOf(
             // 1.6.x 이상 호환 Deeplink
@@ -55,6 +70,11 @@ object MessageFactory {
             "deeplink" to "knutice://meal"
         )
 
+    private fun deeplinkData(alert: SeatAlert): Map<String, String> =
+        mapOf(
+            "deeplink" to "knutice://reading-room?room=${alert.readingRoom.roomName}&seat=${alert.seatNumber}",
+        )
+
     private fun defaultNotification(notice: Notice, body: String): Notification =
         Notification.builder()
             .setTitle("["+notice.topic.category+"]")
@@ -65,6 +85,12 @@ object MessageFactory {
     private fun mealNotification(meal: Meal, body: String): Notification =
         Notification.builder()
             .setTitle(meal.topic.category)
+            .setBody(body)
+            .build()
+
+    private fun seatAlertNotification(body: String): Notification =
+        Notification.builder()
+            .setTitle("빈자리 알림")
             .setBody(body)
             .build()
 
