@@ -61,13 +61,9 @@ object MessageFactory {
             "deeplink" to "knutice://notice?nttId=${notice.nttId}&contentUrl=${notice.contentUrl}&FabVisible=true",
 
             // 1.5.x 이하 호환 Deeplink
+            // dslee (2026-02-21) : Android deeplink encoding 문제로 인해 nttId, contentUrl 따로 전달
             "nttId" to "${notice.nttId}",
             "contentUrl" to "${notice.contentUrl}",
-
-            // dslee (2026-02-18) : Android background 에서 Notification 못받는 경우 대비
-            "title" to notice.topic.category,
-            "body" to bodyMessage,
-            "image" to (notice.contentImageUrl ?: "")
         )
 
     private fun deeplinkData(meal: Meal): Map<String, String> =
