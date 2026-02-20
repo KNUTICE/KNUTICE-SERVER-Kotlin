@@ -70,7 +70,7 @@ class ApiLogInterceptor(
     private fun getDeviceType(request: HttpServletRequest): DeviceType {
         val userAgent = request.getHeader("User-Agent")?.lowercase() ?: ""
         return when {
-            userAgent.contains("iphone") || userAgent.contains("ipad") -> DeviceType.iOS
+            userAgent.contains("ios") -> DeviceType.iOS
             userAgent.contains("android") -> DeviceType.AOS
             else -> DeviceType.UNKNOWN
         }
