@@ -3,7 +3,7 @@ import java.time.LocalDateTime
 
 data class SeatAlert(
 
-    val id: String?,
+    val id: String? = null,
     val fcmToken: String,
     val readingRoom: ReadingRoom,
     val seatNumber: Int,

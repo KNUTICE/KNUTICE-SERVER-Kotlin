@@ -22,4 +22,5 @@ class TipPersistenceAdapter(
 
     override fun getTips(deviceType: DeviceType): List<Tip> =
         tipMongoRepository.findAllByDeviceTypeOrderByCreatedAtDesc(deviceType).map { it.toDomain() }
+
 }
