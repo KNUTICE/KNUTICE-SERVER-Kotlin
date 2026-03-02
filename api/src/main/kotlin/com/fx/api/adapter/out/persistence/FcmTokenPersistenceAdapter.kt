@@ -1,6 +1,6 @@
 package com.fx.api.adapter.out.persistence
 
-import com.fx.api.adapter.out.persistence.repository.FcmTokenMongoRepository
+import com.fx.global.adapter.out.persistence.repository.FcmTokenMongoRepository
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.dto.TopicUpdateQuery
 import com.fx.global.adapter.out.persistence.document.FcmTokenDocument

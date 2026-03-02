@@ -1,6 +1,6 @@
 package com.fx.global.adapter.out.persistence.document;
 
-import com.fx.global.adapter.out.persistence.base.MongoBaseDocument;
+import com.fx.global.adapter.out.persistence.base.MongoBaseDocumentJava;
 import com.fx.global.domain.MajorType;
 import com.fx.global.domain.MealType;
 import com.fx.global.domain.NoticeType;
@@ -22,7 +22,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @SuperBuilder
 @NoArgsConstructor
 @QueryEntity
-public class FcmTokenDocument extends MongoBaseDocument {
+public class FcmTokenDocument extends MongoBaseDocumentJava {
 
     @Id
     private String fcmToken;
