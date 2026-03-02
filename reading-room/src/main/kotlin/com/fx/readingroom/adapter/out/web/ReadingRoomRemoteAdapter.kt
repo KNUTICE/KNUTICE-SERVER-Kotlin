@@ -8,6 +8,7 @@ import com.fx.readingroom.domain.ReadingRoom
 import com.fx.readingroom.domain.ReadingRoomSeat
 import com.fx.readingroom.domain.ReadingRoomStatus
 import io.ktor.client.HttpClient
+import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.get
@@ -52,10 +53,19 @@ class ReadingRoomRemoteAdapter(
      * 열람실별 전체 현황(요약 정보) 조회
      */
     override suspend fun getReadingRoomStatus(): List<ReadingRoomStatus> = coroutineScope {
-        val response: ReadingRoomStatusRemoteResponse = httpClient.get("$rootUrl$statusEndpoint") {
-            parameter("caller", "nicom")
-        }.body()
+        var response: ReadingRoomStatusRemoteResponse
 
+        try {
+            response = httpClient.get("$rootUrl$statusEndpoint") {
+                parameter("caller", "nicom")
+            }.body()
+        } catch (e: NoTransformationFoundException) {
+            // dslee (2026.02.10) : try 구문에서 html 응답이 오는 경우, 재시도 처리
+            log.error("열람실 현황 조회 중 응답 변환 실패, HTML 응답 수신. 재시도 시도 - ${e.message}")
+            response = httpClient.get("$rootUrl$statusEndpoint") {
+                parameter("caller", "nicom")
+            }.body()
+        }
         response.result.items.map { item ->
             ReadingRoomStatus(
                 roomId = ReadingRoom.Companion.from(item.room_no),
