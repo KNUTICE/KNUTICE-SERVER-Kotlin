@@ -3,7 +3,7 @@ package com.fx.api.application.service
 import com.fx.api.application.port.`in`.NotificationUseCase
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.NoticePersistencePort
-import com.fx.api.application.port.out.NotificationWebPort
+import com.fx.api.application.port.out.NotificationRemotePort
 import com.fx.global.domain.MealType
 import com.fx.global.exception.FcmTokenException
 import com.fx.global.exception.NoticeException
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class NotificationService(
-    private val notificationWebPort: NotificationWebPort,
+    private val notificationRemotePort: NotificationRemotePort,
     private val fcmTokenPersistencePort: FcmTokenPersistencePort,
     private val noticePersistencePort: NoticePersistencePort
 ) : NotificationUseCase {
@@ -31,7 +31,7 @@ class NotificationService(
      * @throws FcmTokenException 유효하지 않은 토큰일 경우
      * @throws NoticeException 공지가 존재하지 않을 경우
      */
-    override fun notifyNotice(fcmToken: String, nttId: Long): Boolean {
+    override suspend fun notifyNotice(fcmToken: String, nttId: Long): Boolean {
         if (!fcmTokenPersistencePort.existsByFcmToken(fcmToken)) {
             throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
         }
@@ -39,14 +39,14 @@ class NotificationService(
             throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)
         }
 
-        return notificationWebPort.notifyNotice(fcmToken, nttId)
+        return notificationRemotePort.notifyNotice(fcmToken, nttId)
     }
 
-    override fun notifyMeal(fcmToken: String, mealType: MealType): Boolean {
+    override suspend fun notifyMeal(fcmToken: String, mealType: MealType): Boolean {
         if (!fcmTokenPersistencePort.existsByFcmToken(fcmToken)) {
             throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
         }
 
-        return notificationWebPort.notifyMeal(fcmToken, mealType)
+        return notificationRemotePort.notifyMeal(fcmToken, mealType)
     }
 }
