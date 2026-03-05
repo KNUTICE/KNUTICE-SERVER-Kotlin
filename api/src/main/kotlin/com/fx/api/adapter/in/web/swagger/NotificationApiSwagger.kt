@@ -34,7 +34,7 @@ interface NotificationApiSwagger {
         ]
     )
     @Operation(summary = "공지 알림 발송", description = "입력한 Fcm token 과 nttId 로 알림메시지를 발송합니다.")
-    fun notifyNotice(
+    suspend fun notifyNotice(
         @RequestHeader fcmToken: String,
         @PathVariable nttId: Long
     ): ResponseEntity<Api<Boolean>>
@@ -58,7 +58,7 @@ interface NotificationApiSwagger {
     @Operation(summary = "학식 알림 발송", description = "입력한 Fcm token 과 mealType 으로 알림메시지를 발송합니다. <br>" +
             "mealType : `STUDENT_CAFETERIA(학생식당)`, `STAFF_CAFETERIA(교직원식당)` <br>" +
             "**학식 정보가 없는 경우 500 에러가 발생합니다.**")
-    fun notifyMeal(
+    suspend fun notifyMeal(
         @RequestHeader fcmToken: String,
         @PathVariable mealType: MealType
     ):  ResponseEntity<Api<Boolean>>

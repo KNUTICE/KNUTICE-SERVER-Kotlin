@@ -1,21 +1,23 @@
 package com.fx.api.config.security
 
 import com.fx.api.application.port.out.JwtProviderPort
-import jakarta.servlet.DispatcherType
+import com.fx.api.config.filter.JwtAuthenticationWebFilter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.http.HttpMethod
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder
+import org.springframework.security.config.web.server.ServerHttpSecurity
+import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import org.springframework.web.filter.CorsFilter
+import org.springframework.web.cors.reactive.CorsWebFilter
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 
 @Configuration
-@EnableWebSecurity
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
 class SecurityConfig(
     private val jwtProviderPort: JwtProviderPort,
     @Value("\${url.allowed-origins[0]}") private val allowedOrigin0: String,
@@ -30,39 +32,45 @@ class SecurityConfig(
     )
 
     @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http
+    fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
+        return http
             .csrf { it.disable() }
-            .cors {  }
+            .cors { } // CorsWebFilter 사용
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .authorizeHttpRequests { auth ->
-                auth
-                    .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
-                    .requestMatchers(*WHITE_LIST).permitAll()
-                    .requestMatchers("/api/**").hasRole("ADMIN")
-                    .anyRequest().authenticated()
+            .authorizeExchange { exchanges ->
+                exchanges
+                    .pathMatchers(*WHITE_LIST).permitAll()
+                    .pathMatchers("/api/**").hasRole("ADMIN")
+                    .anyExchange().authenticated()
             }
-            .addFilterBefore(
-                JwtAuthenticationFilter(jwtProviderPort),
-                UsernamePasswordAuthenticationFilter::class.java
+            .addFilterAt(
+                JwtAuthenticationWebFilter(jwtProviderPort),
+                SecurityWebFiltersOrder.AUTHENTICATION
             )
-        return http.build()
+            .build()
     }
 
     @Bean
-    fun corsFilter(): CorsFilter {
-        val config = CorsConfiguration()
-        val allowedOrigins = listOf(allowedOrigin0, allowedOrigin1)
-        config.allowedOriginPatterns = allowedOrigins
-        config.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-        config.allowedHeaders = listOf("*")
-        config.allowCredentials = true
+    fun corsWebFilter(): CorsWebFilter {
+        val config = CorsConfiguration().apply {
+            allowedOriginPatterns = listOf(allowedOrigin0, allowedOrigin1)
+            allowedMethods = listOf(
+                HttpMethod.GET.name(),
+                HttpMethod.POST.name(),
+                HttpMethod.PUT.name(),
+                HttpMethod.PATCH.name(),
+                HttpMethod.DELETE.name(),
+                HttpMethod.OPTIONS.name()
+            )
+            allowedHeaders = listOf("*")
+            allowCredentials = true
+        }
 
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", config)
-        return CorsFilter(source)
+
+        return CorsWebFilter(source)
     }
 
 }

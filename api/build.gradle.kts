@@ -34,14 +34,24 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.3.13")
     implementation("io.ktor:ktor-serialization-jackson:2.3.13")
 
-    // Mongo
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    // Apache Commons Text (HTML unescaping)
+    implementation("org.apache.commons:commons-text:1.15.0")
+
+    // Blocking Mongo
+//    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
+    // Non-blocking Mongo
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
 
     // OpenFeign
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+//    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     // Web
-    implementation("org.springframework.boot:spring-boot-starter-web")
+//    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    // WebFlux
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 
     // Jsoup (Crawler)
     implementation("org.jsoup:jsoup:1.21.2")
@@ -66,11 +76,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // Swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+//    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.9")
 
     // Lombok
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
+//    compileOnly("org.projectlombok:lombok")
+//    annotationProcessor("org.projectlombok:lombok")
 
     implementation(project(":global"))
     implementation(project(":reading-room"))

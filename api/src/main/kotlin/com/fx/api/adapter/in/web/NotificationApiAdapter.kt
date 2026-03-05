@@ -21,7 +21,7 @@ class NotificationApiAdapter(
     private val log = LoggerFactory.getLogger(NoticeOpenApiAdapter::class.java)
 
     @PostMapping("/notices/{nttId}")
-    override fun notifyNotice(
+    override suspend fun notifyNotice(
         @RequestHeader fcmToken: String,
         @PathVariable nttId: Long
     ): ResponseEntity<Api<Boolean>> =
@@ -30,7 +30,7 @@ class NotificationApiAdapter(
 
 
     @PostMapping("/meals/{mealType}")
-    override fun notifyMeal(
+    override suspend fun notifyMeal(
         @RequestHeader fcmToken: String,
         @PathVariable mealType: MealType
     ): ResponseEntity<Api<Boolean>> =

@@ -19,7 +19,7 @@ interface NotificationUseCase {
      * @param nttId 알림을 전송할 공지의 고유 ID
      * @return 알림 발송 성공 여부
      */
-    fun notifyNotice(fcmToken: String, nttId: Long): Boolean
+    suspend fun notifyNotice(fcmToken: String, nttId: Long): Boolean
 
 
     /**
@@ -29,6 +29,6 @@ interface NotificationUseCase {
      * @param mealType 알림을 전송할 학식 종류
      * @return 알림 발송 성공 여부
      */
-    fun notifyMeal(fcmToken: String, mealType: MealType): Boolean
+    suspend fun notifyMeal(fcmToken: String, mealType: MealType): Boolean
 
 }
