@@ -5,7 +5,7 @@ import com.fx.api.application.port.`in`.dto.FcmTokenSaveCommand
 import com.fx.api.application.port.`in`.dto.FcmTokenUpdateCommand
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
-import com.fx.global.domain.TopicType
+import com.fx.api.application.port.out.dto.TopicUpdateQuery
 import com.fx.global.exception.FcmTokenException
 import com.fx.global.exception.errorcode.FcmTokenErrorCode
 import com.fx.global.domain.FcmToken
@@ -67,42 +67,19 @@ class FcmTokenCommandService(
     }
 
     override fun updateTopic(topicUpdateCommand: TopicUpdateCommand): Boolean {
-        val fcmToken = (fcmTokenPersistencePort.findByFcmToken(topicUpdateCommand.fcmToken)
-            ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND))
-
-        val updatedFcmToken = when (topicUpdateCommand.topicType) {
-            TopicType.NOTICE -> fcmToken.copy(
-                subscribedNoticeTopics = updateTopicSet(fcmToken.subscribedNoticeTopics, topicUpdateCommand)
+        val updated = fcmTokenPersistencePort.atomicUpdateTopic(
+            TopicUpdateQuery(
+                fcmToken = topicUpdateCommand.fcmToken,
+                topicType = topicUpdateCommand.topicType,
+                topic = topicUpdateCommand.topic,
+                enabled = topicUpdateCommand.enabled
             )
-            TopicType.MAJOR -> fcmToken.copy(
-                subscribedMajorTopics = updateTopicSet(fcmToken.subscribedMajorTopics, topicUpdateCommand)
-            )
-            TopicType.MEAL -> fcmToken.copy(
-                subscribedMealTopics = updateTopicSet(fcmToken.subscribedMealTopics, topicUpdateCommand)
-            )
+        )
+        if (!updated) {
+            throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
         }
-
-        fcmTokenPersistencePort.saveFcmToken(updatedFcmToken)
         return true
     }
-
-    private fun <T: Enum<T>> updateTopicSet(
-        currentTopics: Set<T>,
-        topicUpdateCommand: TopicUpdateCommand
-    ): Set<T> {
-        val updated = currentTopics.toMutableSet()
-
-        @Suppress("UNCHECKED_CAST")
-        val topic = topicUpdateCommand.topic as T
-
-        if (topicUpdateCommand.enabled)
-            updated.add(topic)
-        else
-            updated.remove(topic)
-        return updated
-    }
-
-
 
 
 }
