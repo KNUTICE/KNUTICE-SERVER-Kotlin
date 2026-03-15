@@ -23,7 +23,7 @@ class NoticeOpenApiAdapter(
 ) : NoticeOpenApiSwagger {
 
     @GetMapping
-    override fun getNotices(
+    override suspend fun getNotices(
         @ModelAttribute noticeSearchParam: NoticeSearchParam,
         @PageableDefault(sort = ["nttId"], direction = Sort.Direction.DESC, size = 20) pageable: Pageable
     ): ResponseEntity<Api<List<NoticeResponse>>> =

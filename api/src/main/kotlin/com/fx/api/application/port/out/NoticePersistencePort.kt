@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 interface NoticePersistencePort {
 
-    fun getNotices(noticeQuery: NoticeQuery): List<Notice>
+    suspend fun getNotices(noticeQuery: NoticeQuery): List<Notice>
     fun getNotice(nttId: Long): Notice?
     fun saveNotice(notice: Notice)
     fun deleteById(nttId: Long)

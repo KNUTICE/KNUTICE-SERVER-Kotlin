@@ -13,7 +13,7 @@ class NoticeQueryService(
     private val noticePersistencePort: NoticePersistencePort
 ): NoticeQueryUseCase {
 
-    override fun getNotices(noticeQuery: NoticeQuery): List<Notice> {
+    override suspend fun getNotices(noticeQuery: NoticeQuery): List<Notice> {
         val notices = noticePersistencePort.getNotices(noticeQuery)
         if (notices.isEmpty()) {
             throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)

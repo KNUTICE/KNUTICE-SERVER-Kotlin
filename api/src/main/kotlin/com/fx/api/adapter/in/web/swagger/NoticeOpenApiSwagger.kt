@@ -32,7 +32,7 @@ interface NoticeOpenApiSwagger {
     @Operation(summary = "공지 목록을 조회/검색합니다.",
         description = "ex) /open-api/v1/notices?topic=GENERAL_NEWS&size=5&nttId=1081908&keyword=파이썬&sort=nttId,DESC <br>" +
                 "[DEFAULT : sort=nttId,DESC&size=20]")
-    fun getNotices(
+    suspend fun getNotices(
         @ModelAttribute noticeSearchParam: NoticeSearchParam,
         @PageableDefault(sort = ["nttId"], direction = Sort.Direction.DESC, size = 20) pageable: Pageable
     ): ResponseEntity<Api<List<NoticeResponse>>>
