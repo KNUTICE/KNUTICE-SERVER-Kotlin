@@ -126,62 +126,39 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
             enabled = false
         )
 
-        val mealTopicUpdateCommand = TopicUpdateCommand(
-            fcmToken = fcmTokenStr,
-            topicType = TopicType.MEAL,
-            topic = MealType.STUDENT_CAFETERIA,
-            enabled = false
-        )
-
-        val fcmToken = FcmToken.createFcmToken(
-            fcmTokenStr,
-            DeviceType.iOS
-        )
-
         When("Fcm token 이 존재하지 않는 경우") {
+            clearMocks(fcmTokenPersistencePort)
             every {
-                fcmTokenPersistencePort.findByFcmToken(fcmTokenStr)
-            } returns null
+                fcmTokenPersistencePort.atomicUpdateTopic(any())
+            } returns false
 
             Then("FcmTokenException 예외 발생") {
                 val exception = shouldThrow<FcmTokenException> {
                     fcmTokenCommandService.updateTopic(noticeTopicUpdateCommand)
                 }
-
                 exception.baseErrorCode shouldBe FcmTokenErrorCode.TOKEN_NOT_FOUND
             }
         }
 
-        When("Fcm token 이 존재하는 경유") {
+        When("Fcm token 이 존재하는 경우") {
             clearMocks(fcmTokenPersistencePort)
             every {
-                fcmTokenPersistencePort.findByFcmToken(noticeTopicUpdateCommand.fcmToken)
-            } returns fcmToken
+                fcmTokenPersistencePort.atomicUpdateTopic(any())
+            } returns true
 
-            Then("GENERAL_NEWS Topic 제거") {
+            Then("GENERAL_NEWS Topic 제거 요청이 원자적으로 전달된다") {
                 val result = fcmTokenCommandService.updateTopic(noticeTopicUpdateCommand)
                 result shouldBe true
 
                 verify(exactly = 1) {
-                    fcmTokenPersistencePort.saveFcmToken(match {
-                        it.fcmToken == noticeTopicUpdateCommand.fcmToken && !it.subscribedNoticeTopics.contains(
-                            NoticeType.GENERAL_NEWS)
+                    fcmTokenPersistencePort.atomicUpdateTopic(match {
+                        it.fcmToken == noticeTopicUpdateCommand.fcmToken &&
+                        it.topicType == noticeTopicUpdateCommand.topicType &&
+                        it.topic == noticeTopicUpdateCommand.topic &&
+                        !it.enabled
                     })
                 }
             }
-
-            // TODO : 앱 기능 추가 후 활성화
-//            Then("STUDENT_CAFETERIA Topic 제거") {
-//                val result = fcmTokenCommandService.updateTopic(mealTopicUpdateCommand)
-//                result shouldBe true
-//
-//                verify(exactly = 1) {
-//                    fcmTokenPersistencePort.saveFcmToken(match {
-//                        it.fcmToken == mealTopicUpdateCommand.fcmToken && !it.subscribedMealTopics.contains(
-//                            MealType.STUDENT_CAFETERIA)
-//                    })
-//                }
-//            }
         }
     }
 
