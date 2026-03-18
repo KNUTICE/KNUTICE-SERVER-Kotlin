@@ -6,8 +6,8 @@ import org.springframework.web.multipart.MultipartFile
 
 interface ImageCommandUseCase {
 
-    fun uploadImage(imageFile: MultipartFile, type: ImageType): Image
+    suspend fun uploadImage(imageFile: MultipartFile, type: ImageType): Image
 
-    fun deleteImage(imageId: String): Boolean
+    suspend fun deleteImage(imageId: String): Boolean
 
 }

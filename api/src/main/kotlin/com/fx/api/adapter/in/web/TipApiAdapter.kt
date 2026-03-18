@@ -20,11 +20,11 @@ class TipApiAdapter(
 ) : TipApiSwagger {
 
     @PostMapping
-    override fun saveTip(@RequestBody @Valid tipSaveRequest: TipSaveRequest): ResponseEntity<Api<Boolean>> =
+    override suspend fun saveTip(@RequestBody @Valid tipSaveRequest: TipSaveRequest): ResponseEntity<Api<Boolean>> =
         Api.OK(tipCommandUseCase.saveTip(tipSaveRequest.toCommand()), "TIP 이 저장되었습니다.")
 
     @DeleteMapping("/{tipId}")
-    override fun deleteTip(@PathVariable tipId: String): ResponseEntity<Api<Boolean>> =
+    override suspend fun deleteTip(@PathVariable tipId: String): ResponseEntity<Api<Boolean>> =
         Api.OK(tipCommandUseCase.deleteTip(tipId), "TIP 이 삭제되었습니다.")
 
 }

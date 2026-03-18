@@ -5,14 +5,14 @@ import com.fx.api.domain.ImageType
 
 interface ImagePersistencePort {
 
-    fun save(image: Image): Image
+    suspend fun save(image: Image): Image
 
-    fun findByType(type: ImageType): Image?
+    suspend fun findByType(type: ImageType): Image?
 
-    fun findAllByType(type: ImageType): List<Image>
+    suspend fun findAllByType(type: ImageType): List<Image>
 
-    fun findById(imageId: String): Image?
+    suspend fun findById(imageId: String): Image?
 
-    fun delete(imageId: String)
+    suspend fun delete(imageId: String)
 
 }

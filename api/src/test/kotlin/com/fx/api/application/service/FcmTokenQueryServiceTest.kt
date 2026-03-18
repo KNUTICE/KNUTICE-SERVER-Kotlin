@@ -7,7 +7,7 @@ import com.fx.global.exception.errorcode.FcmTokenErrorCode
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 
 class FcmTokenQueryServiceTest : BehaviorSpec({
@@ -26,7 +26,7 @@ class FcmTokenQueryServiceTest : BehaviorSpec({
     )
 
     Given("토픽 조회") {
-        every { fcmTokenPersistencePort.findByFcmToken(fcmTokenValue) } returns fcmToken
+        coEvery { fcmTokenPersistencePort.findByFcmToken(fcmTokenValue) } returns fcmToken
 
         When("Notice 토픽 조회") {
             val result = fcmTokenQueryService.getMyTopics(fcmTokenValue, TopicType.NOTICE)
@@ -54,7 +54,7 @@ class FcmTokenQueryServiceTest : BehaviorSpec({
     }
 
     Given("토큰이 존재하지 않은 경우") {
-        every { fcmTokenPersistencePort.findByFcmToken(fcmTokenValue) } returns null
+        coEvery { fcmTokenPersistencePort.findByFcmToken(fcmTokenValue) } returns null
 
         When("토픽을 조회") {
             Then("예외가 발생") {

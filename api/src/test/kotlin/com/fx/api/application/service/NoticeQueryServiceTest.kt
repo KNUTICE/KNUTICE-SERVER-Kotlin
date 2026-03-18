@@ -10,7 +10,7 @@ import com.fx.global.exception.errorcode.NoticeErrorCode
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -44,7 +44,7 @@ class NoticeQueryServiceTest : BehaviorSpec({
         val notices = createNotice(pageSize, NoticeType.GENERAL_NEWS)
 
         When("GENERAL_NEWS 목록 조회") {
-            every { noticePersistencePort.getNotices(noticeQuery) } returns notices
+            coEvery { noticePersistencePort.getNotices(noticeQuery) } returns notices
 
             Then("목록 정상 반환") {
                 val result = noticeQueryService.getNotices(noticeQuery)
@@ -54,7 +54,7 @@ class NoticeQueryServiceTest : BehaviorSpec({
         }
 
         When("공지 목록이 비어있는 경우") {
-            every { noticePersistencePort.getNotices(noticeQuery) } returns emptyList()
+            coEvery { noticePersistencePort.getNotices(noticeQuery) } returns emptyList()
 
             Then("NoticeException 예외 발생") {
                 val exception = shouldThrow<NoticeException> { noticeQueryService.getNotices(noticeQuery) }
@@ -67,7 +67,7 @@ class NoticeQueryServiceTest : BehaviorSpec({
         val notice = createNotice(1, NoticeType.GENERAL_NEWS).first()
 
         When("존재하는 nttId 조회") {
-            every { noticePersistencePort.getNotice(notice.nttId) } returns notice
+            coEvery { noticePersistencePort.getNotice(notice.nttId) } returns notice
 
             Then("정상 반환") {
                 val result = noticeQueryService.getNotice(notice.nttId)
@@ -76,7 +76,7 @@ class NoticeQueryServiceTest : BehaviorSpec({
         }
 
         When("존재하지 않는 nttId 조회") {
-            every { noticePersistencePort.getNotice(999L) } returns null
+            coEvery { noticePersistencePort.getNotice(999L) } returns null
 
             Then("NoticeException 예외 발생") {
                 val exception = shouldThrow<NoticeException> { noticeQueryService.getNotice(999L) }

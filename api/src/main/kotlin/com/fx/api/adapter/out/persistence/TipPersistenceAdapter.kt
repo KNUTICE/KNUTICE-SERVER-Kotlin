@@ -12,15 +12,15 @@ class TipPersistenceAdapter(
     private val tipMongoRepository: TipMongoRepository
 ) : TipPersistencePort {
 
-    override fun saveTip(tip: Tip) {
+    override suspend fun saveTip(tip: Tip) {
         tipMongoRepository.save(TipDocument.from(tip))
     }
 
-    override fun deleteById(tipId: String) {
+    override suspend fun deleteById(tipId: String) {
         tipMongoRepository.deleteById(tipId)
     }
 
-    override fun getTips(deviceType: DeviceType): List<Tip> =
+    override suspend fun getTips(deviceType: DeviceType): List<Tip> =
         tipMongoRepository.findAllByDeviceTypeOrderByCreatedAtDesc(deviceType).map { it.toDomain() }
 
 }

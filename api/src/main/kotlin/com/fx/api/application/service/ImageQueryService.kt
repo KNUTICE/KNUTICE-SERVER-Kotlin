@@ -13,7 +13,7 @@ class ImageQueryService(
     private val imagePersistencePort: ImagePersistencePort
 ) : ImageQueryUseCase {
 
-    override fun getImages(type: ImageType): List<Image> {
+    override suspend fun getImages(type: ImageType): List<Image> {
         val images = imagePersistencePort.findAllByType(type)
         if (images.isEmpty()) {
             throw ImageException(ImageErrorCode.IMAGE_NOT_FOUND)

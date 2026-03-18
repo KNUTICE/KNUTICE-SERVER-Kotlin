@@ -107,7 +107,7 @@ interface ReadingRoomOpenApiSwagger {
     )
     @Operation(summary = "빈자리 알림 조회", description = "등록된 빈자리 알림을 조회합니다. <br>" +
             "알림이 활성화된 좌석에 대한 정보가 반환됩니다.")
-    fun getSeatAlerts(
+    suspend fun getSeatAlerts(
         @RequestHeader fcmToken: String
     ): ResponseEntity<Api<List<SeatAlertResponse>>>
 
@@ -128,7 +128,7 @@ interface ReadingRoomOpenApiSwagger {
         ]
     )
     @Operation(summary = "빈자리 알림 삭제", description = "등록된 빈자리 알림을 삭제합니다.")
-    fun deleteSeatAlert(
+    suspend fun deleteSeatAlert(
         @RequestHeader fcmToken: String,
         @PathVariable alertId: String
     ): ResponseEntity<Api<Boolean>>

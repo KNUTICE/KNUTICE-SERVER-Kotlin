@@ -106,6 +106,10 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5-jvm:5.9.1")
     testImplementation("io.kotest:kotest-assertions-core-jvm:5.9.1")
     testImplementation("io.mockk:mockk:1.14.5")
+
+
+    // BlockHound (Reactor 블로킹 탐지)
+//    implementation("io.projectreactor.tools:blockhound:1.0.8.RELEASE")
 }
 
 dependencyManagement {

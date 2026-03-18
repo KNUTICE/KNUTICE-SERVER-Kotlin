@@ -6,7 +6,7 @@ import com.fx.global.domain.Notice
 interface NoticeQueryUseCase {
 
     suspend fun getNotices(noticeQuery: NoticeQuery): List<Notice>
-    fun getNotice(nttId: Long): Notice
-    fun getNoticeSummary(nttId: Long): Notice
+    suspend fun getNotice(nttId: Long): Notice
+    suspend fun getNoticeSummary(nttId: Long): Notice
 
 }

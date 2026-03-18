@@ -6,8 +6,8 @@ import java.time.LocalDateTime
 
 interface ApiLogPersistencePort {
 
-    fun save(apiLog: ApiLog)
+    suspend fun save(apiLog: ApiLog)
 
-    fun aggregateDailyTopicStatistics(start: LocalDateTime, end: LocalDateTime): List<DailyTopicCount>
+    suspend fun aggregateDailyTopicStatistics(start: LocalDateTime, end: LocalDateTime): List<DailyTopicCount>
 
 }

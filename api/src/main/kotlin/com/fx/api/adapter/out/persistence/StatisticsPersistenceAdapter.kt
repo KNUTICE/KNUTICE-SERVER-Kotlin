@@ -12,7 +12,7 @@ class StatisticsPersistenceAdapter(
     private val dailyStatisticsRepository: StatisticsMongoRepository
 ) : StatisticsPersistencePort {
 
-    override fun findAllByDateLessThan(date: LocalDate, pageable: Pageable): List<DailyStatistics> =
+    override suspend fun findAllByDateLessThan(date: LocalDate, pageable: Pageable): List<DailyStatistics> =
         dailyStatisticsRepository.findByStatisticsDateLessThan(date, pageable)
             .map { it.toDomain() }
 

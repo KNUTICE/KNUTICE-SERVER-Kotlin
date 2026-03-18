@@ -23,11 +23,11 @@ class ApiLogPersistenceAdapter(
     private val mongoTemplate: MongoTemplate
 ): ApiLogPersistencePort {
 
-    override fun save(apiLog: ApiLog) {
+    override suspend fun save(apiLog: ApiLog) {
         apiLogMongoRepository.save(ApiLogDocument.from(apiLog))
     }
 
-    override fun aggregateDailyTopicStatistics(start: LocalDateTime, end: LocalDateTime): List<DailyTopicCount> {
+    override suspend fun aggregateDailyTopicStatistics(start: LocalDateTime, end: LocalDateTime): List<DailyTopicCount> {
         val aggregation = Aggregation.newAggregation(
 
             // 1. notices API만

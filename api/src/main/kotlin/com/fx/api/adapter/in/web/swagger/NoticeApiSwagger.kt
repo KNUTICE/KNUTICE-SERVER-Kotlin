@@ -28,7 +28,7 @@ interface NoticeApiSwagger {
         ]
     )
     @Operation(summary = "공지 저장", description = "nttId 가 이미 존재하는 경우 예외 발생합니다.")
-    fun saveNotice(
+    suspend fun saveNotice(
         @RequestBody @Valid noticeRequest: NoticeRequest,
         @RequestParam type: TopicType
     ): ResponseEntity<Api<Boolean>>
@@ -44,7 +44,7 @@ interface NoticeApiSwagger {
         ]
     )
     @Operation(summary = "공지 수정", description = "Request Body 에 값이 없는 경우 null 처리됩니다.")
-    fun updateNotice(
+    suspend fun updateNotice(
         @RequestBody @Valid noticeRequest: NoticeRequest,
         @RequestParam type: TopicType,
     ): ResponseEntity<Api<Boolean>>
@@ -60,5 +60,5 @@ interface NoticeApiSwagger {
         ]
     )
     @Operation(summary = "공지 삭제", description = "영구삭제되며 복구 불가능합니다.")
-    fun deleteNotice(@PathVariable nttId: Long): ResponseEntity<Api<Boolean>>
+    suspend fun deleteNotice(@PathVariable nttId: Long): ResponseEntity<Api<Boolean>>
 }

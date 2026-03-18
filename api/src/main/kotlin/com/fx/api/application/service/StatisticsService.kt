@@ -59,8 +59,8 @@ class StatisticsService(
 
         val pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "statisticsDate"))
 
-        apiLogStatisticsPersistencePort.findAllByDateLessThan(startingCursor, pageable)
-    }
+            apiLogStatisticsPersistencePort.findAllByDateLessThan(startingCursor, pageable)
+        }
 
     override suspend fun getTopicStatistics(cursorDate: LocalDate?, size: Int): List<DailyTopicCount> {
         val today = LocalDate.now()

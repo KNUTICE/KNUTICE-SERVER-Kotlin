@@ -21,7 +21,7 @@ class ImageApiAdapter(
 ) : ImageApiSwagger {
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    override fun uploadImage(
+    override suspend fun uploadImage(
         @RequestParam("image") image: MultipartFile,
         @RequestParam type: ImageType
     ): ResponseEntity<Api<ImageResponse>> =
@@ -31,7 +31,7 @@ class ImageApiAdapter(
         )
 
     @DeleteMapping
-    override fun deleteImage(@RequestParam imageId: String): ResponseEntity<Api<Boolean>> =
+    override suspend fun deleteImage(@RequestParam imageId: String): ResponseEntity<Api<Boolean>> =
         Api.OK(imageCommandUseCase.deleteImage(imageId), "이미지가 제거되었습니다.")
 
 }

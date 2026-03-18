@@ -11,7 +11,7 @@ class ReportPersistenceAdapter(
     private val reportMongoRepository: ReportMongoRepository
 ): ReportPersistencePort {
 
-    override fun saveReport(report: Report): Report =
+    override suspend fun saveReport(report: Report): Report =
         reportMongoRepository.save(ReportDocument.from(report)).toDomain()
 
 }

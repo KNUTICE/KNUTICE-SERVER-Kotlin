@@ -25,7 +25,7 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
 
         When("존재하지 않은 토큰인 경우") {
             clearMocks(fcmTokenPersistencePort)
-            every {
+            coEvery {
                 fcmTokenPersistencePort.findByFcmToken(fcmTokenSaveCommand.fcmToken)
             } returns null
 
@@ -33,7 +33,7 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
                 val result = fcmTokenCommandService.saveFcmToken(fcmTokenSaveCommand)
                 result shouldBe true
 
-                verify(exactly = 1) {
+                coVerify(exactly = 1) {
                     fcmTokenPersistencePort.saveFcmToken(match {
                         it.fcmToken == fcmTokenSaveCommand.fcmToken && it.isActive
                     })
@@ -47,7 +47,7 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
                 fcmTokenSaveCommand.fcmToken,
                 fcmTokenSaveCommand.deviceType
             ).copy(isActive = false)
-            every {
+            coEvery {
                 fcmTokenPersistencePort.findByFcmToken(fcmTokenSaveCommand.fcmToken)
             } returns existingToken
 
@@ -55,7 +55,7 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
                 val result = fcmTokenCommandService.saveFcmToken(fcmTokenSaveCommand)
                 result shouldBe true
 
-                verify(exactly = 1) {
+                coVerify(exactly = 1) {
                     fcmTokenPersistencePort.saveFcmToken(match {
                         it.fcmToken == fcmTokenSaveCommand.fcmToken && it.isActive
                     })
@@ -78,7 +78,7 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
                 fcmTokenUpdateCommand.oldFcmToken,
                 fcmTokenUpdateCommand.deviceType
             )
-            every {
+            coEvery {
                 fcmTokenPersistencePort.findByFcmToken(fcmTokenUpdateCommand.oldFcmToken)
             } returns oldFcmToken
 
@@ -86,7 +86,7 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
                 val result = fcmTokenCommandService.updateFcmToken(fcmTokenUpdateCommand)
                 result shouldBe true
 
-                verifyOrder {
+                coVerifyOrder {
                     fcmTokenPersistencePort.saveFcmToken(match {
                         !it.isActive && it.fcmToken == fcmTokenUpdateCommand.oldFcmToken
                     })
@@ -99,7 +99,7 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
 
         When("oldFcmToken 이 존재하지 않는 경우") {
             clearMocks(fcmTokenPersistencePort)
-            every {
+            coEvery {
                 fcmTokenPersistencePort.findByFcmToken(fcmTokenUpdateCommand.oldFcmToken)
             } returns null
 
@@ -107,7 +107,7 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
                 val result = fcmTokenCommandService.updateFcmToken(fcmTokenUpdateCommand)
                 result shouldBe true
 
-                verify(exactly = 1) {
+                coVerify(exactly = 1) {
                     fcmTokenPersistencePort.saveFcmToken(match {
                         it.fcmToken == fcmTokenUpdateCommand.newFcmToken && it.isActive
                     })
@@ -128,7 +128,7 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
 
         When("Fcm token 이 존재하지 않는 경우") {
             clearMocks(fcmTokenPersistencePort)
-            every {
+            coEvery {
                 fcmTokenPersistencePort.atomicUpdateTopic(any())
             } returns false
 
@@ -142,7 +142,7 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
 
         When("Fcm token 이 존재하는 경우") {
             clearMocks(fcmTokenPersistencePort)
-            every {
+            coEvery {
                 fcmTokenPersistencePort.atomicUpdateTopic(any())
             } returns true
 
@@ -150,7 +150,7 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
                 val result = fcmTokenCommandService.updateTopic(noticeTopicUpdateCommand)
                 result shouldBe true
 
-                verify(exactly = 1) {
+                coVerify(exactly = 1) {
                     fcmTokenPersistencePort.atomicUpdateTopic(match {
                         it.fcmToken == noticeTopicUpdateCommand.fcmToken &&
                         it.topicType == noticeTopicUpdateCommand.topicType &&

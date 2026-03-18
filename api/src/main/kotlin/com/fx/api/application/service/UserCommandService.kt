@@ -21,7 +21,7 @@ class UserCommandService(
 ) : UserCommandUseCase {
 
     @Transactional
-    override fun signUp(signUpCommand: UserSignUpCommand): User {
+    override suspend fun signUp(signUpCommand: UserSignUpCommand): User {
 
         // email, nickname 존재시 예외
         if (userPersistencePort.existsByEmail(signUpCommand.email)) {
@@ -40,7 +40,7 @@ class UserCommandService(
     }
 
     @Transactional
-    override fun login(loginCommand: UserLoginCommand): TokenInfo {
+    override suspend fun login(loginCommand: UserLoginCommand): TokenInfo {
 
         val user = userPersistencePort.findByEmail(loginCommand.email)
             ?: throw UserException(UserErrorCode.USER_NOT_FOUND)

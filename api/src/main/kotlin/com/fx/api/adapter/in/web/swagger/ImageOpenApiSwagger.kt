@@ -25,6 +25,6 @@ interface ImageOpenApiSwagger {
         ]
     )
     @Operation(summary = "이미지 조회", description = "Type 으로 이미지 목록을 조회합니다.")
-    fun getImages(@RequestParam type: ImageType): ResponseEntity<Api<List<ImageResponse>>>
+    suspend fun getImages(@RequestParam type: ImageType): ResponseEntity<Api<List<ImageResponse>>>
 
 }

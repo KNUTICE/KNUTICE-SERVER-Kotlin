@@ -41,7 +41,7 @@ class ReportCommandService(
     }
 
 
-    private fun createSlackMessage(report: Report): SlackMessage =
+    private suspend fun createSlackMessage(report: Report): SlackMessage =
         SlackMessage.create(
             """
                 *내용* : ${report.content}

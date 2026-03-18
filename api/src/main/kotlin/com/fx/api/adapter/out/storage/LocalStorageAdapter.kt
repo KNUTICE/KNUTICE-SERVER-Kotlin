@@ -18,7 +18,7 @@ class LocalStorageAdapter(
     @Value("\${file.upload-dir}") private val uploadDir: Path,
 ) : ImageStoragePort {
 
-    override fun save(imageFile: MultipartFile, serverName: String): String {
+    override suspend fun save(imageFile: MultipartFile, serverName: String): String {
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir)
         }

@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody
 interface TipApiSwagger {
 
     @Operation(summary = "팁 저장", description = "새로운 팁을 저장합니다.")
-    fun saveTip(@RequestBody tipSaveRequest: TipSaveRequest): ResponseEntity<Api<Boolean>>
+    suspend fun saveTip(@RequestBody tipSaveRequest: TipSaveRequest): ResponseEntity<Api<Boolean>>
 
     @Operation(summary = "팁 삭제", description = "tipId 로 팁을 삭제합니다.")
-    fun deleteTip(@PathVariable tipId: String): ResponseEntity<Api<Boolean>>
+    suspend fun deleteTip(@PathVariable tipId: String): ResponseEntity<Api<Boolean>>
 
 }

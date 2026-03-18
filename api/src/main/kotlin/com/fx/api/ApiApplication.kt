@@ -2,13 +2,12 @@ package com.fx.api
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-//import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.data.mongodb.config.EnableMongoAuditing
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
 import org.springframework.scheduling.annotation.EnableScheduling
+import reactor.blockhound.BlockHound
 
-//@EnableFeignClients
 @EnableScheduling
 @EnableMongoAuditing
 @EnableMongoRepositories(basePackages = ["com.fx"])
@@ -17,5 +16,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
 class ApiApplication
 
 fun main(args: Array<String>) {
+//    BlockHound.builder()
+//        .allowBlockingCallsInside("java.io.FileInputStream", "readBytes")
+//        .install()
     runApplication<ApiApplication>(*args)
 }

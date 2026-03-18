@@ -18,7 +18,7 @@ class ImageOpenApiAdapter(
 ) : ImageOpenApiSwagger {
 
     @GetMapping
-    override fun getImages(@RequestParam type: ImageType): ResponseEntity<Api<List<ImageResponse>>> =
+    override suspend fun getImages(@RequestParam type: ImageType): ResponseEntity<Api<List<ImageResponse>>> =
         Api.OK(ImageResponse.from(imageQueryUseCase.getImages(type)))
 
 }

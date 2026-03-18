@@ -15,17 +15,17 @@ class TipCommandQueryService(
     private val tipPersistencePort: TipPersistencePort
 ) : TipCommandUseCase, TipQueryUseCase {
 
-    override fun saveTip(tipSaveCommand: TipSaveCommand): Boolean {
+    override suspend fun saveTip(tipSaveCommand: TipSaveCommand): Boolean {
         tipPersistencePort.saveTip(Tip.createTip(tipSaveCommand))
         return true
     }
 
-    override fun deleteTip(tipId: String): Boolean {
+    override suspend fun deleteTip(tipId: String): Boolean {
         tipPersistencePort.deleteById(tipId)
         return true
     }
 
-    override fun getTips(deviceType: DeviceType): List<Tip> {
+    override suspend fun getTips(deviceType: DeviceType): List<Tip> {
         val tips = tipPersistencePort.getTips(deviceType)
         if (tips.isEmpty()) {
             throw TipException(TipErrorCode.TIP_NOT_FOUND)

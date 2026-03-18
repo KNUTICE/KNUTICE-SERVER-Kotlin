@@ -1,14 +1,14 @@
 package com.fx.api.adapter.out.persistence.repository;
 
 import com.fx.api.adapter.out.persistence.document.UserDocument
-import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 
-interface UserMongoRepository : MongoRepository<UserDocument, String> {
+interface UserMongoRepository : CoroutineCrudRepository<UserDocument, String> {
 
-    fun existsByEmail(email: String): Boolean
+    suspend fun existsByEmail(email: String): Boolean
 
-    fun existsByNickname(nickname: String): Boolean
+    suspend fun existsByNickname(nickname: String): Boolean
 
-    fun findByEmail(email: String): UserDocument?
+    suspend fun findByEmail(email: String): UserDocument?
 
 }

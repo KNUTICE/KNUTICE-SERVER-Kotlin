@@ -25,7 +25,7 @@ interface TipOpenApiSwagger {
         ]
     )
     @Operation(summary = "팁 조회", description = "등록된 팁 목록을 최신순으로 조회합니다. deviceType 이 생략된 경우 iOS 기준으로 조회됩니다.")
-    fun getTips(
+    suspend fun getTips(
         @RequestParam(defaultValue = "iOS") deviceType: DeviceType
     ): ResponseEntity<Api<List<TipResponse>>>
 

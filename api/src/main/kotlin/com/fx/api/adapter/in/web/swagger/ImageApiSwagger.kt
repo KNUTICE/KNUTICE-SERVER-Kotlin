@@ -18,7 +18,7 @@ interface ImageApiSwagger {
 
     @Operation(summary = "이미지 업로드", description = "Type 으로 이미지를 업로드합니다. <br>" +
             "DEFAULT_IMAGE 는 단 하나의 이미지만 저장됩니다.")
-    fun uploadImage(
+    suspend fun uploadImage(
         @RequestParam("image") image: MultipartFile,
         @RequestParam type: ImageType
     ): ResponseEntity<Api<ImageResponse>>
@@ -35,6 +35,6 @@ interface ImageApiSwagger {
         ]
     )
     @Operation(summary = "이미지 삭제", description = "삭제할 이미지가 없는 경우 예외가 발생합니다.")
-    fun deleteImage(@RequestParam imageId: String): ResponseEntity<Api<Boolean>>
+    suspend fun deleteImage(@RequestParam imageId: String): ResponseEntity<Api<Boolean>>
 
 }

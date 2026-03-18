@@ -31,7 +31,7 @@ interface TopicOpenApiSwagger {
         ]
     )
     @Operation(summary = "Topic 조회", description = "Topic 을 조회합니다.<br> type 는 NOTICE, MAJOR, MEAL 입니다.")
-    fun getMyTopics(
+    suspend fun getMyTopics(
         @RequestHeader fcmToken: String,
         @RequestParam type: TopicType
     ): ResponseEntity<Api<TopicResponse>>
@@ -47,14 +47,14 @@ interface TopicOpenApiSwagger {
         ]
     )
     @Operation(summary = "Topic 변경", description = "Notice, Major, Meal Type 에 존재하는 topic 을 변경합니다.")
-    fun updateTopic(
+    suspend fun updateTopic(
         @RequestHeader fcmToken: String,
         @RequestParam type: TopicType,
         @RequestBody @Valid topicUpdateRequest: TopicUpdateRequest
     ): ResponseEntity<Api<Boolean>>
 
     @Operation(summary = "Type 별 Topic 조회", description = "각 타입의 토픽들을 조회합니다.")
-    fun getTopicsByType(
+    suspend fun getTopicsByType(
         @RequestParam type: TopicType
     ): ResponseEntity<Api<List<TypeResponse>>>
 

@@ -27,7 +27,7 @@ class ImageCommandService(
      * 확장자가 다른 경우 이미지를 제거하고 새로 저장 <br>
      * TIP_IMAGE 등은 단순 저장
      */
-    override fun uploadImage(imageFile: MultipartFile, type: ImageType): Image {
+    override suspend fun uploadImage(imageFile: MultipartFile, type: ImageType): Image {
 
         val extension = imageFile.originalFilename?.substringAfterLast(".", "") ?: "png"
         val serverName = if (type == ImageType.DEFAULT_IMAGE) "default" else UUID.randomUUID().toString()
@@ -49,7 +49,7 @@ class ImageCommandService(
         return savedImage
     }
 
-    override fun deleteImage(imageId: String): Boolean {
+    override suspend fun deleteImage(imageId: String): Boolean {
         val existingImage = imagePersistencePort.findById(imageId)
             ?: throw ImageException(ImageErrorCode.IMAGE_NOT_FOUND)
         imageStoragePort.delete(existingImage.serverName)

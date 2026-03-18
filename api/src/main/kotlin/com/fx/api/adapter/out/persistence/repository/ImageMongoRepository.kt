@@ -3,12 +3,12 @@ package com.fx.api.adapter.out.persistence.repository;
 import com.fx.api.adapter.out.persistence.document.ImageDocument
 import com.fx.api.domain.ImageType;
 import java.util.List;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 
-interface ImageMongoRepository : MongoRepository<ImageDocument, String> {
+interface ImageMongoRepository : CoroutineCrudRepository<ImageDocument, String> {
 
-    fun findByType(type: ImageType): ImageDocument?
+    suspend fun findByType(type: ImageType): ImageDocument?
 
-    fun findAllByType(type: ImageType): List<ImageDocument>
+    suspend fun findAllByType(type: ImageType): List<ImageDocument>
 
 }

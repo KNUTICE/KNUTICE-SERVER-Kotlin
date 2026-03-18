@@ -19,21 +19,21 @@ class FcmTokenPersistenceAdapter(
     private val mongoTemplate: MongoTemplate
 ): FcmTokenPersistencePort {
 
-    override fun saveFcmToken(fcmToken: FcmToken) {
+    override suspend fun saveFcmToken(fcmToken: FcmToken) {
         fcmTokenMongoRepository.save(FcmTokenDocument.from(fcmToken))
     }
 
-    override fun findByFcmToken(fcmToken: String): FcmToken? =
+    override suspend fun findByFcmToken(fcmToken: String): FcmToken? =
         fcmTokenMongoRepository.findById(fcmToken).orElse(null)?.toDomain()
 
-    override fun existsByFcmToken(fcmToken: String): Boolean =
+    override suspend fun existsByFcmToken(fcmToken: String): Boolean =
         fcmTokenMongoRepository.existsById(fcmToken)
 
-    override fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long =
+    override suspend fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long =
         fcmTokenMongoRepository.countByIsActiveAndDeviceType(isActive, deviceType)
 
     // 배타락으로 Lost Update 발생 방지
-    override fun atomicUpdateTopic(topicUpdateQuery: TopicUpdateQuery): Boolean {
+    override suspend fun atomicUpdateTopic(topicUpdateQuery: TopicUpdateQuery): Boolean {
         val field = when (topicUpdateQuery.topicType) {
             TopicType.NOTICE -> "subscribedNoticeTopics"
             TopicType.MAJOR  -> "subscribedMajorTopics"

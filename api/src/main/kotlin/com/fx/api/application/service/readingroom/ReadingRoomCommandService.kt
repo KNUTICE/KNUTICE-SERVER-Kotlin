@@ -72,7 +72,7 @@ class ReadingRoomCommandService(
         }
     }
 
-    override fun deleteSeatAlert(fcmToken: String, alertId: String): Boolean {
+    override suspend fun deleteSeatAlert(fcmToken: String, alertId: String): Boolean {
         if (!fcmTokenPersistencePort.existsByFcmToken(fcmToken)) {
             throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
         }

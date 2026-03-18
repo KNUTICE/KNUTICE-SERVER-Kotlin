@@ -23,7 +23,7 @@ class NoticeApiAdapter(
 ) : NoticeApiSwagger {
 
     @PostMapping
-    override fun saveNotice(
+    override suspend fun saveNotice(
         @RequestBody @Valid noticeRequest: NoticeRequest,
         @RequestParam type: TopicType
     ): ResponseEntity<Api<Boolean>> =
@@ -34,7 +34,7 @@ class NoticeApiAdapter(
 
 
     @PutMapping()
-    override fun updateNotice(
+    override suspend fun updateNotice(
         @RequestBody @Valid noticeRequest: NoticeRequest,
         @RequestParam type: TopicType,
     ): ResponseEntity<Api<Boolean>> =
@@ -44,7 +44,7 @@ class NoticeApiAdapter(
             ), "수정되었습니다.")
 
     @DeleteMapping("/{nttId}")
-    override fun deleteNotice(@PathVariable nttId: Long): ResponseEntity<Api<Boolean>> =
+    override suspend  fun deleteNotice(@PathVariable nttId: Long): ResponseEntity<Api<Boolean>> =
         Api.OK(noticeCommandUseCase.deleteNotice(nttId), "삭제되었습니다.")
 
 }

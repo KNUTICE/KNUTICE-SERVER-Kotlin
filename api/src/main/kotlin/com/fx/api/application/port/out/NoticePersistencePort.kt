@@ -7,12 +7,12 @@ import java.time.LocalDateTime
 interface NoticePersistencePort {
 
     suspend fun getNotices(noticeQuery: NoticeQuery): List<Notice>
-    fun getNotice(nttId: Long): Notice?
-    fun saveNotice(notice: Notice)
-    fun deleteById(nttId: Long)
-    fun existsById(nttId: Long): Boolean
+    suspend fun getNotice(nttId: Long): Notice?
+    suspend fun saveNotice(notice: Notice)
+    suspend fun deleteById(nttId: Long)
+    suspend fun existsById(nttId: Long): Boolean
 
-    fun countByCreatedAtLessThanEqual(dateTime: LocalDateTime): Long
-    fun countByCreatedAtLessThanEqualAndHasSummary(dateTime: LocalDateTime): Long
+    suspend fun countByCreatedAtLessThanEqual(dateTime: LocalDateTime): Long
+    suspend fun countByCreatedAtLessThanEqualAndHasSummary(dateTime: LocalDateTime): Long
 
 }
