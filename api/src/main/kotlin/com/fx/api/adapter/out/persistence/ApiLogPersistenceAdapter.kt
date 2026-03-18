@@ -6,9 +6,10 @@ import com.fx.api.domain.DailyTopicCount
 import com.fx.global.adapter.out.persistence.document.ApiLogDocument
 import com.fx.global.domain.ApiLog
 import com.fx.global.annotation.PersistenceAdapter
+import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.MongoExpression
-import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.aggregation.Aggregation
 import org.springframework.data.mongodb.core.aggregation.Aggregation.group
 import org.springframework.data.mongodb.core.aggregation.Aggregation.match
@@ -20,7 +21,7 @@ import java.time.LocalDateTime
 @PersistenceAdapter
 class ApiLogPersistenceAdapter(
     private val apiLogMongoRepository: ApiLogMongoRepository,
-    private val mongoTemplate: MongoTemplate
+    private val reactiveMongoTemplate: ReactiveMongoTemplate
 ): ApiLogPersistencePort {
 
     override suspend fun save(apiLog: ApiLog) {
@@ -75,11 +76,12 @@ class ApiLogPersistenceAdapter(
             )
         )
 
-        return mongoTemplate.aggregate(
+        return reactiveMongoTemplate.aggregate(
             aggregation,
             "api_log",
             DailyTopicCount::class.java
-        ).mappedResults
+        ).collectList().awaitSingle()
+
     }
 
 }

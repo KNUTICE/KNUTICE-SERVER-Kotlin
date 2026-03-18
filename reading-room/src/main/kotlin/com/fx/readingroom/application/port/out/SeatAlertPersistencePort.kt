@@ -5,14 +5,14 @@ import com.fx.readingroom.domain.SeatAlert.SeatAlertStatus
 
 interface SeatAlertPersistencePort {
 
-    fun save(seatAlert: SeatAlert): SeatAlert
+    suspend fun save(seatAlert: SeatAlert): SeatAlert
 
-    fun findByFcmTokenAndStatus(fcmToken: String, seatAlertStatus: SeatAlertStatus): List<SeatAlert>
+    suspend fun findByFcmTokenAndStatus(fcmToken: String, seatAlertStatus: SeatAlertStatus): List<SeatAlert>
 
-    fun deleteByFcmTokenAndAlertId(fcmToken: String, alertId: String): Boolean
+    suspend fun deleteByFcmTokenAndAlertId(fcmToken: String, alertId: String): Boolean
 
-    fun delete(alertId: String)
+    suspend fun delete(alertId: String)
 
-    fun findByAlertStatus(seatAlertStatus: SeatAlertStatus): List<SeatAlert>
+    suspend fun findByAlertStatus(seatAlertStatus: SeatAlertStatus): List<SeatAlert>
 
 }

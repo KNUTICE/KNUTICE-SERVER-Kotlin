@@ -4,13 +4,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.data.mongodb.config.EnableMongoAuditing
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
+import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
 import org.springframework.scheduling.annotation.EnableScheduling
 import reactor.blockhound.BlockHound
 
 @EnableScheduling
 @EnableMongoAuditing
-@EnableMongoRepositories(basePackages = ["com.fx"])
+@EnableReactiveMongoRepositories(basePackages = ["com.fx"])
 @ComponentScan(basePackages = ["com.fx.api", "com.fx.api.adapter", "com.fx.global", "com.fx.readingroom"])
 @SpringBootApplication
 class ApiApplication

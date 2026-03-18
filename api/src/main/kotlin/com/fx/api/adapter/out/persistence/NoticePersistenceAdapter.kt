@@ -19,7 +19,7 @@ class NoticePersistenceAdapter(
         noticeQueryRepository.findByNotice(noticeQuery).map { it.toDomain() }
 
     override suspend fun getNotice(nttId: Long): Notice? =
-        noticeMongoRepository.findById(nttId).orElse(null)?.toDomain()
+        noticeMongoRepository.findById(nttId)?.toDomain()
 
     override suspend fun saveNotice(notice: Notice) {
         noticeMongoRepository.save(NoticeDocument.from(notice))

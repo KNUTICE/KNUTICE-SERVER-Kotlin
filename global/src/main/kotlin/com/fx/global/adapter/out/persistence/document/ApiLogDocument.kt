@@ -1,6 +1,6 @@
 package com.fx.global.adapter.out.persistence.document
 
-import com.fx.global.adapter.out.persistence.base.MongoBaseDocument
+import com.fx.global.adapter.out.persistence.document.base.MongoBaseDocument
 import com.fx.global.domain.ApiLog
 import com.fx.global.domain.DeviceType
 import org.springframework.data.annotation.Id

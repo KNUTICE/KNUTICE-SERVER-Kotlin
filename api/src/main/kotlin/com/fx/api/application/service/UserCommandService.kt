@@ -39,7 +39,7 @@ class UserCommandService(
         return userPersistencePort.save(User.createUser(signUpCommand))
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     override suspend fun login(loginCommand: UserLoginCommand): TokenInfo {
 
         val user = userPersistencePort.findByEmail(loginCommand.email)
