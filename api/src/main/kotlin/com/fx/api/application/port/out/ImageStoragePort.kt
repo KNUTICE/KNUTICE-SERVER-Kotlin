@@ -1,11 +1,11 @@
 package com.fx.api.application.port.out
 
-import org.springframework.web.multipart.MultipartFile
+import org.springframework.http.codec.multipart.FilePart
 
 interface ImageStoragePort {
 
-    suspend fun save(file: MultipartFile, serverName: String): String
+    suspend fun save(imageFile: FilePart, serverName: String): String
 
-    fun delete(serverName: String)
+    suspend fun delete(serverName: String)
 
 }

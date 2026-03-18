@@ -1,6 +1,7 @@
 package com.fx.api.adapter.`in`.web.swagger
 
 import com.fx.api.adapter.`in`.web.dto.image.ImageResponse
+import com.fx.api.adapter.`in`.web.dto.image.ImageUploadRequest
 import com.fx.api.domain.ImageType
 import com.fx.api.exception.errorcode.ImageErrorCode
 import com.fx.global.annotation.ApiExceptionExplanation
@@ -9,8 +10,8 @@ import io.github.seob7.Api
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.multipart.MultipartFile
 
 @Tag(name = "IMAGE 관리 API - ADMIN")
 interface ImageApiSwagger {
@@ -19,8 +20,7 @@ interface ImageApiSwagger {
     @Operation(summary = "이미지 업로드", description = "Type 으로 이미지를 업로드합니다. <br>" +
             "DEFAULT_IMAGE 는 단 하나의 이미지만 저장됩니다.")
     suspend fun uploadImage(
-        @RequestParam("image") image: MultipartFile,
-        @RequestParam type: ImageType
+        @ModelAttribute uploadRequest: ImageUploadRequest
     ): ResponseEntity<Api<ImageResponse>>
 
 
