@@ -32,12 +32,12 @@ class ReadingRoomQueryService(
         return readingRoomRemotePort.getReadingRoomSeats(readingRoom, readingRoomRemotePort.getCsrfToken())
     }
 
-    override fun getSeatAlerts(fcmToken: String): List<SeatAlert> {
+    override suspend fun getSeatAlerts(fcmToken: String): List<SeatAlert> {
         validateFcmToken(fcmToken)
         return seatAlertPersistencePort.findByFcmTokenAndStatus(fcmToken, SeatAlert.SeatAlertStatus.ACTIVE)
     }
 
-    private fun validateFcmToken(fcmToken: String) {
+    private suspend fun validateFcmToken(fcmToken: String) {
         if (!fcmTokenPersistencePort.existsByFcmToken(fcmToken)) {
             throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
         }

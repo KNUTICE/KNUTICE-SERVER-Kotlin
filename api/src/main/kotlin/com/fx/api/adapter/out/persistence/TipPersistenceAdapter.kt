@@ -6,21 +6,25 @@ import com.fx.api.application.port.out.TipPersistencePort
 import com.fx.api.domain.Tip
 import com.fx.global.annotation.PersistenceAdapter
 import com.fx.global.domain.DeviceType
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 
 @PersistenceAdapter
 class TipPersistenceAdapter(
     private val tipMongoRepository: TipMongoRepository
 ) : TipPersistencePort {
 
-    override fun saveTip(tip: Tip) {
+    override suspend fun saveTip(tip: Tip) {
         tipMongoRepository.save(TipDocument.from(tip))
     }
 
-    override fun deleteById(tipId: String) {
+    override suspend fun deleteById(tipId: String) {
         tipMongoRepository.deleteById(tipId)
     }
 
-    override fun getTips(deviceType: DeviceType): List<Tip> =
-        tipMongoRepository.findAllByDeviceTypeOrderByCreatedAtDesc(deviceType).map { it.toDomain() }
+    override suspend fun getTips(deviceType: DeviceType): List<Tip> =
+        tipMongoRepository.findAllByDeviceTypeOrderByCreatedAtDesc(deviceType)
+            .map { it.toDomain() }
+            .toList()
 
 }

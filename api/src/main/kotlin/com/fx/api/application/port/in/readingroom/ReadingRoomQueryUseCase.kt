@@ -17,6 +17,6 @@ interface ReadingRoomQueryUseCase {
 
     suspend fun getReadingRoomSeats(fcmToken: String, readingRoom: ReadingRoom): List<ReadingRoomSeat>
 
-    fun getSeatAlerts(fcmToken: String): List<SeatAlert>
+    suspend fun getSeatAlerts(fcmToken: String): List<SeatAlert>
 
 }

@@ -18,24 +18,24 @@ class NoticePersistenceAdapter(
     override suspend fun getNotices(noticeQuery: NoticeQuery): List<Notice> =
         noticeQueryRepository.findByNotice(noticeQuery).map { it.toDomain() }
 
-    override fun getNotice(nttId: Long): Notice? =
-        noticeMongoRepository.findById(nttId).orElse(null)?.toDomain()
+    override suspend fun getNotice(nttId: Long): Notice? =
+        noticeMongoRepository.findById(nttId)?.toDomain()
 
-    override fun saveNotice(notice: Notice) {
+    override suspend fun saveNotice(notice: Notice) {
         noticeMongoRepository.save(NoticeDocument.from(notice))
     }
 
-    override fun deleteById(nttId: Long) {
+    override suspend fun deleteById(nttId: Long) {
         noticeMongoRepository.deleteById(nttId)
     }
 
-    override fun existsById(nttId: Long): Boolean =
+    override suspend fun existsById(nttId: Long): Boolean =
         noticeMongoRepository.existsById(nttId)
 
-    override fun countByCreatedAtLessThanEqual(dateTime: LocalDateTime): Long =
+    override suspend fun countByCreatedAtLessThanEqual(dateTime: LocalDateTime): Long =
         noticeMongoRepository.countByCreatedAtLessThanEqual(dateTime)
 
-    override fun countByCreatedAtLessThanEqualAndHasSummary(dateTime: LocalDateTime): Long =
+    override suspend fun countByCreatedAtLessThanEqualAndHasSummary(dateTime: LocalDateTime): Long =
         noticeMongoRepository.countByCreatedAtLessThanEqualAndContentSummaryIsNotNull(dateTime)
 
 }

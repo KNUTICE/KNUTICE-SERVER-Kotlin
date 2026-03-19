@@ -21,7 +21,7 @@ class TopicOpenApiAdapter(
 ) : TopicOpenApiSwagger {
 
     @GetMapping
-    override fun getMyTopics(
+    override suspend fun getMyTopics(
         @RequestHeader fcmToken: String,
         @RequestParam type: TopicType
     ): ResponseEntity<Api<TopicResponse>> {
@@ -30,7 +30,7 @@ class TopicOpenApiAdapter(
     }
 
     @PatchMapping
-    override fun updateTopic(
+    override suspend fun updateTopic(
         @RequestHeader fcmToken: String,
         @RequestParam type: TopicType,
         @RequestBody @Valid topicUpdateRequest: TopicUpdateRequest
@@ -40,7 +40,7 @@ class TopicOpenApiAdapter(
         ), "토픽 업데이트 성공")
 
     @GetMapping("/types")
-    override fun getTopicsByType(
+    override suspend fun getTopicsByType(
         @RequestParam type: TopicType
     ): ResponseEntity<Api<List<TypeResponse>>> {
         val responses = when (type) {

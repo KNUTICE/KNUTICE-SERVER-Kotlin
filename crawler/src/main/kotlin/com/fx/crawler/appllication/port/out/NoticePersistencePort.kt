@@ -5,10 +5,10 @@ import java.time.LocalDateTime
 
 interface NoticePersistencePort {
 
-    fun findByNttIdIn(nttIds: List<Long>): List<Notice>
-    fun saveAll(notices: List<Notice>)
+    suspend fun findByNttIdIn(nttIds: List<Long>): List<Notice>
+    suspend fun saveAll(notices: List<Notice>)
 
-    fun countByCreatedAtLessThanEqual(dateTime: LocalDateTime): Long
-    fun countByCreatedAtLessThanEqualAndHasSummary(dateTime: LocalDateTime): Long
+    suspend fun countByCreatedAtLessThanEqual(dateTime: LocalDateTime): Long
+    suspend fun countByCreatedAtLessThanEqualAndHasSummary(dateTime: LocalDateTime): Long
 
 }

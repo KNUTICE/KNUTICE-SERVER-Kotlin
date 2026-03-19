@@ -21,11 +21,11 @@ class NoticeQueryService(
         return notices
     }
 
-    override fun getNotice(nttId: Long): Notice =
+    override suspend fun getNotice(nttId: Long): Notice =
         noticePersistencePort.getNotice(nttId)
             ?: throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)
 
-    override fun getNoticeSummary(nttId: Long): Notice {
+    override suspend fun getNoticeSummary(nttId: Long): Notice {
         val notice = noticePersistencePort.getNotice(nttId)
             ?: throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)
 

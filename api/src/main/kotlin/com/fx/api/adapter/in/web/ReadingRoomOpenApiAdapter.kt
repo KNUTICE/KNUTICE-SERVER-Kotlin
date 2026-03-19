@@ -53,7 +53,7 @@ class ReadingRoomOpenApiAdapter(
         ))
 
     @GetMapping("/seat-alerts")
-    override fun getSeatAlerts(
+    override suspend fun getSeatAlerts(
         @RequestHeader fcmToken: String
     ): ResponseEntity<Api<List<SeatAlertResponse>>> =
         Api.OK(SeatAlertResponse.from(
@@ -61,7 +61,7 @@ class ReadingRoomOpenApiAdapter(
         ))
 
     @DeleteMapping("/seat-alerts/{alertId}")
-    override fun deleteSeatAlert(
+    override suspend fun deleteSeatAlert(
         @RequestHeader fcmToken: String,
         @PathVariable alertId: String
     ): ResponseEntity<Api<Boolean>> =

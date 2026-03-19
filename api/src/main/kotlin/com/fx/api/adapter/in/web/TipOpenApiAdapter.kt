@@ -19,7 +19,7 @@ class TipOpenApiAdapter(
     // TODO API 요청 수
 
     @GetMapping
-    override fun getTips(
+    override suspend fun getTips(
         @RequestParam(defaultValue = "iOS") deviceType: DeviceType
     ): ResponseEntity<Api<List<TipResponse>>> =
         Api.OK(TipResponse.from(tipQueryUseCase.getTips(deviceType)))

@@ -21,7 +21,7 @@ class NoticeCommandService(
     private val noticePersistencePort: NoticePersistencePort
 ): NoticeCommandUseCase {
 
-    override fun saveNotice(noticeCommand: NoticeCommand): Boolean {
+    override suspend fun saveNotice(noticeCommand: NoticeCommand): Boolean {
         if (noticePersistencePort.existsById(noticeCommand.nttId)) {
             throw NoticeException(NoticeErrorCode.ALREADY_EXISTS)
         }
@@ -44,7 +44,7 @@ class NoticeCommandService(
     }
 
     @Transactional
-    override fun updateNotice(noticeCommand: NoticeCommand): Boolean {
+    override suspend fun updateNotice(noticeCommand: NoticeCommand): Boolean {
         val noticeExists = (noticePersistencePort.getNotice(noticeCommand.nttId)
             ?: throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND))
 
@@ -54,7 +54,7 @@ class NoticeCommandService(
     }
 
     @Transactional
-    override fun deleteNotice(nttId: Long): Boolean {
+    override suspend fun deleteNotice(nttId: Long): Boolean {
         if (!noticePersistencePort.existsById(nttId)) {
             throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)
         }

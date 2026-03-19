@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.bind.support.WebExchangeBindException
 import kotlin.collections.joinToString
 import kotlin.jvm.java
 
@@ -16,8 +17,9 @@ class GlobalExceptionHandler {
 
     private val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
 
-    @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<Api<String>> {
+    // dslee (2026-03-17) : WebExchangeBindException 은 WebFlux 에서 발생하는 유효성 검사 예외, MethodArgumentNotValidException 과 유사함
+    @ExceptionHandler(WebExchangeBindException::class)
+    fun handleWebExchangeBindException(e: WebExchangeBindException): ResponseEntity<Api<String>> {
         val errorMessage = e.bindingResult.fieldErrors.joinToString(" ") { fieldError ->
             "[${fieldError.field}](은)는 ${fieldError.defaultMessage} 입력된 값: [${fieldError.rejectedValue}]"
         }

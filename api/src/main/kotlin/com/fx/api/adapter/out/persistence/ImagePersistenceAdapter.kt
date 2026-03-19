@@ -6,25 +6,29 @@ import com.fx.api.application.port.out.ImagePersistencePort
 import com.fx.api.domain.Image
 import com.fx.api.domain.ImageType
 import com.fx.global.annotation.PersistenceAdapter
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 
 @PersistenceAdapter
 class ImagePersistenceAdapter(
     private val imageMongoRepository: ImageMongoRepository,
 ) : ImagePersistencePort {
 
-    override fun save(image: Image): Image =
+    override suspend fun save(image: Image): Image =
         imageMongoRepository.save(ImageDocument.from(image)).toDomain()
 
-    override fun findByType(type: ImageType): Image? =
+    override suspend fun findByType(type: ImageType): Image? =
         imageMongoRepository.findByType(type)?.toDomain()
 
-    override fun findAllByType(type: ImageType): List<Image> =
-        imageMongoRepository.findAllByType(type).map { it.toDomain() }
+    override suspend fun findAllByType(type: ImageType): List<Image> =
+        imageMongoRepository.findAllByType(type)
+            .map { it.toDomain() }
+            .toList()
 
-    override fun findById(imageId: String): Image? =
-        imageMongoRepository.findById(imageId).orElse(null)?.toDomain()
+    override suspend fun findById(imageId: String): Image? =
+        imageMongoRepository.findById(imageId)?.toDomain()
 
-    override fun delete(imageId: String) =
+    override suspend fun delete(imageId: String) =
         imageMongoRepository.deleteById(imageId)
 
 }

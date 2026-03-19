@@ -11,16 +11,16 @@ class UserPersistenceAdapter(
     private val userMongoRepository: UserMongoRepository
 ) : UserPersistencePort {
 
-    override fun save(user: User): User =
+    override suspend fun save(user: User): User =
         userMongoRepository.save(UserDocument.from(user)).toDomain()
 
-    override fun existsByEmail(email: String): Boolean =
+    override suspend fun existsByEmail(email: String): Boolean =
         userMongoRepository.existsByEmail(email)
 
-    override fun existsByNickname(nickname: String): Boolean =
+    override suspend fun existsByNickname(nickname: String): Boolean =
         userMongoRepository.existsByNickname(nickname)
 
-    override fun findByEmail(email: String): User? =
+    override suspend fun findByEmail(email: String): User? =
         userMongoRepository.findByEmail(email)?.toDomain()
 
 }

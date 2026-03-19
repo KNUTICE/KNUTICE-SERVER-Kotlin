@@ -7,6 +7,6 @@ interface ReadingRoomCommandUseCase {
 
     suspend fun createSeatAlert(seatAlertCommand: CreateSeatAlertCommand): SeatAlert
 
-    fun deleteSeatAlert(fcmToken: String, alertId: String): Boolean
+    suspend fun deleteSeatAlert(fcmToken: String, alertId: String): Boolean
 
 }

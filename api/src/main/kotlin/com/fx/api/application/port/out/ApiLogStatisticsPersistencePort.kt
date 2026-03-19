@@ -6,6 +6,6 @@ import java.time.LocalDate
 
 interface ApiLogStatisticsPersistencePort {
 
-    fun findAllByDateLessThan(date: LocalDate, pageable: Pageable): List<DailyApiLogStatistics>
+    suspend fun findAllByDateLessThan(date: LocalDate, pageable: Pageable): List<DailyApiLogStatistics>
 
 }

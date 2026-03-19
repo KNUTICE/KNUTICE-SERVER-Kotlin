@@ -22,7 +22,7 @@ class UserOpenApiAdapter(
 ) : UserOpenApiSwagger {
 
     @PostMapping("/signup")
-    override fun signUp(
+    override suspend fun signUp(
         @RequestBody @Valid signUpRequest: UserSignUpRequest
     ): ResponseEntity<Api<UserIdResponse>> =
         Api.OK(UserIdResponse(
@@ -32,7 +32,7 @@ class UserOpenApiAdapter(
         )
 
     @PostMapping("/login")
-    override fun login(
+    override suspend fun login(
         @RequestBody @Valid loginRequest: UserLoginRequest
     ): ResponseEntity<Api<TokenResponse>> =
         Api.OK(

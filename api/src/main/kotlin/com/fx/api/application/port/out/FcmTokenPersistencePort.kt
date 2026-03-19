@@ -6,18 +6,18 @@ import com.fx.global.domain.FcmToken
 
 interface FcmTokenPersistencePort {
 
-    fun saveFcmToken(fcmToken: FcmToken)
+    suspend fun saveFcmToken(fcmToken: FcmToken)
 
-    fun findByFcmToken(fcmToken: String): FcmToken?
+    suspend fun findByFcmToken(fcmToken: String): FcmToken?
 
-    fun existsByFcmToken(fcmToken: String): Boolean
+    suspend fun existsByFcmToken(fcmToken: String): Boolean
 
-    fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long
+    suspend fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long
 
     /**
      * MongoDB $addToSet / $pull 연산자로 토픽을 원자적으로 추가/제거
      * @return 대상 토큰이 존재하면 true, 없으면 false
      */
-    fun atomicUpdateTopic(topicUpdateQuery: TopicUpdateQuery): Boolean
+    suspend fun atomicUpdateTopic(topicUpdateQuery: TopicUpdateQuery): Boolean
 
 }

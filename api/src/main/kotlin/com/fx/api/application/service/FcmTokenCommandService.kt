@@ -17,7 +17,7 @@ class FcmTokenCommandService(
     private val fcmTokenPersistencePort: FcmTokenPersistencePort
 ) : FcmTokenCommandUseCase {
 
-    override fun saveFcmToken(fcmTokenSaveCommand: FcmTokenSaveCommand): Boolean {
+    override suspend fun saveFcmToken(fcmTokenSaveCommand: FcmTokenSaveCommand): Boolean {
         if (fcmTokenSaveCommand.fcmToken.isBlank()) { // 빈 토큰 "   " 처리
             throw FcmTokenException(FcmTokenErrorCode.TOKEN_INVALID)
         }
@@ -39,7 +39,7 @@ class FcmTokenCommandService(
      * oldFcmToken 이 존재하는 경우 oldFcmToken 을 isActive = false 처리, 토픽 정보를 newFcmToken 으로 업데이트 후 저장
      */
     @Transactional
-    override fun updateFcmToken(fcmTokenUpdateCommand: FcmTokenUpdateCommand): Boolean {
+    override suspend fun updateFcmToken(fcmTokenUpdateCommand: FcmTokenUpdateCommand): Boolean {
         if (fcmTokenUpdateCommand.newFcmToken.isEmpty()) { // 헤더로 넘어온 빈 토큰 "   " 처리
             throw FcmTokenException(FcmTokenErrorCode.TOKEN_INVALID)
         }
@@ -66,7 +66,7 @@ class FcmTokenCommandService(
         return true
     }
 
-    override fun updateTopic(topicUpdateCommand: TopicUpdateCommand): Boolean {
+    override suspend fun updateTopic(topicUpdateCommand: TopicUpdateCommand): Boolean {
         val updated = fcmTokenPersistencePort.atomicUpdateTopic(
             TopicUpdateQuery(
                 fcmToken = topicUpdateCommand.fcmToken,

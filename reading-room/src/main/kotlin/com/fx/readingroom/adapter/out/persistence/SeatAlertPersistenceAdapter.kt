@@ -6,28 +6,33 @@ import com.fx.readingroom.adapter.out.persistence.repository.SeatAlertMongoRepos
 import com.fx.readingroom.application.port.out.SeatAlertPersistencePort
 import com.fx.readingroom.domain.SeatAlert
 import com.fx.readingroom.domain.SeatAlert.SeatAlertStatus
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 
 @PersistenceAdapter
 class SeatAlertPersistenceAdapter(
     private val seatAlertMongoRepository: SeatAlertMongoRepository
 ): SeatAlertPersistencePort {
 
-    override fun save(seatAlert: SeatAlert): SeatAlert =
+    override suspend fun save(seatAlert: SeatAlert): SeatAlert =
         seatAlertMongoRepository.save(SeatAlertDocument.from(seatAlert)).toDomain()
 
-    override fun findByFcmTokenAndStatus(fcmToken: String, seatAlertStatus: SeatAlertStatus): List<SeatAlert> =
+    override suspend fun findByFcmTokenAndStatus(fcmToken: String, seatAlertStatus: SeatAlertStatus): List<SeatAlert> =
         seatAlertMongoRepository.findByFcmTokenAndStatusOrderByCreatedAtDesc(fcmToken, seatAlertStatus)
             .map { it.toDomain() }
+            .toList()
 
-    override fun deleteByFcmTokenAndAlertId(fcmToken: String, alertId: String): Boolean {
+    override suspend fun deleteByFcmTokenAndAlertId(fcmToken: String, alertId: String): Boolean {
         return seatAlertMongoRepository.deleteByFcmTokenAndId(fcmToken, alertId) > 0
     }
 
-    override fun delete(alertId: String) {
+    override suspend fun delete(alertId: String) {
         seatAlertMongoRepository.deleteById(alertId)
     }
 
-    override fun findByAlertStatus(seatAlertStatus: SeatAlertStatus): List<SeatAlert> =
-        seatAlertMongoRepository.findByStatus(seatAlertStatus).map { it.toDomain() }
+    override suspend fun findByAlertStatus(seatAlertStatus: SeatAlertStatus): List<SeatAlert> =
+        seatAlertMongoRepository.findByStatus(seatAlertStatus)
+            .map { it.toDomain() }
+            .toList()
 
 }

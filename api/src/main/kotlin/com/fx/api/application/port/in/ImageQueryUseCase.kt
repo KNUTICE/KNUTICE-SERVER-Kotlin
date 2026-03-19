@@ -5,6 +5,6 @@ import com.fx.api.domain.ImageType
 
 interface ImageQueryUseCase {
 
-    fun getImages(type: ImageType): List<Image>
+    suspend fun getImages(type: ImageType): List<Image>
 
 }

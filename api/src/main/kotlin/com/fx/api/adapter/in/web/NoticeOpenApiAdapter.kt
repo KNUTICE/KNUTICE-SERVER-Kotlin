@@ -32,11 +32,11 @@ class NoticeOpenApiAdapter(
         )
 
     @GetMapping("/{nttId}")
-    override fun getNotice(@PathVariable nttId: Long): ResponseEntity<Api<NoticeResponse>> =
+    override suspend fun getNotice(@PathVariable nttId: Long): ResponseEntity<Api<NoticeResponse>> =
         Api.OK(NoticeResponse.from(noticeQueryUseCase.getNotice(nttId)))
 
     @GetMapping("/summary/{nttId}")
-    override fun getNoticeSummary(@PathVariable nttId: Long): ResponseEntity<Api<NoticeSummaryResponse>> =
+    override suspend fun getNoticeSummary(@PathVariable nttId: Long): ResponseEntity<Api<NoticeSummaryResponse>> =
         Api.OK(NoticeSummaryResponse.from(noticeQueryUseCase.getNoticeSummary(nttId)))
 
 }

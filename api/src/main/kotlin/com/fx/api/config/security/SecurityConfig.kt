@@ -40,6 +40,7 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .authorizeExchange { exchanges ->
                 exchanges
+                    .pathMatchers(HttpMethod.OPTIONS).permitAll()
                     .pathMatchers(*WHITE_LIST).permitAll()
                     .pathMatchers("/api/**").hasRole("ADMIN")
                     .anyExchange().authenticated()

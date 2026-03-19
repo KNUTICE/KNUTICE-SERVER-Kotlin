@@ -10,8 +10,8 @@ import org.springframework.validation.annotation.Validated
 @Validated
 interface UserCommandUseCase{
 
-    fun signUp(@Valid signUpCommand: UserSignUpCommand): User
+    suspend fun signUp(@Valid signUpCommand: UserSignUpCommand): User
 
-    fun login(@Valid loginCommand: UserLoginCommand): TokenInfo
+    suspend fun login(@Valid loginCommand: UserLoginCommand): TokenInfo
 
 }

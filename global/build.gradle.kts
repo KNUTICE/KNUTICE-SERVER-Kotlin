@@ -26,7 +26,10 @@ dependencies {
     implementation("io.github.seob7:common-api:0.0.2")
 
     // Mongo
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+//    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
+    // Non-blocking Mongo
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
 
     // Web
 //    implementation("org.springframework.boot:spring-boot-starter-web")
@@ -40,6 +43,10 @@ dependencies {
 
     // Validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    // Coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
 
     // Slack
     implementation("com.slack.api:slack-api-client:1.45.4")

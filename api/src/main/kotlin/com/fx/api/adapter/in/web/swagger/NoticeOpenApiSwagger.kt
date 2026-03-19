@@ -50,7 +50,7 @@ interface NoticeOpenApiSwagger {
         ]
     )
     @Operation(summary = "단일 공지 조회", description = "nttId 로 공지를 조회합니다.")
-    fun getNotice(@PathVariable nttId: Long): ResponseEntity<Api<NoticeResponse>>
+    suspend fun getNotice(@PathVariable nttId: Long): ResponseEntity<Api<NoticeResponse>>
 
     @ApiResponseExplanations(
         errors = [
@@ -70,6 +70,6 @@ interface NoticeOpenApiSwagger {
     )
     @Operation(summary = "공지 요약 조회", description = "nttId 로 공지 요약을 조회합니다. <br>" +
             "`contentSummary` 존재하지 않는 경우 예외가 발생됩니다.")
-    fun getNoticeSummary(@PathVariable nttId: Long): ResponseEntity<Api<NoticeSummaryResponse>>
+    suspend fun getNoticeSummary(@PathVariable nttId: Long): ResponseEntity<Api<NoticeSummaryResponse>>
 
 }

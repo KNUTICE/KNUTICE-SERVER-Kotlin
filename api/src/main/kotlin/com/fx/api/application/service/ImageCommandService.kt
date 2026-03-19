@@ -1,6 +1,5 @@
 package com.fx.api.application.service
 
-import com.fx.api.adapter.out.storage.LocalStorageAdapter
 import com.fx.api.application.port.`in`.ImageCommandUseCase
 import com.fx.api.application.port.out.ImagePersistencePort
 import com.fx.api.application.port.out.ImageStoragePort
@@ -9,8 +8,8 @@ import com.fx.api.domain.ImageType
 import com.fx.api.exception.ImageException
 import com.fx.api.exception.errorcode.ImageErrorCode
 import org.slf4j.LoggerFactory
+import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Service
-import org.springframework.web.multipart.MultipartFile
 import java.util.UUID
 
 @Service
@@ -27,9 +26,9 @@ class ImageCommandService(
      * 확장자가 다른 경우 이미지를 제거하고 새로 저장 <br>
      * TIP_IMAGE 등은 단순 저장
      */
-    override fun uploadImage(imageFile: MultipartFile, type: ImageType): Image {
+    override suspend fun uploadImage(imageFile: FilePart, type: ImageType): Image {
 
-        val extension = imageFile.originalFilename?.substringAfterLast(".", "") ?: "png"
+        val extension = imageFile.filename().substringAfterLast(".", "")
         val serverName = if (type == ImageType.DEFAULT_IMAGE) "default" else UUID.randomUUID().toString()
 
         if (type == ImageType.DEFAULT_IMAGE) {
@@ -49,7 +48,7 @@ class ImageCommandService(
         return savedImage
     }
 
-    override fun deleteImage(imageId: String): Boolean {
+    override suspend fun deleteImage(imageId: String): Boolean {
         val existingImage = imagePersistencePort.findById(imageId)
             ?: throw ImageException(ImageErrorCode.IMAGE_NOT_FOUND)
         imageStoragePort.delete(existingImage.serverName)

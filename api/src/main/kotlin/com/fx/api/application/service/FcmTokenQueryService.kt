@@ -13,7 +13,7 @@ class FcmTokenQueryService(
     private val fcmTokenPersistencePort: FcmTokenPersistencePort
 ): FcmTokenQueryUseCase {
 
-    override fun getMyTopics(fcmToken: String, type: TopicType): Set<String> {
+    override suspend fun getMyTopics(fcmToken: String, type: TopicType): Set<String> {
         val token = findTokenOrThrow(fcmToken)
         val subscribedTopics = when (type) {
             TopicType.NOTICE -> token.subscribedNoticeTopics
@@ -23,7 +23,7 @@ class FcmTokenQueryService(
         return subscribedTopics.map { it.name }.toSet()
     }
 
-    private fun findTokenOrThrow(fcmToken: String): FcmToken =
+    private suspend fun findTokenOrThrow(fcmToken: String): FcmToken =
         fcmTokenPersistencePort.findByFcmToken(fcmToken)
             ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
 

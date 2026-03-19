@@ -1,6 +1,6 @@
 package com.fx.api.domain
 
-import org.springframework.web.multipart.MultipartFile
+import org.springframework.http.codec.multipart.FilePart
 import java.time.LocalDateTime
 
 data class Image(
@@ -16,7 +16,7 @@ data class Image(
 
     companion object {
         fun createImage(
-            imageFile: MultipartFile,
+            imageFile: FilePart,
             imageUrl: String,
             serverName: String,
             extension: String,
@@ -24,7 +24,7 @@ data class Image(
         ): Image =
             Image(
                 imageUrl = imageUrl,
-                originalName = imageFile.originalFilename!!,
+                originalName = imageFile.filename(),
                 serverName = serverName,
                 extension = extension,
                 type = type

@@ -9,8 +9,8 @@ import com.fx.global.domain.NoticeType
 
 interface FcmTokenCommandUseCase {
 
-    fun saveFcmToken(fcmTokenSaveCommand: FcmTokenSaveCommand): Boolean
-    fun updateFcmToken(fcmTokenUpdateCommand: FcmTokenUpdateCommand): Boolean
-    fun updateTopic(topicUpdateCommand: TopicUpdateCommand): Boolean
+    suspend fun saveFcmToken(fcmTokenSaveCommand: FcmTokenSaveCommand): Boolean
+    suspend fun updateFcmToken(fcmTokenUpdateCommand: FcmTokenUpdateCommand): Boolean
+    suspend fun updateTopic(topicUpdateCommand: TopicUpdateCommand): Boolean
 
 }

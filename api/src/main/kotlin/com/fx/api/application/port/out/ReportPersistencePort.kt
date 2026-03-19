@@ -4,6 +4,6 @@ import com.fx.api.domain.Report
 
 interface ReportPersistencePort {
 
-    fun saveReport(report: Report): Report
+    suspend fun saveReport(report: Report): Report
 
 }

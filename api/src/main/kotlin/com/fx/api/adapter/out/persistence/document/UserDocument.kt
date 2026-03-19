@@ -2,7 +2,7 @@ package com.fx.api.adapter.out.persistence.document
 
 import com.fx.api.domain.User
 import com.fx.api.domain.UserRole
-import com.fx.global.adapter.out.persistence.base.MongoBaseDocument
+import com.fx.global.adapter.out.persistence.document.base.MongoBaseDocument
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 

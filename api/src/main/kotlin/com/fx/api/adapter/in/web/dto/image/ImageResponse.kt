@@ -1,9 +1,7 @@
 package com.fx.api.adapter.`in`.web.dto.image
 
-import com.fx.api.adapter.`in`.web.dto.notice.NoticeResponse
 import com.fx.api.domain.Image
 import com.fx.api.domain.ImageType
-import com.fx.global.domain.Notice
 
 data class ImageResponse(
 

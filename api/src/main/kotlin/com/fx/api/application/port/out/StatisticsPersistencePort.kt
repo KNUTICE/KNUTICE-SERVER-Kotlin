@@ -6,6 +6,6 @@ import java.time.LocalDate
 
 interface StatisticsPersistencePort {
 
-    fun findAllByDateLessThan(date: LocalDate, pageable: Pageable): List<DailyStatistics>
+    suspend fun findAllByDateLessThan(date: LocalDate, pageable: Pageable): List<DailyStatistics>
 
 }

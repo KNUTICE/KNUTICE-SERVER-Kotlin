@@ -35,7 +35,7 @@ interface UserOpenApiSwagger {
     )
     @Operation(summary = "회원가입", description = "비밀번호는 영문과 숫자를 포함하여 5자 이상 20자 이하여야 합니다.<br>" +
             "닉네임은 2자 이상 30자 이하여야 합니다.")
-    fun signUp(
+    suspend fun signUp(
         @RequestBody @Valid signUpRequest: UserSignUpRequest
     ): ResponseEntity<Api<UserIdResponse>>
 
@@ -58,7 +58,7 @@ interface UserOpenApiSwagger {
     )
     @Operation(summary = "로그인", description = "비밀번호는 영문과 숫자를 포함하여 5자 이상 20자 이하여야 합니다.<br>" +
             "응답으로 AccessToken 과 RefreshToken 을 전달합니다.")
-    fun login(
+    suspend fun login(
         @RequestBody @Valid loginRequest: UserLoginRequest
     ): ResponseEntity<Api<TokenResponse>>
 
