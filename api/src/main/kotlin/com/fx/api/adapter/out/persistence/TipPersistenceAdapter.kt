@@ -6,6 +6,8 @@ import com.fx.api.application.port.out.TipPersistencePort
 import com.fx.api.domain.Tip
 import com.fx.global.annotation.PersistenceAdapter
 import com.fx.global.domain.DeviceType
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 
 @PersistenceAdapter
 class TipPersistenceAdapter(
@@ -21,6 +23,8 @@ class TipPersistenceAdapter(
     }
 
     override suspend fun getTips(deviceType: DeviceType): List<Tip> =
-        tipMongoRepository.findAllByDeviceTypeOrderByCreatedAtDesc(deviceType).map { it.toDomain() }
+        tipMongoRepository.findAllByDeviceTypeOrderByCreatedAtDesc(deviceType)
+            .map { it.toDomain() }
+            .toList()
 
 }

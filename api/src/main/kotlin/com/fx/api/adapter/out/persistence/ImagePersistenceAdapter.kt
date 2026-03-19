@@ -6,6 +6,8 @@ import com.fx.api.application.port.out.ImagePersistencePort
 import com.fx.api.domain.Image
 import com.fx.api.domain.ImageType
 import com.fx.global.annotation.PersistenceAdapter
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 
 @PersistenceAdapter
 class ImagePersistenceAdapter(
@@ -19,7 +21,9 @@ class ImagePersistenceAdapter(
         imageMongoRepository.findByType(type)?.toDomain()
 
     override suspend fun findAllByType(type: ImageType): List<Image> =
-        imageMongoRepository.findAllByType(type).map { it.toDomain() }
+        imageMongoRepository.findAllByType(type)
+            .map { it.toDomain() }
+            .toList()
 
     override suspend fun findById(imageId: String): Image? =
         imageMongoRepository.findById(imageId)?.toDomain()
