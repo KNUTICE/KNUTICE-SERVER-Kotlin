@@ -7,9 +7,9 @@ import java.time.LocalDateTime
 open class MongoBaseDocument {
 
     @CreatedDate
-    protected var createdAt: LocalDateTime? = null
+    var createdAt: LocalDateTime? = null
 
     @LastModifiedDate
-    protected var updatedAt: LocalDateTime? = null
+    var updatedAt: LocalDateTime? = null
 
 }

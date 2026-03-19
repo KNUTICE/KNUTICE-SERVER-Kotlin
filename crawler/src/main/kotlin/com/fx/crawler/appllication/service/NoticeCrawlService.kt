@@ -14,8 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -28,17 +28,17 @@ class NoticeCrawlService(
 ): NoticeCrawlUseCase {
 
     private val log = LoggerFactory.getLogger(NoticeCrawlService::class.java)
-    private val backgroundScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val backgroundScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
 
     override suspend fun crawlAndSaveNotices(
         topics: List<CrawlableType>,
         page: Int)
-    : List<Notice> = coroutineScope {
+    : List<Notice> = supervisorScope {
 
         val allSummariesDeferred = (1..page).flatMap { p ->
             topics.map { topic ->
-                async(Dispatchers.IO) {
+                async {
                     try {
                         log.info("Crawling page: {}, target: {}", p, topic)
                         noticeCrawlPort.crawlNoticeSummaries(topic, p)
@@ -58,7 +58,7 @@ class NoticeCrawlService(
 
         // 전체 중복 제거
         val distinctSummaries = allSummaries.distinctBy { it.nttId }
-        if (distinctSummaries.isEmpty()) return@coroutineScope emptyList()
+        if (distinctSummaries.isEmpty()) return@supervisorScope emptyList()
 
         // DB에 이미 존재하는 nttId 확인
         val existingIds = noticePersistencePort.findByNttIdIn(distinctSummaries.map { it.nttId })
@@ -67,7 +67,7 @@ class NoticeCrawlService(
         val newNotices = distinctSummaries.filter { it.nttId !in existingIds }
         if (newNotices.isEmpty()) {
             log.info("No new notices found in all pages.")
-            return@coroutineScope emptyList()
+            return@supervisorScope emptyList()
         }
 
         // 3. 신규 공지의 상세 조회
@@ -81,7 +81,7 @@ class NoticeCrawlService(
             summarizeAndNotifyFailures(detailedNotices)
         }
 
-        return@coroutineScope detailedNotices
+        return@supervisorScope detailedNotices
     }
 
     private suspend fun summarizeAndNotifyFailures(detailedNotices: List<Notice>) {

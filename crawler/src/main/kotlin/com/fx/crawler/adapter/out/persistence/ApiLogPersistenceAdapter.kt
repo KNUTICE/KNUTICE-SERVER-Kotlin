@@ -4,8 +4,9 @@ import com.fx.crawler.appllication.port.out.ApiLogPersistencePort
 import com.fx.global.adapter.out.persistence.document.DailyApiLogStatisticsDocument
 import com.fx.global.annotation.PersistenceAdapter
 import com.fx.global.domain.DailyApiLogStatistics
+import kotlinx.coroutines.reactor.awaitSingle
 import org.bson.Document
-import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.aggregation.Aggregation
 import org.springframework.data.mongodb.core.aggregation.AggregationExpression
 import org.springframework.data.mongodb.core.query.Criteria
@@ -14,10 +15,10 @@ import java.time.LocalTime
 
 @PersistenceAdapter
 class ApiLogPersistenceAdapter(
-    private val mongoTemplate: MongoTemplate,
+    private val reactiveMongoTemplate: ReactiveMongoTemplate,
 ) : ApiLogPersistencePort {
 
-    override fun aggregateDailyStatistics(date: LocalDate): List<DailyApiLogStatistics> {
+    override suspend fun aggregateDailyStatistics(date: LocalDate): List<DailyApiLogStatistics> {
         val aggregation = Aggregation.newAggregation(
 
             // 1. 해당 날짜 로그만
@@ -52,17 +53,19 @@ class ApiLogPersistenceAdapter(
                 .`as`("statisticsDate")
         )
 
-        val results = mongoTemplate.aggregate(
+        return reactiveMongoTemplate.aggregate(
             aggregation,
             "api_log",
             DailyApiLogStatisticsDocument::class.java
         )
+            .collectList()
+            .awaitSingle()
+            .map { doc ->
+                doc.toDomain().copy(
+                    id = "${date}_${doc.urlPattern}_${doc.method}",
+                )
+            }
 
-        return results.mappedResults.map { doc ->
-            doc.toDomain().copy(
-                id = "${date}_${doc.urlPattern}_${doc.method}",
-            )
-        }
     }
 
 }

@@ -29,7 +29,7 @@ class MealParseService(
         return executeParse(topic)
     }
 
-    private fun executeParse(topic: MealType): Meal? {
+    private suspend fun executeParse(topic: MealType): Meal? {
         log.info("Parse target: {}", topic)
         return try {
             mealParsePort.parseMeal(topic)

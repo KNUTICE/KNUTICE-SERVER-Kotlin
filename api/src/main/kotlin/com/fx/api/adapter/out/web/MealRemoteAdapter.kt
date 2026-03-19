@@ -4,21 +4,23 @@ import com.fx.api.application.port.out.MealRemotePort
 import com.fx.global.annotation.hexagonal.WebOutputAdapter
 import com.fx.global.domain.Meal
 import com.fx.global.domain.MealType
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
+import kotlinx.coroutines.reactor.awaitSingle
 import org.apache.commons.text.StringEscapeUtils
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.LocalDate
 
 @WebOutputAdapter
 class MealRemoteAdapter(
-    private val httpClient: HttpClient
+    private val webClient: WebClient
 ) : MealRemotePort {
 
     override suspend fun getMeals(type: MealType): List<Meal> {
-        val responses = httpClient
-            .get(type.rootDomain + type.bbsPath)
-            .body<List<MealResponseDto>>()
+        val responses = webClient.get()
+            .uri(type.rootDomain + type.bbsPath)
+            .retrieve()
+            .bodyToMono<List<MealResponseDto>>()
+            .awaitSingle()
         return responses.mapNotNull { toDomain(it, type) }
     }
 

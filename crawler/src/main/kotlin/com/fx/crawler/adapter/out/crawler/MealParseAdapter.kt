@@ -6,6 +6,7 @@ import com.fx.crawler.appllication.port.out.MealParsePort
 import com.fx.crawler.common.annotation.CrawlAdapter
 import com.fx.global.domain.Meal
 import com.fx.global.domain.MealType
+import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.apache.commons.text.StringEscapeUtils
 import org.slf4j.LoggerFactory
 import org.springframework.web.reactive.function.client.WebClient
@@ -19,19 +20,22 @@ import java.time.LocalDate
  */
 @CrawlAdapter
 class MealParseAdapter(
+    private val webClient: WebClient
 ) : MealParsePort {
 
     private val log = LoggerFactory.getLogger(MealParseAdapter::class.java)
     private val mapper = jacksonObjectMapper()
 
-    override fun parseMeal(topic: MealType): Meal? {
+    override suspend fun parseMeal(topic: MealType): Meal? {
         val today = LocalDate.now()
 
-        val jsonResponse = WebClient.create().post()
+        val jsonResponse = webClient.post()
             .uri(topic.getNoticeUrl())
             .retrieve()
             .bodyToMono(String::class.java)
-            .block() ?: ""
+            .awaitSingleOrNull() ?: ""
+
+        if (jsonResponse.isBlank()) return null
 
         // Json 파싱
         val mealList: List<Map<String, Any>> = try {

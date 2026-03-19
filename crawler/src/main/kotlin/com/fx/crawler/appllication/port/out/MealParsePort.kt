@@ -5,6 +5,6 @@ import com.fx.global.domain.MealType
 
 interface MealParsePort {
 
-    fun parseMeal(topic: MealType): Meal?
+    suspend fun parseMeal(topic: MealType): Meal?
 
 }

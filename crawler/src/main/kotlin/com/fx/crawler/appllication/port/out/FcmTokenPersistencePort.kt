@@ -6,14 +6,14 @@ import com.fx.global.domain.DeviceType
 
 interface FcmTokenPersistencePort {
 
-    fun findByCreatedAtAndIsActive(fcmTokenQuery: FcmTokenQuery): List<FcmToken>
+    suspend fun findByCreatedAtAndIsActive(fcmTokenQuery: FcmTokenQuery): List<FcmToken>
 
-    fun findByFcmToken(fcmToken: String): FcmToken?
+    suspend fun findByFcmToken(fcmToken: String): FcmToken?
 
-    fun save(fcmToken: FcmToken)
+    suspend fun save(fcmToken: FcmToken)
 
-    fun saveAll(fcmTokens: List<FcmToken>)
+    suspend fun saveAll(fcmTokens: List<FcmToken>)
 
-    fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long
+    suspend fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long
 
 }

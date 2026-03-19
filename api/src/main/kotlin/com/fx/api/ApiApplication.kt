@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.data.mongodb.config.EnableMongoAuditing
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
 import org.springframework.scheduling.annotation.EnableScheduling
-import reactor.blockhound.BlockHound
+//import reactor.blockhound.BlockHound
 
 @EnableScheduling
 @EnableMongoAuditing

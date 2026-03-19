@@ -75,7 +75,7 @@ class MealNotificationService(
         }
     }
 
-    private fun handleFailedTokens(failedTokens: List<FcmToken>) {
+    private suspend fun handleFailedTokens(failedTokens: List<FcmToken>) {
         fcmTokenPersistencePort.saveAll(failedTokens.map { it.copy(isActive = false) })
     }
 

@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
-import java.time.OffsetDateTime
 
 @RestController
 class TestController(
@@ -26,7 +25,7 @@ class TestController(
     private val log = LoggerFactory.getLogger(TestController::class.java)
 
     @GetMapping("/fcm")
-    fun getFcmTokens() {
+    suspend fun getFcmTokens() {
 
         val BATCH_SIZE = 100
 
@@ -51,7 +50,7 @@ class TestController(
     }
 
     @GetMapping("/meal")
-    fun getMeal() {
+    suspend fun getMeal() {
         val parseMeal = mealParseAdapter.parseMeal(MealType.STAFF_CAFETERIA)
         log.info("meal : {}", parseMeal)
     }

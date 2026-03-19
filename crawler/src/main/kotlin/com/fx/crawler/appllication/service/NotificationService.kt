@@ -1,7 +1,6 @@
 package com.fx.crawler.appllication.service
 
 import com.fx.crawler.appllication.port.`in`.NotificationUseCase
-import com.fx.crawler.appllication.port.`in`.dto.NoticeCommand
 import com.fx.crawler.appllication.port.out.FcmNotificationPort
 import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort
 import com.fx.crawler.appllication.port.out.NoticePersistencePort
@@ -23,6 +22,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.supervisorScope
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -42,17 +42,17 @@ class NotificationService(
         const val BATCH_SIZE = 500
     }
 
-    override suspend fun sendNotification(notices: List<Notice>) = coroutineScope {
+    override suspend fun sendNotification(notices: List<Notice>) = supervisorScope {
         if (notices.isEmpty()) {
-            return@coroutineScope
+            return@supervisorScope
         }
 
         // 공지 타입별 그룹화
         val noticesByTopic: Map<CrawlableType, List<Notice>> = notices.groupBy { it.topic }
 
-        noticesByTopic.map { (topic, notices) ->
-            log.info("Topic : {}", topic)
+        val jobs = noticesByTopic.map { (topic, notices) ->
             async {
+                log.info("Topic : {}", topic)
                 var cursor: LocalDateTime? = null
 
                 while (true) {
@@ -66,7 +66,10 @@ class NotificationService(
                     val query = when (topic) {
                         is NoticeType -> baseQuery.copy(subscribedNoticeTopic = topic)
                         is MajorType -> baseQuery.copy(subscribedMajorTopic = topic)
-                        else -> throw IllegalArgumentException("Unsupported topic: $topic")
+                        else -> {
+                            log.error("Unsupported topic type: {}", topic)
+                            return@async
+                        }
                     }
 
                     val fcmTokens = fcmTokenPersistencePort.findByCreatedAtAndIsActive(query)
@@ -80,9 +83,9 @@ class NotificationService(
                     }
                     cursor = fcmTokens.last().createdAt // cursor update
                 }
-
             }
-        }.forEach { it.await() } // 비동기 병렬 전송 대기. 모든 작업이 끝나야 코루틴 종료
+        }
+        jobs.awaitAll() // 비동기 병렬 전송 대기. 모든 작업이 끝나야 코루틴 종료
     }
 
     override suspend fun sendSilentPushNotification() = coroutineScope {
@@ -132,7 +135,7 @@ class NotificationService(
         fcmNotificationPort.sendSeatAlert(alert)
     }
 
-    private fun handleFailedTokens(failedTokens: List<FcmToken>) {
+    private suspend fun handleFailedTokens(failedTokens: List<FcmToken>) {
         fcmTokenPersistencePort.saveAll(failedTokens.map { it.copy(isActive = false) })
     }
 

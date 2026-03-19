@@ -4,12 +4,12 @@ import com.fx.crawler.appllication.port.`in`.NotificationUseCase
 import com.fx.crawler.appllication.port.`in`.readingroom.SeatAlertProcessUseCase
 import com.fx.readingroom.application.port.out.ReadingRoomRemotePort
 import com.fx.readingroom.application.port.out.SeatAlertPersistencePort
-import com.fx.readingroom.domain.ReadingRoom
 import com.fx.readingroom.domain.SeatAlert
 import com.fx.readingroom.domain.SeatAlert.SeatAlertStatus
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -22,10 +22,10 @@ class SeatAlertProcessService(
 
     private val log = LoggerFactory.getLogger(SeatAlertProcessService::class.java)
 
-    override suspend fun checkAndNotifyAll() = coroutineScope {
+    override suspend fun checkAndNotifyAll() = supervisorScope {
         // 1. ACTIVE 알림 조회
         val alerts = seatAlertPersistencePort.findByAlertStatus(SeatAlertStatus.ACTIVE)
-        if (alerts.isEmpty()) return@coroutineScope
+        if (alerts.isEmpty()) return@supervisorScope
 
         val csrfToken = readingRoomRemotePort.getCsrfToken()
 
@@ -41,7 +41,9 @@ class SeatAlertProcessService(
 
                     roomAlerts.forEach { alert ->
                         if (alert.seatNumber in availableSeats) {
-                            triggerAlert(alert)
+                            launch {
+                                triggerAlert(alert)
+                            }
                         }
                     }
                 } catch (e: Exception) {

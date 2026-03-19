@@ -5,6 +5,6 @@ import java.time.LocalDate
 
 interface ApiLogPersistencePort {
 
-    fun aggregateDailyStatistics(date: LocalDate): List<DailyApiLogStatistics>
+    suspend fun aggregateDailyStatistics(date: LocalDate): List<DailyApiLogStatistics>
 
 }

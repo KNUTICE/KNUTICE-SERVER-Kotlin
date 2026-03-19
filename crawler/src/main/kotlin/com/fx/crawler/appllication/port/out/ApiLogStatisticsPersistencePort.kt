@@ -4,6 +4,6 @@ import com.fx.global.domain.DailyApiLogStatistics
 
 interface ApiLogStatisticsPersistencePort {
 
-    fun saveAll(dailyApiLogStatistics: List<DailyApiLogStatistics>)
+    suspend fun saveAll(dailyApiLogStatistics: List<DailyApiLogStatistics>)
 
 }

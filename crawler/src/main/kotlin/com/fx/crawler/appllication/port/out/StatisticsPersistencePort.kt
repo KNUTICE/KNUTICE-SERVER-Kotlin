@@ -4,6 +4,6 @@ import com.fx.global.domain.DailyStatistics
 
 interface StatisticsPersistencePort {
 
-    fun save(dailyStatistics: DailyStatistics)
+    suspend fun save(dailyStatistics: DailyStatistics)
 
 }

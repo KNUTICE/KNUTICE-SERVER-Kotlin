@@ -6,7 +6,6 @@ import com.fx.crawler.common.annotation.ScheduleAdapter
 import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.MajorType
 import com.fx.global.domain.NoticeType
-import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 
@@ -20,12 +19,12 @@ class NoticeScheduler(
 
 
     @Scheduled(cron = "0 0/15 * * * *") // 매일 15분마다
-    fun crawlAndPushNotices() = runBlocking {
+    suspend fun crawlAndPushNotices() {
         processCrawl(NoticeType.entries, "notice")
     }
 
     @Scheduled(cron = "0 10 16 * * *") // 매일 16시 10분마다
-    fun crawlAndPushMajorNotices() = runBlocking {
+    suspend fun crawlAndPushMajorNotices() {
         processCrawl(MajorType.entries, "major notice")
     }
 

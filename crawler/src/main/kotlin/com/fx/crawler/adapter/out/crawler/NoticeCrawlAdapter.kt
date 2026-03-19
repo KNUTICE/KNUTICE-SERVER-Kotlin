@@ -4,32 +4,32 @@ import com.fx.crawler.appllication.port.out.NoticeCrawlPort
 import com.fx.crawler.common.annotation.CrawlAdapter
 import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.Notice
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.request.get
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.reactor.awaitSingle
 import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @CrawlAdapter
-class NoticeCrawlAdapter: NoticeCrawlPort {
+class NoticeCrawlAdapter(
+    private val webClient: WebClient
+): NoticeCrawlPort {
 
     private val log = LoggerFactory.getLogger(NoticeCrawlAdapter::class.java)
-    private val httpClient = HttpClient(CIO)
 
     override suspend fun crawlNoticeSummaries(topic: CrawlableType, page: Int): List<Notice> = coroutineScope {
         val pageUrl = topic.getNoticeUrl() + "?pageIndex=$page"
 
-//        val document = Jsoup.connect(pageUrl).get() // Blocking
-        val html: String = httpClient.get(pageUrl).body()
+        val html = webClient.get()
+            .uri(pageUrl)
+            .retrieve()
+            .bodyToMono<String>()
+            .awaitSingle()
+
         val document = withContext(Dispatchers.Default) {
             Jsoup.parse(html)
         }
@@ -93,8 +93,11 @@ class NoticeCrawlAdapter: NoticeCrawlPort {
         val deferredList = notices.map { notice ->
             async(Dispatchers.IO) {
                 try {
-//                    val detailDocument = Jsoup.connect(notice.contentUrl).get() // blocking
-                    val html: String = httpClient.get(notice.contentUrl).body()
+                    val html = webClient.get()
+                        .uri(notice.contentUrl)
+                        .retrieve()
+                        .bodyToMono<String>()
+                        .awaitSingle()
 
                     val detailDocument = withContext(Dispatchers.Default) {
                         Jsoup.parse(html)

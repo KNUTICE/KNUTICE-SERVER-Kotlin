@@ -31,8 +31,11 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.3.13")
     implementation("io.ktor:ktor-serialization-jackson:2.3.13")
 
-    // Mongo
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    // Blocking Mongo
+//    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
+    // Non-blocking Mongo
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
 
     // Web
 //    implementation("org.springframework.boot:spring-boot-starter-web")
@@ -46,6 +49,10 @@ dependencies {
     // Kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+    // Coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
 
     // Validation
     implementation("org.springframework.boot:spring-boot-starter-validation")

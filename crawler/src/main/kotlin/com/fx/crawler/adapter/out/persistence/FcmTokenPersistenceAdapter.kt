@@ -8,6 +8,7 @@ import com.fx.crawler.domain.FcmTokenQuery
 import com.fx.global.adapter.out.persistence.repository.FcmTokenMongoRepository
 import com.fx.global.annotation.PersistenceAdapter
 import com.fx.global.domain.DeviceType
+import kotlinx.coroutines.flow.collect
 
 @PersistenceAdapter
 class FcmTokenPersistenceAdapter(
@@ -15,21 +16,21 @@ class FcmTokenPersistenceAdapter(
     private val fcmTokenQueryRepository: FcmTokenQueryRepository
 ): FcmTokenPersistencePort {
 
-    override fun save(fcmToken: FcmToken) {
+    override suspend fun save(fcmToken: FcmToken) {
         fcmTokenMongoRepository.save(FcmTokenDocument.from(fcmToken))
     }
 
-    override fun saveAll(fcmTokens: List<FcmToken>) {
-        fcmTokenMongoRepository.saveAll(FcmTokenDocument.from(fcmTokens))
+    override suspend fun saveAll(fcmTokens: List<FcmToken>) {
+        fcmTokenMongoRepository.saveAll(FcmTokenDocument.from(fcmTokens)).collect()
     }
 
-    override fun findByFcmToken(fcmToken: String): FcmToken?  =
-        fcmTokenMongoRepository.findById(fcmToken).orElse(null)?.toDomain()
+    override suspend fun findByFcmToken(fcmToken: String): FcmToken?  =
+        fcmTokenMongoRepository.findById(fcmToken)?.toDomain()
 
-    override fun findByCreatedAtAndIsActive(fcmTokenQuery: FcmTokenQuery): List<FcmToken> =
+    override suspend fun findByCreatedAtAndIsActive(fcmTokenQuery: FcmTokenQuery): List<FcmToken> =
         fcmTokenQueryRepository.findByCreatedAtAndIsActive(fcmTokenQuery).map { it.toDomain() };
 
-    override fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long =
+    override suspend fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long =
         fcmTokenMongoRepository.countByIsActiveAndDeviceType(isActive, deviceType)
 
 }

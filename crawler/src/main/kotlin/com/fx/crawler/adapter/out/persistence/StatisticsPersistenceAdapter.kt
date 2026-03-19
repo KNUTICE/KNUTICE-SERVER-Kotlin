@@ -11,7 +11,7 @@ class StatisticsPersistenceAdapter(
     private val statisticsMongoRepository: StatisticsMongoRepository
 ): StatisticsPersistencePort {
 
-    override fun save(dailyStatistics: DailyStatistics) {
+    override suspend fun save(dailyStatistics: DailyStatistics) {
         statisticsMongoRepository.save(DailyStatisticsDocument.from(dailyStatistics))
     }
 

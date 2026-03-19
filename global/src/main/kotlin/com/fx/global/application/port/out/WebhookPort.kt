@@ -4,6 +4,6 @@ import com.fx.global.domain.SlackMessage
 
 interface WebhookPort {
 
-    fun notifySlack(slackMessage: SlackMessage)
+    suspend fun notifySlack(slackMessage: SlackMessage)
 
 }

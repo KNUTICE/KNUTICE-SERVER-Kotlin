@@ -47,7 +47,7 @@ class NotificationApiAdapter(
         log.info("알림 발송 대상 fcmToken : {}", fcmToken)
         val meal = mealParseUseCase.parseMeal(mealType)
         meal?.let { // 급식 정보가 존재할 때만 알림 발송
-            mealNotificationUseCase.sendNotification(fcmToken, meal);
+            mealNotificationUseCase.sendNotification(fcmToken, meal)
         } ?: run {
             throw NotificationException(NotificationErrorCode.NOTIFICATION_SEND_FAILED)
         }

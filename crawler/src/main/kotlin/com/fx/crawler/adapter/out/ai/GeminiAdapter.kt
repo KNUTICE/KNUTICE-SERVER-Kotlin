@@ -7,6 +7,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import org.slf4j.LoggerFactory
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.prompt.Prompt
@@ -18,13 +20,16 @@ class GeminiAdapter(
 ) : NoticeSummaryPort {
 
     private val log = LoggerFactory.getLogger(GeminiAdapter::class.java)
+    private val semaphore = Semaphore(10)
 
     override suspend fun summarizeNotices(notices: List<Notice>): List<Notice> = coroutineScope {
         val jobs = notices.mapNotNull { notice ->
             if (notice.content.isNullOrBlank()) null
             else async(Dispatchers.IO) {
-                log.info("start ai summary : ${notice.nttId}")
-                retrySummaryNotice(notice)
+                semaphore.withPermit {
+                    log.info("AI 요약 시작 : ${notice.nttId}")
+                    retrySummaryNotice(notice)
+                }
             }
         }
         jobs.awaitAll().filterNotNull()

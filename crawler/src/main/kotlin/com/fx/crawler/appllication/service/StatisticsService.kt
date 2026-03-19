@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
@@ -47,7 +48,7 @@ class StatisticsService(
      * @update
      * - dslee (2026-02-07) : API 로그 통계 집계 로직 추가
      */
-    override suspend fun aggregateDailyStatistics() = withContext(Dispatchers.IO) {
+    override suspend fun aggregateDailyStatistics() = coroutineScope {
         val yesterday = LocalDate.now().minusDays(1)
         val endOfDay = yesterday.atTime(LocalTime.MAX)
 
