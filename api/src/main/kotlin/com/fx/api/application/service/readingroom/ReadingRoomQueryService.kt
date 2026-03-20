@@ -29,7 +29,7 @@ class ReadingRoomQueryService(
 
     override suspend fun getReadingRoomSeats(fcmToken: String, readingRoom: ReadingRoom): List<ReadingRoomSeat> {
         validateFcmToken(fcmToken)
-        return readingRoomRemotePort.getReadingRoomSeats(readingRoom, readingRoomRemotePort.getCsrfToken())
+        return readingRoomRemotePort.getReadingRoomSeats(readingRoom, readingRoomRemotePort.getCsrfTokenAndCookie())
     }
 
     override suspend fun getSeatAlerts(fcmToken: String): List<SeatAlert> {

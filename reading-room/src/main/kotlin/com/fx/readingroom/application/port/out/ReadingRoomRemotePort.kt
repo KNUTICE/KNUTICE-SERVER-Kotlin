@@ -6,10 +6,10 @@ import com.fx.readingroom.domain.ReadingRoomStatus
 
 interface ReadingRoomRemotePort {
 
-    suspend fun getCsrfToken(): String
+    suspend fun getCsrfTokenAndCookie(): Pair<String, String>
 
     suspend fun getReadingRoomStatus(): List<ReadingRoomStatus>
 
-    suspend fun getReadingRoomSeats(readingRoom: ReadingRoom, csrfToken: String): List<ReadingRoomSeat>
+    suspend fun getReadingRoomSeats(readingRoom: ReadingRoom, csrfInfo: Pair<String, String>): List<ReadingRoomSeat>
 
 }

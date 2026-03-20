@@ -1,6 +1,8 @@
 package com.fx.readingroom.adapter.out.web
 
 import com.fx.global.annotation.hexagonal.WebOutputAdapter
+import com.fx.global.exception.ConnectionException
+import com.fx.global.exception.errorcode.ConnectionErrorCode
 import com.fx.readingroom.adapter.out.web.dto.ReadingRoomSeatRemoteResponse
 import com.fx.readingroom.adapter.out.web.dto.ReadingRoomStatusRemoteResponse
 import com.fx.readingroom.application.port.out.ReadingRoomRemotePort
@@ -8,7 +10,6 @@ import com.fx.readingroom.domain.ReadingRoom
 import com.fx.readingroom.domain.ReadingRoomSeat
 import com.fx.readingroom.domain.ReadingRoomStatus
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -32,18 +33,23 @@ class ReadingRoomRemoteAdapter(
     private val log = LoggerFactory.getLogger(ReadingRoomRemoteAdapter::class.java)
 
     /**
-     * 초기 접속을 통해 CSRF 토큰을 추출하고 세션을 수립합니다.
+     * 초기 접속을 통해 CSRF 토큰을 추출하고, 쿠키를 획득하는 메서드
      */
-    override suspend fun getCsrfToken(): String {
-        val html = webClient.get()
+    override suspend fun getCsrfTokenAndCookie(): Pair<String, String> {
+        val response = webClient.get()
             .uri(rootUrl)
             .retrieve()
-            .bodyToMono<String>()
+            .toEntity(String::class.java)
             .awaitSingle()
 
-        val document = withContext(Dispatchers.Default) { Jsoup.parse(html) }
-        return document.getElementById("token")?.attr("value")
-            ?: throw IllegalStateException("CSRF 토큰을 찾을 수 없습니다.")
+        val html = response.body
+            ?: throw ConnectionException(ConnectionErrorCode.REMOTE_SERVER_UNAVAILABLE)
+        val cookie = response.headers["Set-Cookie"]?.firstOrNull()
+            ?: throw ConnectionException(ConnectionErrorCode.REMOTE_SERVER_UNAVAILABLE)
+        val token = Jsoup.parse(html).getElementById("token")?.attr("value")
+            ?: throw ConnectionException(ConnectionErrorCode.REMOTE_SERVER_UNAVAILABLE)
+
+        return Pair(token, cookie)
     }
 
     /**
@@ -52,7 +58,7 @@ class ReadingRoomRemoteAdapter(
     override suspend fun getReadingRoomStatus(): List<ReadingRoomStatus> {
         val fetchStatus = suspend {
             webClient.get()
-                .uri { it.path("$rootUrl$statusEndpoint").queryParam("caller", "nicom").build() }
+                .uri("$rootUrl$statusEndpoint?caller=nicom")
                 .retrieve()
                 .bodyToMono<ReadingRoomStatusRemoteResponse>()
                 .awaitSingle()
@@ -82,10 +88,19 @@ class ReadingRoomRemoteAdapter(
     /**
      * 특정 열람실의 상세 좌석 정보 조회
      */
-    override suspend fun getReadingRoomSeats(readingRoom: ReadingRoom, csrfToken: String): List<ReadingRoomSeat> {
+    /**
+     * 특정 열람실의 상세 좌석 정보 조회
+     * @param csrfInfo Pair(토큰, 쿠키)
+     */
+    override suspend fun getReadingRoomSeats(
+        readingRoom: ReadingRoom,
+        csrfInfo: Pair<String, String>
+    ): List<ReadingRoomSeat> {
+        val (csrfToken, cookie) = csrfInfo
         val response = webClient.post()
             .uri("$rootUrl$seatsEndpoint")
             .header("x-csrf-token", csrfToken)
+            .header("Cookie", cookie)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body(
                 BodyInserters.fromFormData("caller", "nicom")

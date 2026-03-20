@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
-@Document
+@Document(collection = "seat_alert")
 @CompoundIndexes(
     CompoundIndex(
         name = "unique_active_alert",

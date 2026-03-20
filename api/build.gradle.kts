@@ -27,8 +27,8 @@ dependencies {
 
     implementation("io.github.seob7:common-api:0.0.2")
 
-    // Ktor Client (논블로킹 HTTP)
-    implementation("io.ktor:ktor-client-cio:2.3.6")
+    // Ktor Client (논블로킹 HTTP) - WebClient 로 대체함
+//    implementation("io.ktor:ktor-client-cio:2.3.6")
 
     // Ktor JSON Serialization
     implementation("io.ktor:ktor-client-content-negotiation:2.3.13")

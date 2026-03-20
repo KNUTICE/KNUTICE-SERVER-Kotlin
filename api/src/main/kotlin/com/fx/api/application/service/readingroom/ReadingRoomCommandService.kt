@@ -32,7 +32,7 @@ class ReadingRoomCommandService(
         // 2. 열람실 좌석 정보 조회
         val seat = readingRoomRemotePort.getReadingRoomSeats(
             seatAlertCommand.readingRoom,
-            readingRoomRemotePort.getCsrfToken()
+            readingRoomRemotePort.getCsrfTokenAndCookie()
         ).find { it.seatNumber == seatAlertCommand.seatNumber }
             ?: throw ReadingRoomException(ReadingRoomErrorCode.SEAT_NOT_FOUND)
 

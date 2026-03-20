@@ -27,7 +27,7 @@ class SeatAlertProcessService(
         val alerts = seatAlertPersistencePort.findByAlertStatus(SeatAlertStatus.ACTIVE)
         if (alerts.isEmpty()) return@supervisorScope
 
-        val csrfToken = readingRoomRemotePort.getCsrfToken()
+        val csrfToken = readingRoomRemotePort.getCsrfTokenAndCookie()
 
         // 2. 열람실별 그룹화
         val alertsByRoom = alerts.groupBy { it.readingRoom }
