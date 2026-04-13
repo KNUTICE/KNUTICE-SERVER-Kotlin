@@ -141,6 +141,12 @@ enum class MajorType(
         "커뮤니케이션디자인학과"
     ),
 
+    SCHOOL_OF_NANOMEDICAL_ENGINEERING(
+        "https://www.ut.ac.kr",
+        "/cop/bbs/BBSMSTR_000000001501/selectBoardList.do",
+        "나노메디컬공학부"
+    ),
+
     // ---------- 인문대학 ----------
     ENGLISH_LANGUAGE_AND_LITERATURE(
         "https://www.ut.ac.kr",
