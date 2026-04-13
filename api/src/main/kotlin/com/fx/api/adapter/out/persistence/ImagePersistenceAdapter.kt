@@ -16,7 +16,7 @@ class ImagePersistenceAdapter(
         imageMongoRepository.save(ImageDocument.from(image)).toDomain()
 
     override fun findByType(type: ImageType): Image? =
-        imageMongoRepository.findByType(type)?.orElse(null)?.toDomain()
+        imageMongoRepository.findByType(type)?.toDomain()
 
     override fun findAllByType(type: ImageType): List<Image> =
         imageMongoRepository.findAllByType(type).map { it.toDomain() }
@@ -26,4 +26,5 @@ class ImagePersistenceAdapter(
 
     override fun delete(imageId: String) =
         imageMongoRepository.deleteById(imageId)
+
 }

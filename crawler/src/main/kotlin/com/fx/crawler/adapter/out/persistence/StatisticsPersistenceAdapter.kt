@@ -1,6 +1,6 @@
 package com.fx.crawler.adapter.out.persistence
 
-import com.fx.crawler.adapter.out.persistence.repository.StatisticsMongoRepository
+import com.fx.global.adapter.out.persistence.persistence.StatisticsMongoRepository
 import com.fx.crawler.appllication.port.out.StatisticsPersistencePort
 import com.fx.global.adapter.out.persistence.document.DailyStatisticsDocument
 import com.fx.global.annotation.PersistenceAdapter
