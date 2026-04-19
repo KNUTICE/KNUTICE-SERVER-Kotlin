@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: KNUTICE-API
+  messages:
+    basename: messages
+    encoding: UTF-8
+    # 해당하는 Locale 이 없을 때 System Locale 을 사용하지 않도록 설정, 기본으로 설정된 message.properties (한국어) 사용
+    fallback-to-system-locale: false
 
   data:
     mongodb:
