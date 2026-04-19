@@ -10,6 +10,7 @@ import com.fx.global.domain.TopicType
 import com.fx.global.annotation.hexagonal.WebInputAdapter
 import io.github.seob7.Api
 import jakarta.validation.Valid
+import org.springframework.context.MessageSource
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/open-api/v1/topics")
 class TopicOpenApiAdapter(
     private val fcmTokenQueryUseCase: FcmTokenQueryUseCase,
-    private val fcmTokenCommandUseCase: FcmTokenCommandUseCase
+    private val fcmTokenCommandUseCase: FcmTokenCommandUseCase,
+    private val messageSource: MessageSource
 ) : TopicOpenApiSwagger {
 
     @GetMapping
@@ -46,7 +48,7 @@ class TopicOpenApiAdapter(
     ): ResponseEntity<Api<List<TypeResponse>>> {
         val responses = when (type) {
             TopicType.NOTICE -> TypeResponse.fromNoticeTypes()
-            TopicType.MAJOR -> TypeResponse.fromMajorTypes()
+            TopicType.MAJOR -> TypeResponse.fromMajorTypes(messageSource)
             TopicType.MEAL -> TypeResponse.fromMealTypes()
         }
         return Api.OK(responses)
