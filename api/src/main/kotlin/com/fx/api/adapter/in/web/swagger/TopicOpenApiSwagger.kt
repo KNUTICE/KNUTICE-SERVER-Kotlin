@@ -10,6 +10,9 @@ import com.fx.global.annotation.ApiExceptionExplanation
 import com.fx.global.annotation.ApiResponseExplanations
 import io.github.seob7.Api
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -55,6 +58,13 @@ interface TopicOpenApiSwagger {
 
     @Operation(summary = "Type 별 Topic 조회", description = "각 타입의 토픽들을 조회합니다.")
     fun getTopicsByType(
+        @Parameter(
+            name = "Accept-Language",
+            description = "언어 설정 (ko-KR, en-US, ja-JP)",
+            `in` = ParameterIn.HEADER,
+            schema = Schema(type = "string", allowableValues = ["ko-KR", "en-US", "ja-JP"], defaultValue = "ko-KR")
+        )
+        @RequestHeader(value = "Accept-Language", required = false, defaultValue = "ko-KR") acceptLanguage: String,
         @RequestParam type: TopicType
     ): ResponseEntity<Api<List<TypeResponse>>>
 

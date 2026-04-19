@@ -41,6 +41,7 @@ class TopicOpenApiAdapter(
 
     @GetMapping("/types")
     override fun getTopicsByType(
+        @RequestHeader(value = "Accept-Language", required = false, defaultValue = "ko-KR") acceptLanguage: String,
         @RequestParam type: TopicType
     ): ResponseEntity<Api<List<TypeResponse>>> {
         val responses = when (type) {
