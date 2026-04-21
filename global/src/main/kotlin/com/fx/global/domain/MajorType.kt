@@ -23,27 +23,31 @@ enum class MajorType(
      * - 미래융합대학 (6개)
      */
 
-    // dslee (2026.04.15) : 페이지 접속은 가능하나 2026년 단과대 및 학부 개편을 통해 사라진듯 함
-//    AI_ROBOTICS_ENGINEERING(
-//        "https://www.ut.ac.kr",
-//        "/cop/bbs/BBSMSTR_000000001156/selectBoardList.do",
-//        "AI로봇공학과",
-//        "융합기술대학"
-//    ),
-//
-//    BIOMEDICAL_ENGINEERING(
-//        "https://www.ut.ac.kr",
-//        "/cop/bbs/BBSMSTR_000000001139/selectBoardList.do",
-//        "바이오메디컬융합학과",
-//        "융합기술대학"
-//    ),
-//
-//    PRECISION_MEDICINE_MEDICAL_DEVICE(
-//        "https://www.ut.ac.kr",
-//        "/cop/bbs/BBSMSTR_000000001382/selectBoardList.do",
-//        "정밀의료·의료기기학과",
-//        "융합기술대학"
-//    ),
+    /**
+     * dslee (2026.04.15)
+     * - 페이지 접속은 가능하나 2026년 단과대 및 학부 개편을 통해 사라진듯 함
+     * - 1.7.x 버전에서 사용중이므로 추후 주석 OR 제거 필요
+     */
+    AI_ROBOTICS_ENGINEERING(
+        "https://www.ut.ac.kr",
+        "/cop/bbs/BBSMSTR_000000001156/selectBoardList.do",
+        "AI로봇공학과",
+        "UNKNOWN"
+    ),
+
+    BIOMEDICAL_ENGINEERING(
+        "https://www.ut.ac.kr",
+        "/cop/bbs/BBSMSTR_000000001139/selectBoardList.do",
+        "바이오메디컬융합학과",
+        "UNKNOWN"
+    ),
+
+    PRECISION_MEDICINE_MEDICAL_DEVICE(
+        "https://www.ut.ac.kr",
+        "/cop/bbs/BBSMSTR_000000001382/selectBoardList.do",
+        "정밀의료·의료기기학과",
+        "UNKNOWN"
+    ),
 
 
     // ---------- 공과대학 | College of Engineering ----------
