@@ -32,21 +32,21 @@ enum class MajorType(
         "https://www.ut.ac.kr",
         "/cop/bbs/BBSMSTR_000000001156/selectBoardList.do",
         "AI로봇공학과",
-        "UNKNOWN"
+        "DEPRECATED"
     ),
 
     BIOMEDICAL_ENGINEERING(
         "https://www.ut.ac.kr",
         "/cop/bbs/BBSMSTR_000000001139/selectBoardList.do",
         "바이오메디컬융합학과",
-        "UNKNOWN"
+        "DEPRECATED"
     ),
 
     PRECISION_MEDICINE_MEDICAL_DEVICE(
         "https://www.ut.ac.kr",
         "/cop/bbs/BBSMSTR_000000001382/selectBoardList.do",
         "정밀의료·의료기기학과",
-        "UNKNOWN"
+        "DEPRECATED"
     ),
 
 
