@@ -10,7 +10,7 @@ class PasswordEncoderAdapter(
 ) : PasswordEncoderPort {
 
     override fun encode(rawPassword: String): String {
-        return passwordEncoder.encode(rawPassword)
+        return passwordEncoder.encode(rawPassword)!!
     }
 
     override fun matches(rawPassword: String, encodedPassword: String): Boolean {
