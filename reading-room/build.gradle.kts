@@ -1,7 +1,3 @@
-plugins {
-    id("org.springframework.boot")
-}
-
 dependencies {
     implementation(project(":global"))
 
@@ -42,5 +38,6 @@ allOpen {
     annotation("jakarta.persistence.Embeddable")
 }
 
-tasks.bootJar { enabled = false }
+// Root 설정에서 false 로 설정함
+//tasks.bootJar { enabled = false }
 tasks.jar { enabled = true }
