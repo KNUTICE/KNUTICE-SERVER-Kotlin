@@ -1,8 +1,3 @@
-plugins {
-    id("org.springframework.boot")
-    id("com.google.devtools.ksp")
-}
-
 extra["springCloudVersion"] = "2025.0.0"
 
 dependencies {
@@ -83,7 +78,7 @@ allOpen {
     annotation("jakarta.persistence.Embeddable")
 }
 
-tasks.bootJar { enabled = false }
+tasks.bootJar { enabled = true }
 tasks.jar { enabled = false }
 
 // QueryDSL QClass 생성 경로

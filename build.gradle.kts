@@ -19,6 +19,8 @@ subprojects {
 	apply(plugin = "org.jetbrains.kotlin.jvm")
 	apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 	apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
+	apply(plugin = "org.springframework.boot")
+	apply(plugin = "com.google.devtools.ksp")
 	apply(plugin = "io.spring.dependency-management")
 
 	configure<JavaPluginExtension> {
@@ -31,6 +33,11 @@ subprojects {
 		"implementation"("com.fasterxml.jackson.module:jackson-module-kotlin")
 		"implementation"("org.jetbrains.kotlin:kotlin-reflect")
 		"testImplementation"("org.springframework.boot:spring-boot-starter-test")
+	}
+
+	// 기본적으로 bootJar 는 끄고 각 모듈에서 필요한 경우에만 켜도록 설정
+	tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+		enabled = false
 	}
 
 	tasks.withType<Test> {

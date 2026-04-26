@@ -1,8 +1,3 @@
-plugins {
-    id("org.springframework.boot")
-    id("com.google.devtools.ksp")
-}
-
 dependencies {
 
     implementation("io.github.seob7:common-api:0.0.2")
@@ -38,7 +33,8 @@ allOpen {
     annotation("jakarta.persistence.Embeddable")
 }
 
-tasks.bootJar { enabled = false }
+// Root 설정에서 false 로 설정함
+//tasks.bootJar { enabled = false }
 tasks.jar { enabled = true }
 
 // QueryDSL QClass 생성 경로

@@ -1,8 +1,3 @@
-plugins {
-    id("org.springframework.boot")
-    id("com.google.devtools.ksp")
-}
-
 extra["springAiVersion"] = "1.0.2"
 
 dependencies {
@@ -73,13 +68,8 @@ allOpen {
     annotation("jakarta.persistence.Embeddable")
 }
 
-tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
-    enabled = true
-}
-
-tasks.getByName<Jar>("jar") {
-    enabled = false
-}
+tasks.bootJar { enabled = true }
+tasks.jar { enabled = false }
 
 // QueryDSL QClass 생성 경로
 kotlin {
