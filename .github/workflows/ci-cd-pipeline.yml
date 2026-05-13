@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+# GHCR 권한 설정
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     name: Test Gradle
@@ -48,11 +53,12 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Docker Hub Login
+      - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_KNUTICE_TOKEN }}
 
       - name: Create firebase_service_key.json
         run: |
@@ -88,6 +94,9 @@ jobs:
             git clone https://github.com/KNUTICE/KNUTICE-SERVER-Kotlin.git
             
             cd KNUTICE-SERVER-Kotlin
+            
+            echo "${{ secrets.GHCR_KNUTICE_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
             doppler run -- docker compose pull
             doppler run -- docker compose up -d
             docker image prune -f
@@ -96,7 +105,6 @@ jobs:
             rm -rf KNUTICE-SERVER-Kotlin
             
             docker restart nginx
-
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
         with:
