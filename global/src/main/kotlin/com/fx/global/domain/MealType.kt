@@ -1,18 +1,21 @@
 package com.fx.global.domain
 
 enum class MealType(
+    override val code: Int,
     override val rootDomain: String,
     override val bbsPath: String,
     override val category: String
 ) : CrawlableType {
 
     STUDENT_CAFETERIA(
+        900,
         "https://www.ut.ac.kr",
         "/prog/mealManage/MT01/kor/sub06_02_02_01/dayList.do",
         "학생식당"
     ),
 
     STAFF_CAFETERIA(
+        901,
         "https://www.ut.ac.kr",
         "/prog/mealManage/MT02/kor/sub06_02_02_02/dayList.do",
         "교직원식당"
