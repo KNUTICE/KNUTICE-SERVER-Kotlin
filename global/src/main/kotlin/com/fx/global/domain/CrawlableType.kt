@@ -1,5 +1,8 @@
 package com.fx.global.domain
 
+import com.fx.global.exception.TopicException
+import com.fx.global.exception.errorcode.TopicErrorCode
+
 interface CrawlableType {
     val rootDomain: String
     val bbsPath: String
@@ -20,11 +23,11 @@ interface CrawlableType {
 
         @JvmStatic
         fun fromString(topicName: String): CrawlableType =
-            registry[topicName] ?: throw IllegalArgumentException("Unknown type: $topicName")
+            registry[topicName] ?: throw TopicException(TopicErrorCode.TOPIC_NOT_FOUND)
 
         @JvmStatic
         fun fromCode(code: Int): CrawlableType =
-            codeRegistry[code] ?: throw IllegalArgumentException("Unknown code: $code")
+            codeRegistry[code] ?: throw TopicException(TopicErrorCode.TOPIC_NOT_FOUND)
 
         @JvmStatic
         fun allTypeNames(): Set<String> = registry.keys

@@ -17,18 +17,8 @@ data class NoticeSearchParamV2(
     fun toCommand(pageable: Pageable) =
         NoticeQuery(
             nttId = this.nttId,
-            topic = topic?.let { resolveTopicCode(it) },
+            topic = topic?.let { CrawlableType.fromCode(it) },
             keyword = this.keyword,
             pageable = pageable
         )
-
-    private fun resolveTopicCode(code: Int): CrawlableType {
-        val type = try {
-            CrawlableType.fromCode(code)
-        } catch (e: IllegalArgumentException) {
-            throw TopicException(TopicErrorCode.INVALID_TOPIC_CODE, e)
-        }
-        if (type is MealType) throw TopicException(TopicErrorCode.INVALID_TOPIC_CODE)
-        return type
-    }
 }
