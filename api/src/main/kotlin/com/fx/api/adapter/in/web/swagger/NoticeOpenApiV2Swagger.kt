@@ -30,7 +30,7 @@ interface NoticeOpenApiV2Swagger {
     )
     @Operation(
         summary = "공지 목록을 조회/검색합니다. (정수형 topic)",
-        description = "ex) /open-api/v2/notices?topic=1&size=5&nttId=1081908&keyword=파이썬&sort=nttId,DESC <br>" +
+        description = "ex) /open-api/v2/notices?topicId=1&size=5&nttId=1081908&keyword=파이썬&sort=nttId,DESC <br>" +
                 "[DEFAULT : sort=nttId,DESC&size=20] <br><br>" +
                 "NoticeType: GENERAL_NEWS=1, SCHOLARSHIP_NEWS=2, EVENT_NEWS=3, ACADEMIC_NEWS=4, EMPLOYMENT_NEWS=5 <br>" +
                 "MajorType: 공과대학 100~113, 교통공과대학 200~202, AI융합대학 300~303, 인문대학 400~405, " +
