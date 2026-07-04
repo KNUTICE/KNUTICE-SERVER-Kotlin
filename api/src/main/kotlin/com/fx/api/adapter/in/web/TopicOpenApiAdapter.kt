@@ -6,8 +6,11 @@ import com.fx.api.adapter.`in`.web.dto.topic.TypeResponse
 import com.fx.api.adapter.`in`.web.swagger.TopicOpenApiSwagger
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase
+import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.TopicType
 import com.fx.global.annotation.hexagonal.WebInputAdapter
+import com.fx.global.exception.TopicException
+import com.fx.global.exception.errorcode.TopicErrorCode
 import io.github.seob7.Api
 import jakarta.validation.Valid
 import org.springframework.context.MessageSource
@@ -44,9 +47,16 @@ class TopicOpenApiAdapter(
     @GetMapping("/types")
     override fun getTopicsByType(
         @RequestHeader(value = "Accept-Language", required = false, defaultValue = "ko-KR") acceptLanguage: String,
-        @RequestParam type: TopicType
+        @RequestParam(required = false) type: TopicType?,
+        @RequestParam(required = false) topic: String?,
+        @RequestParam(required = false) topicId: Int?
     ): ResponseEntity<Api<List<TypeResponse>>> {
-        val responses = when (type) {
+        if (topic != null || topicId != null) {
+            val resolved = topicId?.let { CrawlableType.fromCode(it) } ?: CrawlableType.fromString(topic!!)
+            return Api.OK(listOf(TypeResponse.from(resolved, messageSource)))
+        }
+
+        val responses = when (type ?: throw TopicException(TopicErrorCode.TOPIC_NOT_FOUND)) {
             TopicType.NOTICE -> TypeResponse.fromNoticeTypes()
             TopicType.MAJOR -> TypeResponse.fromMajorTypes(messageSource)
             TopicType.MEAL -> TypeResponse.fromMealTypes()

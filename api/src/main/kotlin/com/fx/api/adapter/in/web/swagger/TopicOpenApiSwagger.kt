@@ -56,7 +56,20 @@ interface TopicOpenApiSwagger {
         @RequestBody @Valid topicUpdateRequest: TopicUpdateRequest
     ): ResponseEntity<Api<Boolean>>
 
-    @Operation(summary = "Type 별 Topic 조회", description = "각 타입의 토픽들을 조회합니다.")
+    @ApiResponseExplanations(
+        errors = [
+            ApiExceptionExplanation(
+                name = "유효하지 않은 Topic",
+                description = "type 이 없고 topic/topicId 도 없거나, 서버에 존재하지 않는 topic/topicId 인 경우",
+                value = TopicErrorCode::class,
+                constant = "TOPIC_NOT_FOUND"
+            ),
+        ]
+    )
+    @Operation(
+        summary = "Type 별 Topic 조회",
+        description = "각 타입의 토픽들을 조회합니다.<br> type 만 주어지면 해당 카테고리(NOTICE, MAJOR, MEAL)의 전체 토픽을 반환합니다.<br> topic 또는 topicId 가 주어지면 해당 토픽 하나만 반환합니다."
+    )
     fun getTopicsByType(
         @Parameter(
             name = "Accept-Language",
@@ -65,7 +78,12 @@ interface TopicOpenApiSwagger {
             schema = Schema(type = "string", allowableValues = ["ko-KR", "en-US", "ja-JP"], defaultValue = "ko-KR")
         )
         @RequestHeader(value = "Accept-Language", required = false, defaultValue = "ko-KR") acceptLanguage: String,
-        @RequestParam type: TopicType
+        @Parameter(description = "조회할 토픽 카테고리 (topic/topicId 미지정 시 필수)")
+        @RequestParam(required = false) type: TopicType?,
+        @Parameter(description = "조회할 토픽 이름 (ex. GENERAL_NEWS)")
+        @RequestParam(required = false) topic: String?,
+        @Parameter(description = "조회할 토픽 정수 코드")
+        @RequestParam(required = false) topicId: Int?
     ): ResponseEntity<Api<List<TypeResponse>>>
 
 }
