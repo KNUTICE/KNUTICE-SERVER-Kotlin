@@ -1,5 +1,6 @@
 package com.fx.api.adapter.`in`.web.dto.notice
 
+import com.fx.global.domain.CrawlableType
 import com.fx.global.domain.Notice
 import java.time.LocalDate
 
@@ -13,7 +14,8 @@ data class NoticeResponseV2(
     val department: String,
     val registrationDate: LocalDate,
     val isAttachment: Boolean,
-    val topic: Int
+    val topic: CrawlableType,
+    val topicIc: Int
 
 ) {
 
@@ -29,7 +31,9 @@ data class NoticeResponseV2(
                 department = notice.department,
                 registrationDate = notice.registrationDate,
                 isAttachment = notice.isAttachment,
-                topic = notice.topic.code
+                topic = notice.topic,
+                topicIc = notice.topic.code
+
             )
 
         fun from(notices: List<Notice>): List<NoticeResponseV2> =
