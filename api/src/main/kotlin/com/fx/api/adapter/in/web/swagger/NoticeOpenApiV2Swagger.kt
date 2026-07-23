@@ -34,7 +34,7 @@ interface NoticeOpenApiV2Swagger {
                 "[DEFAULT : sort=nttId,DESC&size=20] <br><br>" +
                 "NoticeType: GENERAL_NEWS=1, SCHOLARSHIP_NEWS=2, EVENT_NEWS=3, ACADEMIC_NEWS=4, EMPLOYMENT_NEWS=5 <br>" +
                 "MajorType: 공과대학 100~113, 교통공과대학 200~202, AI융합대학 300~303, 인문대학 400~405, " +
-                "사회과학대학 500~509, 보건생명대학 600~607, 철도대학 700~706, 미래융합대학 800~805"
+                "사회과학대학 500~509, 보건생명대학 600~607, 철도대학 700~706, 미래융합대학 800~805 <br><br>"
     )
     fun getNotices(
         @ModelAttribute noticeSearchParamV2: NoticeSearchParamV2,

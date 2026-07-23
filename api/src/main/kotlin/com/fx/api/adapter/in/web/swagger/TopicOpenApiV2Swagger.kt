@@ -31,7 +31,8 @@ interface TopicOpenApiV2Swagger {
     )
     @Operation(
         summary = "Topic 조회 V2",
-        description = "Topic 을 조회합니다.<br> type 는 NOTICE, MAJOR, MEAL 입니다. <br> [2026.01.21] 해당 API 는 Integer topicIds 를 반환합니다."
+        description = "Topic 을 조회합니다.<br> type 는 NOTICE, MAJOR, MEAL 입니다. <br> [2026.01.21] 해당 API 는 Integer topicIds 를 반환합니다. <br>" +
+                "[2026.07.21] subscribedTopics(topic·topicId·name·college 객체 리스트)로 변경되었습니다. "
     )
     fun getMyTopics(
         @RequestHeader fcmToken: String,
