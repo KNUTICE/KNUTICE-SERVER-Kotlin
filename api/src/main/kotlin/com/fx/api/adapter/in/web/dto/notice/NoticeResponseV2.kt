@@ -15,7 +15,7 @@ data class NoticeResponseV2(
     val registrationDate: LocalDate,
     val isAttachment: Boolean,
     val topic: CrawlableType,
-    val topicIc: Int
+    val topicId: Int,
 
 ) {
 
@@ -32,7 +32,7 @@ data class NoticeResponseV2(
                 registrationDate = notice.registrationDate,
                 isAttachment = notice.isAttachment,
                 topic = notice.topic,
-                topicIc = notice.topic.code
+                topicId = notice.topic.code,
 
             )
 

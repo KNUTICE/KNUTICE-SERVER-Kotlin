@@ -9,6 +9,7 @@ import com.fx.global.annotation.hexagonal.WebInputAdapter
 import com.fx.global.domain.TopicType
 import io.github.seob7.Api
 import jakarta.validation.Valid
+import org.springframework.context.MessageSource
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*
 class TopicOpenApiV2Adapter(
     private val fcmTokenQueryUseCase: FcmTokenQueryUseCase,
     private val fcmTokenCommandUseCase: FcmTokenCommandUseCase,
+    private val messageSource: MessageSource
 ) : TopicOpenApiV2Swagger {
 
     @GetMapping
@@ -25,7 +27,7 @@ class TopicOpenApiV2Adapter(
         @RequestParam type: TopicType
     ): ResponseEntity<Api<TopicResponseV2>> =
         Api.OK(
-            TopicResponseV2.from(fcmTokenQueryUseCase.getMyTopics(fcmToken, type)),
+            TopicResponseV2.from(fcmTokenQueryUseCase.getMyTopics(fcmToken, type), messageSource),
             "토픽 조회 성공"
         )
 
