@@ -26,10 +26,6 @@ class NoticeResponseV2Test : BehaviorSpec({
                 response.topicId shouldBe NoticeType.GENERAL_NEWS.code
             }
 
-            Then("오타 필드 topicIc 는 클라이언트 전환 완료 전까지 topicId 와 같은 값으로 유지된다") {
-                response.topicIc shouldBe response.topicId
-            }
-
             Then("나머지 필드도 도메인 값과 일치한다") {
                 response.nttId shouldBe notice.nttId
                 response.topic shouldBe NoticeType.GENERAL_NEWS

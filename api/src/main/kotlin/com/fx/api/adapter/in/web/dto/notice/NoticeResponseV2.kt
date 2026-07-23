@@ -16,7 +16,6 @@ data class NoticeResponseV2(
     val isAttachment: Boolean,
     val topic: CrawlableType,
     val topicId: Int,
-    val topicIc: Int // topicId 의 오타 필드 — 기존 클라이언트가 파싱 중이라 전환 완료 전까지 유지
 
 ) {
 
@@ -34,7 +33,6 @@ data class NoticeResponseV2(
                 isAttachment = notice.isAttachment,
                 topic = notice.topic,
                 topicId = notice.topic.code,
-                topicIc = notice.topic.code
 
             )
 

@@ -4,7 +4,6 @@ import com.fx.global.domain.CrawlableType
 import org.springframework.context.MessageSource
 
 data class TopicResponseV2(
-    val subscribedTopicIds: Set<Int>,
     val subscribedTopics: List<TypeResponse>
 ) {
     companion object {
@@ -14,7 +13,6 @@ data class TopicResponseV2(
                 .sortedBy { it.code }
 
             return TopicResponseV2(
-                subscribedTopicIds = types.map { it.code }.toSet(),
                 subscribedTopics = types.map { TypeResponse.from(it, messageSource) }
             )
         }

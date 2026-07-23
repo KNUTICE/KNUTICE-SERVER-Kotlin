@@ -31,13 +31,6 @@ class TopicResponseV2Test : BehaviorSpec({
                 messageSource
             )
 
-            Then("subscribedTopicIds 는 기존과 같이 정수 code 집합을 유지한다 (하위 호환)") {
-                response.subscribedTopicIds shouldBe setOf(
-                    NoticeType.GENERAL_NEWS.code,
-                    MajorType.COMPUTER_ENGINEERING.code
-                )
-            }
-
             Then("subscribedTopics 는 topicId 오름차순의 신규 객체 리스트로 반환된다") {
                 response.subscribedTopics shouldHaveSize 2
                 response.subscribedTopics.shouldBeSortedBy { it.topicId }
@@ -59,7 +52,6 @@ class TopicResponseV2Test : BehaviorSpec({
             val response = TopicResponseV2.from(emptySet(), messageSource)
 
             Then("빈 집합과 빈 리스트를 반환한다") {
-                response.subscribedTopicIds shouldBe emptySet()
                 response.subscribedTopics shouldBe emptyList()
             }
         }
