@@ -5,6 +5,7 @@ spring:
   config:
     import:
       - "classpath:common.yaml"        # common : Slack 웹훅, 로깅, Actuator
+      - "classpath:mysql.yaml"         # persistence-common : MySQL · JPA
       - "classpath:mongodb.yaml"       # persistence-common : MongoDB 연결
       - "classpath:reading-room.yaml"  # reading-room : 열람실 원격 API
 

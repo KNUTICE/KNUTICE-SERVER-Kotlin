@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      data-source-properties:
+        # 배치 INSERT 를 multi-row INSERT 한 문장으로 재작성한다
+        rewriteBatchedStatements: true
+
+  jpa:
+    # 지연 로딩은 트랜잭션(서비스) 안에서만 한다
+    open-in-view: false
+    hibernate:
+      # 스키마는 Flyway(db/migration)가 관리한다
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+        order_inserts: true
+        order_updates: true

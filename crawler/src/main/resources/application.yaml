@@ -5,11 +5,16 @@ spring:
   config:
     import:
       - "classpath:common.yaml"        # common : Slack 웹훅, 로깅, Actuator
+      - "classpath:mysql.yaml"         # persistence-common : MySQL · JPA
       - "classpath:mongodb.yaml"       # persistence-common : MongoDB 연결
       - "classpath:reading-room.yaml"  # reading-room : 열람실 원격 API
 
   application:
     name: KNUTICE-CRAWLER
+
+  # api 와 같은 DB 를 쓰므로 스키마 마이그레이션은 api 에서만 실행한다
+  flyway:
+    enabled: false
   ai:
     openai:
       api-key: ${GEMINI_API_KEY}  # https://aistudio.google.com/apikey

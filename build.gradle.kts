@@ -25,6 +25,7 @@ allprojects {
 // 버전 전역 관리 (Spring Boot BOM 이 관리하지 않는 라이브러리)
 extra["commonApiVersion"] = "0.0.2"
 extra["querydslVersion"] = "7.7"
+extra["hypersistenceUtilsVersion"] = "3.16.0"
 extra["springAiVersion"] = "2.0.1"
 extra["springdocVersion"] = "3.1.1"
 extra["firebaseAdminVersion"] = "9.11.0"
