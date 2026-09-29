@@ -1,5 +1,0 @@
-spring:
-  # Boot 4 : spring.data.mongodb.{uri,database} → spring.mongodb.{uri,database}
-  mongodb:
-    database: ${MONGO_DATABASE}
-    uri: ${MONGO_URI}

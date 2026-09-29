@@ -37,11 +37,11 @@ CREATE TABLE batch_run_request
 
 -- 레거시 @Scheduled cron 을 그대로 옮긴 초기 스케줄
 -- next_fire_at 은 비워 둔다. 폴러가 처음 확인할 때 다음 발화 시각으로 채우므로 배포 직후 한꺼번에 실행되지 않는다
--- 메타데이터 정리는 보존 기간이 정해질 때까지 꺼 둔다
+-- 메타데이터는 7일 보관한다 (열람실 빈자리 확인이 1분마다 실행 기록을 남긴다)
 INSERT INTO batch_schedule (id, schedule_key, job_name, job_parameters, cron, enabled, description, next_fire_at, last_fired_at, created_at, updated_at) VALUES
     (892805280898322488, 'notice-crawl-notice', 'noticeCrawlJob', '{"topicType":"NOTICE"}', '0 0/15 * * * *', TRUE, '공지 게시판 크롤링 · 알림 · 요약 (15분마다)', NULL, NULL, '2026-09-30 01:09:26', '2026-09-30 01:09:26'),
     (892805280910905599, 'notice-crawl-major', 'noticeCrawlJob', '{"topicType":"MAJOR"}', '0 10 16 * * *', TRUE, '학과 게시판 크롤링 · 알림 · 요약 (매일 16:10)', NULL, NULL, '2026-09-30 01:09:26', '2026-09-30 01:09:26'),
     (892805280923488311, 'meal-notify', 'mealNotifyJob', '{}', '0 10 10 * * MON-FRI', TRUE, '학식 알림 (평일 10:10)', NULL, NULL, '2026-09-30 01:09:26', '2026-09-30 01:09:26'),
     (892805280936071423, 'silent-push', 'silentPushJob', '{}', '0 0 0 1 * *', TRUE, 'iOS 토큰 갱신용 사일런트 푸시 (매월 1일 00:00)', NULL, NULL, '2026-09-30 01:09:26', '2026-09-30 01:09:26'),
     (892805280948654323, 'seat-alert-check', 'seatAlertCheckJob', '{}', '0 * * * * *', TRUE, '열람실 빈자리 확인 · 알림, 만료 알림 정리 (1분마다)', NULL, NULL, '2026-09-30 01:09:26', '2026-09-30 01:09:26'),
-    (892805280965431477, 'batch-maintenance', 'maintenanceJob', '{"retentionDays":"30"}', '0 30 4 * * *', FALSE, '보존 기간이 지난 Spring Batch 메타데이터 삭제 (매일 04:30)', NULL, NULL, '2026-09-30 01:09:26', '2026-09-30 01:09:26');
+    (892805280965431477, 'batch-maintenance', 'maintenanceJob', '{"retentionDays":"7"}', '0 30 4 * * *', TRUE, '7일이 지난 Spring Batch 메타데이터 삭제 (매일 04:30)', NULL, NULL, '2026-09-30 01:09:26', '2026-09-30 01:09:26');

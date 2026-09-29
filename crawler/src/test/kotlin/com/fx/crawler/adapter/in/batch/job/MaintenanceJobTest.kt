@@ -18,11 +18,11 @@ class MaintenanceJobTest : CrawlerIntegrationTest() {
         val old = run(silentPushJob)
         val recent = run(silentPushJob)
         jdbcTemplate.update(
-            "UPDATE BATCH_JOB_EXECUTION SET END_TIME = DATE_SUB(NOW(6), INTERVAL 40 DAY) WHERE JOB_EXECUTION_ID = ?",
+            "UPDATE BATCH_JOB_EXECUTION SET END_TIME = DATE_SUB(NOW(6), INTERVAL 8 DAY) WHERE JOB_EXECUTION_ID = ?",
             old.id,
         )
 
-        val execution = run(maintenanceJob, mapOf("retentionDays" to "30"))
+        val execution = run(maintenanceJob, mapOf("retentionDays" to "7"))
 
         assertThat(execution.status).isEqualTo(BatchStatus.COMPLETED)
         assertThat(countExecution(old.id)).isZero()

@@ -50,8 +50,9 @@ class BatchScheduleRepositoryTest @Autowired constructor(
             assertThatCode { BatchJobParameters.parse(schedule.jobParameters) }.doesNotThrowAnyException()
             assertThat(schedule.nextFireAt).isNull()
         }
-        assertThat(schedules.getValue("batch-maintenance").enabled).isFalse()
-        assertThat(schedules.filterKeys { it != "batch-maintenance" }.values).allMatch { it.enabled }
+        assertThat(schedules.values).allMatch { it.enabled }
+        assertThat(BatchJobParameters.parse(schedules.getValue("batch-maintenance").jobParameters))
+            .isEqualTo(mapOf("retentionDays" to "7"))
     }
 
     @Test

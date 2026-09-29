@@ -29,7 +29,7 @@ class BatchTriggerIntegrationTest : CrawlerIntegrationTest() {
 
     @AfterEach
     fun restoreSchedules() {
-        jdbcTemplate.update("UPDATE batch_schedule SET enabled = (schedule_key <> 'batch-maintenance'), next_fire_at = NULL, last_fired_at = NULL")
+        jdbcTemplate.update("UPDATE batch_schedule SET enabled = TRUE, next_fire_at = NULL, last_fired_at = NULL")
     }
 
     @Test

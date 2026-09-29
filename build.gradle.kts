@@ -35,7 +35,6 @@ extra["slackApiVersion"] = "1.51.0"
 extra["jjwtVersion"] = "0.13.0"
 extra["kotestVersion"] = "6.2.5"
 extra["mockkVersion"] = "1.14.11"
-extra["mysemaCommonsLangVersion"] = "0.2.4"
 
 subprojects {
 	apply(plugin = "org.jetbrains.kotlin.jvm")

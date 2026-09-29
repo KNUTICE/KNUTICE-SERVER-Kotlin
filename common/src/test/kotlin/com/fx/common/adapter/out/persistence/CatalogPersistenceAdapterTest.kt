@@ -2,10 +2,6 @@ package com.fx.common.adapter.out.persistence
 
 import com.fx.common.adapter.out.persistence.repository.NotificationTemplateRepository
 import com.fx.common.adapter.out.persistence.repository.TopicRepository
-import com.fx.common.domain.CrawlableType
-import com.fx.common.domain.MajorType
-import com.fx.common.domain.MealType
-import com.fx.common.domain.NoticeType
 import com.fx.common.domain.TopicType
 import com.fx.common.domain.i18n.Language
 import com.fx.common.domain.notification.NotificationTemplateKey
@@ -34,47 +30,47 @@ class CatalogPersistenceAdapterTest @Autowired constructor(
     private val entityManager: EntityManager,
 ) {
 
-    private val legacyTypes: List<CrawlableType> = NoticeType.entries + MajorType.entries + MealType.entries
-
     @Test
-    fun `시드된 토픽은 레거시 enum 과 같다`() {
+    fun `토픽은 기존 code 대역을 유지해 유형별로 시드된다`() {
         val catalog = catalogPersistenceAdapter.loadTopicCatalog()
 
-        assertThat(catalog.topics).hasSize(legacyTypes.size)
-        legacyTypes.forEach { type ->
-            val topic = requireNotNull(catalog.findByCode(type.code)) { "시드에 없는 토픽: ${type.topicName}" }
-
-            assertThat(topic.name).isEqualTo(type.topicName)
-            assertThat(topic.topicType).isEqualTo(type.toTopicType())
-            assertThat(topic.noticeUrl()).isEqualTo(type.getNoticeUrl())
-            assertThat(topic.displayName.ko).isEqualTo(type.category)
-            assertThat(topic.crawlEnabled).isTrue()
-            assertThat(topic.visible).isTrue()
-            assertThat(catalog.findByName(type.topicName)).isEqualTo(topic)
-
-            if (type is MajorType) {
-                assertThat(topic.college?.collegeKey).isEqualTo(type.college)
-            } else {
-                assertThat(topic.college).isNull()
+        assertThat(catalog.topics).hasSize(SEEDED_TOPICS)
+        assertThat(catalog.topicsOf(TopicType.NOTICE).map { it.code }).containsExactly(1, 2, 3, 4, 5)
+        assertThat(catalog.topicsOf(TopicType.MEAL).map { it.code }).containsExactly(900, 901)
+        assertThat(catalog.topicsOf(TopicType.MAJOR)).hasSize(61)
+            .allSatisfy {
+                assertThat(it.code).satisfiesAnyOf({ code -> assertThat(code).isBetween(10, 12) }, { code -> assertThat(code).isBetween(100, 805) })
+                assertThat(it.college).isNotNull()
             }
-        }
+        assertThat(catalog.topics).allMatch { it.crawlEnabled && it.visible }
+        assertThat(catalog.topicsOf(TopicType.NOTICE) + catalog.topicsOf(TopicType.MEAL)).allMatch { it.college == null }
     }
 
     @Test
-    fun `토픽 순서는 레거시 enum 선언 순서와 같다`() {
+    fun `토픽은 이름 · 코드 어느 쪽으로도 찾고 크롤링 URL 을 만든다`() {
         val catalog = catalogPersistenceAdapter.loadTopicCatalog()
 
-        assertThat(catalog.topicsOf(TopicType.NOTICE).map { it.code }).containsExactlyElementsOf(NoticeType.entries.map { it.code })
-        assertThat(catalog.topicsOf(TopicType.MAJOR).map { it.code }).containsExactlyElementsOf(MajorType.entries.map { it.code })
-        assertThat(catalog.topicsOf(TopicType.MEAL).map { it.code }).containsExactlyElementsOf(MealType.entries.map { it.code })
+        val generalNews = requireNotNull(catalog.findByName("GENERAL_NEWS"))
+        assertThat(catalog.findByCode(1)).isEqualTo(generalNews)
+        assertThat(generalNews.displayName.ko).isEqualTo("일반소식")
+        assertThat(generalNews.noticeUrl()).isEqualTo("https://www.ut.ac.kr/cop/bbs/BBSMSTR_000000000059/selectBoardList.do")
+
+        val computerEngineering = requireNotNull(catalog.findByCode(300))
+        assertThat(computerEngineering.name).isEqualTo("COMPUTER_ENGINEERING")
+        assertThat(computerEngineering.college?.collegeKey).isEqualTo("AI_CONVERGENCE")
+
+        assertThat(catalog.findByName("STUDENT_CAFETERIA")?.noticeUrl())
+            .isEqualTo("https://www.ut.ac.kr/prog/mealManage/MT01/kor/sub06_02_02_01/dayList.do")
     }
 
     @Test
-    fun `단과대는 학과 enum 에 처음 나온 순서로 시드된다`() {
+    fun `단과대는 표시 순서대로 시드된다`() {
         val catalog = catalogPersistenceAdapter.loadTopicCatalog()
 
-        assertThat(catalog.colleges.map { it.collegeKey })
-            .containsExactlyElementsOf(MajorType.entries.map { it.college }.distinct())
+        assertThat(catalog.colleges.map { it.collegeKey }).containsExactly(
+            "DEPRECATED", "ENGINEERING", "TRANSPORTATION_ENGINEERING", "AI_CONVERGENCE", "HUMANITIES",
+            "SOCIAL_SCIENCES", "HEALTH_AND_LIFE_SCIENCE", "RAILROAD_SCIENCES", "FUTURE_CONVERGENCE",
+        )
         assertThat(catalog.colleges.first { it.collegeKey == "ENGINEERING" }.displayName.resolve(Language.EN))
             .isEqualTo("College of Engineering")
     }
@@ -100,7 +96,7 @@ class CatalogPersistenceAdapterTest @Autowired constructor(
         val catalog = catalogPersistenceAdapter.loadTopicCatalog()
 
         assertThat(catalog.findByName("GENERAL_NEWS")).isNull()
-        assertThat(catalog.topics).hasSize(legacyTypes.size - 1)
+        assertThat(catalog.topics).hasSize(SEEDED_TOPICS - 1)
     }
 
     @Test
@@ -130,12 +126,9 @@ class CatalogPersistenceAdapterTest @Autowired constructor(
             .isEqualTo("제1열람실 12번 좌석이 비었습니다!")
     }
 
-    private fun CrawlableType.toTopicType(): TopicType =
-        when (this) {
-            is NoticeType -> TopicType.NOTICE
-            is MajorType -> TopicType.MAJOR
-            is MealType -> TopicType.MEAL
-            else -> error("알 수 없는 토픽 유형: $this")
-        }
+    companion object {
+        /** 공지 5 · 학과 61 (폐지 학과 3 포함) · 학식 2 */
+        private const val SEEDED_TOPICS = 68
+    }
 
 }

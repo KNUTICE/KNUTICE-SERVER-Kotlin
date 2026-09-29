@@ -11,8 +11,6 @@ services:
       - app-network
     environment:
       - API_PORT
-      - MONGO_URI
-      - MONGO_DATABASE
       - DB_URL
       - DB_USERNAME
       - DB_PASSWORD
@@ -47,8 +45,6 @@ services:
       - app-network
     environment:
       - CRAWLER_PORT
-      - MONGO_URI
-      - MONGO_DATABASE
       - DB_URL
       - DB_USERNAME
       - DB_PASSWORD
