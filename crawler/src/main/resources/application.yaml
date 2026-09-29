@@ -6,15 +6,51 @@ spring:
     import:
       - "classpath:common.yaml"        # common : Slack 웹훅, 로깅, Actuator
       - "classpath:mysql.yaml"         # persistence-common : MySQL · JPA
-      - "classpath:mongodb.yaml"       # persistence-common : MongoDB 연결
       - "classpath:reading-room.yaml"  # reading-room : 열람실 원격 API
 
   application:
     name: KNUTICE-CRAWLER
 
-  # api 와 같은 DB 를 쓰므로 스키마 마이그레이션은 api 에서만 실행한다
+  # crawler 는 MongoDB 를 쓰지 않는다. 다른 모듈을 통해 드라이버가 클래스패스에 올라오므로 자동 설정을 끈다
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.mongodb.autoconfigure.MongoAutoConfiguration
+      - org.springframework.boot.mongodb.autoconfigure.MongoReactiveAutoConfiguration
+      - org.springframework.boot.mongodb.autoconfigure.health.MongoHealthContributorAutoConfiguration
+      - org.springframework.boot.mongodb.autoconfigure.health.MongoReactiveHealthContributorAutoConfiguration
+      - org.springframework.boot.mongodb.autoconfigure.metrics.MongoMetricsAutoConfiguration
+      - org.springframework.boot.data.mongodb.autoconfigure.DataMongoAutoConfiguration
+      - org.springframework.boot.data.mongodb.autoconfigure.DataMongoReactiveAutoConfiguration
+      - org.springframework.boot.data.mongodb.autoconfigure.DataMongoReactiveRepositoriesAutoConfiguration
+      - org.springframework.boot.data.mongodb.autoconfigure.DataMongoRepositoriesAutoConfiguration
+
+  # 요청 처리 · @Async · @Scheduled 를 가상 스레드에서 실행한다
+  threads:
+    virtual:
+      enabled: true
+
+  # 배치 실행기 빈이 있어도 @Async(Slack 웹훅)용 applicationTaskExecutor 를 만든다
+  task:
+    execution:
+      mode: force
+
+  # RestClient 기본 타임아웃 (학교 게시판 · 식단 사이트)
+  http:
+    clients:
+      connect-timeout: 5s
+      read-timeout: 10s
+
+  # api 와 같은 DB 를 쓰므로 스키마 마이그레이션(BATCH_* 포함)은 api 에서만 실행한다
   flyway:
     enabled: false
+
+  batch:
+    job:
+      # 기동할 때 Job 을 실행하지 않는다. Job 은 스케줄 폴러가 실행한다
+      enabled: false
+    jdbc:
+      initialize-schema: never
+
   ai:
     openai:
       api-key: ${GEMINI_API_KEY}  # https://aistudio.google.com/apikey
@@ -30,3 +66,25 @@ firebase:
   secret:
     key:
       path: ${FIREBASE_KEY_PATH}
+
+crawler:
+  poller:
+    enabled: true
+    request-batch-size: 20
+  launch:
+    async: true
+    max-concurrency: 10
+  push:
+    chunk-size: 500
+    # 발송 chunk 트랜잭션이 커넥션을 쥐고 있으므로 Hikari 풀(기본 10)보다 작게 둔다
+    partition-concurrency: 4
+    max-attempts: 3
+  crawl:
+    max-concurrency: 8
+    timeout: 3m
+  summary:
+    chunk-size: 5
+    max-attempts: 3
+  seat-alert:
+    max-concurrency: 4
+    timeout: 30s

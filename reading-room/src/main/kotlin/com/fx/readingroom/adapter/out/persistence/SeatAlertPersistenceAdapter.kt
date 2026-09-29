@@ -4,6 +4,7 @@ import com.fx.common.annotation.PersistenceAdapter
 import com.fx.readingroom.adapter.out.persistence.repository.SeatAlertRepository
 import com.fx.readingroom.application.port.out.SeatAlertPersistencePort
 import com.fx.readingroom.domain.SeatAlert
+import com.fx.readingroom.domain.SeatAlertTarget
 import com.fx.readingroom.domain.exception.DuplicateSeatAlertException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.transaction.annotation.Transactional
@@ -39,5 +40,18 @@ class SeatAlertPersistenceAdapter(
     @Transactional
     override fun deleteByIdAndFcmTokenId(seatAlertId: Long, fcmTokenId: Long): Boolean =
         seatAlertRepository.deleteByIdAndFcmTokenId(seatAlertId, fcmTokenId) > 0
+
+    @Transactional
+    override fun deleteExpired(now: LocalDateTime): Int =
+        seatAlertRepository.deleteExpired(now)
+
+    @Transactional(readOnly = true)
+    override fun findActiveTargets(now: LocalDateTime): List<SeatAlertTarget> =
+        seatAlertRepository.findActiveTargets(now)
+
+    @Transactional
+    override fun deleteById(seatAlertId: Long) {
+        seatAlertRepository.deleteAllByIdInBatch(listOf(seatAlertId))
+    }
 
 }

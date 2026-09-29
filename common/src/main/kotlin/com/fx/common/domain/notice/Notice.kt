@@ -155,6 +155,11 @@ class Notice(
         }
     }
 
+    /** 요약할 본문이 없어 요약하지 않는다. */
+    fun skipSummary() {
+        summaryStatus = SummaryStatus.SKIPPED
+    }
+
     companion object {
 
         /** 크롤링으로 새로 들어온 공지. 알림 · 요약 모두 대기 상태로 시작한다. */

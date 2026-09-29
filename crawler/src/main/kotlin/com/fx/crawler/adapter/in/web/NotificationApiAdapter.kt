@@ -1,16 +1,7 @@
 package com.fx.crawler.adapter.`in`.web
 
-import com.fx.crawler.appllication.port.`in`.MealNotificationUseCase
-import com.fx.crawler.appllication.port.`in`.MealParseUseCase
-import com.fx.crawler.appllication.port.`in`.NotificationUseCase
-import com.fx.crawler.appllication.port.`in`.dto.NoticeCommand
 import com.fx.common.annotation.hexagonal.WebInputAdapter
-import com.fx.common.domain.MajorType
-import com.fx.common.domain.MealType
-import com.fx.common.domain.NoticeType
-import com.fx.common.domain.TopicType
-import com.fx.common.exception.NotificationException
-import com.fx.common.exception.errorcode.NotificationErrorCode
+import com.fx.crawler.application.port.`in`.PushTestUseCase
 import io.github.seob7.Api
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -19,38 +10,33 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 
+/** api 서버(관리자)가 호출하는 테스트 발송. 토큰 하나에 실제와 같은 알림을 보낸다. */
 @WebInputAdapter
 @RequestMapping("/open-api/v1/notification")
 class NotificationApiAdapter(
-    private val notificationUseCase: NotificationUseCase,
-    private val mealParseUseCase: MealParseUseCase,
-    private val mealNotificationUseCase: MealNotificationUseCase
+    private val pushTestUseCase: PushTestUseCase,
 ) {
 
     private val log = LoggerFactory.getLogger(NotificationApiAdapter::class.java)
 
     @PostMapping("/notice/{nttId}")
-    suspend fun pushTestNotice(
+    fun pushTestNotice(
         @RequestHeader fcmToken: String,
-        @PathVariable nttId: Long
+        @PathVariable nttId: Long,
     ): ResponseEntity<Api<Boolean>> {
-        log.info("알림 발송 대상 fcmToken : {}", fcmToken)
-        notificationUseCase.sendNotification(fcmToken, nttId)
+        log.info("공지 테스트 발송 - nttId: {}", nttId)
+        pushTestUseCase.sendNotice(fcmToken, nttId)
         return Api.OK(true)
     }
 
+    /** @param mealType 학식 토픽 이름 (예: `STUDENT_CAFETERIA`) */
     @PostMapping("/meal/{mealType}")
-    suspend fun pushTestMeal(
+    fun pushTestMeal(
         @RequestHeader fcmToken: String,
-        @PathVariable mealType: MealType
+        @PathVariable mealType: String,
     ): ResponseEntity<Api<Boolean>> {
-        log.info("알림 발송 대상 fcmToken : {}", fcmToken)
-        val meal = mealParseUseCase.parseMeal(mealType)
-        meal?.let { // 급식 정보가 존재할 때만 알림 발송
-            mealNotificationUseCase.sendNotification(fcmToken, meal);
-        } ?: run {
-            throw NotificationException(NotificationErrorCode.NOTIFICATION_SEND_FAILED)
-        }
+        log.info("학식 테스트 발송 - topic: {}", mealType)
+        pushTestUseCase.sendMeal(fcmToken, mealType)
         return Api.OK(true)
     }
 

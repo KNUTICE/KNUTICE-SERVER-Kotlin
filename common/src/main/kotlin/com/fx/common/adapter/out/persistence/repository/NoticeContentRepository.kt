@@ -9,6 +9,8 @@ interface NoticeContentRepository : JpaRepository<NoticeContent, Long> {
 
     fun findByNoticeId(noticeId: Long): NoticeContent?
 
+    fun findAllByNoticeIdIn(noticeIds: Collection<Long>): List<NoticeContent>
+
     @Modifying
     @Query("DELETE FROM NoticeContent c WHERE c.noticeId = :noticeId")
     fun deleteByNoticeId(noticeId: Long): Int

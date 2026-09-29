@@ -36,7 +36,6 @@ extra["jjwtVersion"] = "0.13.0"
 extra["kotestVersion"] = "6.2.5"
 extra["mockkVersion"] = "1.14.11"
 extra["mysemaCommonsLangVersion"] = "0.2.4"
-extra["ktorVersion"] = "2.3.13"
 
 subprojects {
 	apply(plugin = "org.jetbrains.kotlin.jvm")
