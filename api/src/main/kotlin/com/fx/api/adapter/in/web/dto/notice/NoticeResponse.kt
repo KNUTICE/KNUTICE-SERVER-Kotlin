@@ -1,11 +1,9 @@
 package com.fx.api.adapter.`in`.web.dto.notice
 
-import com.fx.common.domain.CrawlableType
-import com.fx.common.domain.Notice
+import com.fx.common.domain.notice.Notice
 import java.time.LocalDate
 
 data class NoticeResponse(
-
     val nttId: Long,
     val title: String,
     val contentUrl: String,
@@ -14,8 +12,8 @@ data class NoticeResponse(
     val department: String,
     val registrationDate: LocalDate,
     val isAttachment: Boolean,
-    val topic: CrawlableType
-
+    /** v1 토픽 이름 (예: `GENERAL_NEWS`) */
+    val topic: String
 ) {
 
     companion object {
@@ -26,11 +24,11 @@ data class NoticeResponse(
                 title = notice.title,
                 contentUrl = notice.contentUrl,
                 contentImageUrl = notice.contentImageUrl,
-                isContentSummary = notice.contentSummary != null,
+                isContentSummary = notice.hasSummary,
                 department = notice.department,
                 registrationDate = notice.registrationDate,
                 isAttachment = notice.isAttachment,
-                topic = notice.topic
+                topic = notice.topicName
             )
 
         fun from(notices: List<Notice>): List<NoticeResponse> =

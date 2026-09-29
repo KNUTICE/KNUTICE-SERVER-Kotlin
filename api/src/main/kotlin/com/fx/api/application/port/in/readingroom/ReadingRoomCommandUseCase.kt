@@ -5,7 +5,7 @@ import com.fx.readingroom.domain.SeatAlert
 
 interface ReadingRoomCommandUseCase {
 
-    suspend fun createSeatAlert(seatAlertCommand: CreateSeatAlertCommand): SeatAlert
+    fun createSeatAlert(seatAlertCommand: CreateSeatAlertCommand): SeatAlert
 
     fun deleteSeatAlert(fcmToken: String, alertId: String): Boolean
 

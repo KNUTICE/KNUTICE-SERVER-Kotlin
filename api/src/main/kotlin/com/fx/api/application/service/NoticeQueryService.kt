@@ -1,38 +1,46 @@
 package com.fx.api.application.service
 
 import com.fx.api.application.port.`in`.NoticeQueryUseCase
+import com.fx.api.application.port.`in`.dto.NoticeSearchCommand
 import com.fx.api.application.port.out.NoticePersistencePort
 import com.fx.api.domain.NoticeQuery
+import com.fx.common.domain.notice.Notice
 import com.fx.common.exception.NoticeException
 import com.fx.common.exception.errorcode.NoticeErrorCode
-import com.fx.common.domain.Notice
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class NoticeQueryService(
-    private val noticePersistencePort: NoticePersistencePort
-): NoticeQueryUseCase {
+    private val noticePersistencePort: NoticePersistencePort,
+    private val topicResolver: TopicResolver,
+) : NoticeQueryUseCase {
 
-    override fun getNotices(noticeQuery: NoticeQuery): List<Notice> {
-        val notices = noticePersistencePort.getNotices(noticeQuery)
+    override fun getNotices(noticeSearchCommand: NoticeSearchCommand): List<Notice> {
+        val topic = topicResolver.byNameOrCode(noticeSearchCommand.topicName, noticeSearchCommand.topicId)
+        val notices = noticePersistencePort.findNotices(
+            NoticeQuery(
+                nttId = noticeSearchCommand.nttId,
+                topicCode = topic?.code,
+                keyword = noticeSearchCommand.keyword?.takeIf { it.isNotBlank() },
+                size = noticeSearchCommand.size,
+            )
+        )
         if (notices.isEmpty()) {
             throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)
         }
         return notices
     }
 
-    override fun getNotice(nttId: Long): Notice =
-        noticePersistencePort.getNotice(nttId)
-            ?: throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)
+    override fun getNotice(nttId: Long): Notice = noticePersistencePort.getNotice(nttId)
 
-    override fun getNoticeSummary(nttId: Long): Notice {
+    override fun getNoticeSummary(nttId: Long): String {
         val notice = noticePersistencePort.getNotice(nttId)
-            ?: throw NoticeException(NoticeErrorCode.NOTICE_NOT_FOUND)
-
-        if (notice.contentSummary.isNullOrBlank()) {
-            throw NoticeException(NoticeErrorCode.SUMMARY_CONTENT_NOT_FOUND)
-        }
-        return notice
+        return noticePersistencePort.findNoticeContent(requireNotNull(notice.id))
+            ?.contentSummary
+            ?.takeIf { it.isNotBlank() }
+            ?: throw NoticeException(NoticeErrorCode.SUMMARY_CONTENT_NOT_FOUND)
     }
 
 }

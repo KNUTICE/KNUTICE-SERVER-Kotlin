@@ -2,8 +2,7 @@ package com.fx.api.adapter.`in`.web
 
 import com.fx.api.adapter.`in`.web.dto.meal.MealResponse
 import com.fx.api.application.port.`in`.MealQueryUseCase
- import com.fx.common.annotation.hexagonal.WebInputAdapter
-import com.fx.common.domain.MealType
+import com.fx.common.annotation.hexagonal.WebInputAdapter
 import io.github.seob7.Api
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,8 +15,9 @@ class MealOpenApiAdapter(
     private val mealQueryUseCase: MealQueryUseCase
 ) {
 
+    /** [type] 은 학식 토픽 이름 (예: `STUDENT_CAFETERIA`). */
     @GetMapping("/{type}")
-    suspend fun getMeals(@PathVariable type: MealType): ResponseEntity<Api<List<MealResponse>>> =
+    fun getMeals(@PathVariable type: String): ResponseEntity<Api<List<MealResponse>>> =
         Api.OK(MealResponse.from(mealQueryUseCase.getMeals(type)))
 
 }

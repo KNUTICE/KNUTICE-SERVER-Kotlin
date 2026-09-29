@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class UserCommandService(
     private val userPersistencePort: UserPersistencePort,
     private val jwtProviderPort: JwtProviderPort,
@@ -22,35 +23,31 @@ class UserCommandService(
 
     @Transactional
     override fun signUp(signUpCommand: UserSignUpCommand): User {
-
-        // email, nickname 존재시 예외
         if (userPersistencePort.existsByEmail(signUpCommand.email)) {
             throw UserException(UserErrorCode.EMAIL_EXISTS)
         }
-
         if (userPersistencePort.existsByNickname(signUpCommand.nickname)) {
             throw UserException(UserErrorCode.NICKNAME_EXISTS)
         }
 
-        // 암호화
-        signUpCommand.password = passwordEncoderPort.encode(signUpCommand.password)
-
-        // 등록
-        return userPersistencePort.save(User.createUser(signUpCommand))
+        return userPersistencePort.save(
+            User.signUp(
+                email = signUpCommand.email,
+                encodedPassword = passwordEncoderPort.encode(signUpCommand.password),
+                nickname = signUpCommand.nickname,
+            )
+        )
     }
 
-    @Transactional
+    /** JWT 의 `userId` 클레임은 TSID 를 문자열로 담는다. */
     override fun login(loginCommand: UserLoginCommand): TokenInfo {
-
         val user = userPersistencePort.findByEmail(loginCommand.email)
             ?: throw UserException(UserErrorCode.USER_NOT_FOUND)
 
         if (!passwordEncoderPort.matches(loginCommand.password, user.password)) {
             throw UserException(UserErrorCode.INVALID_PASSWORD)
         }
-
-
-        return jwtProviderPort.generateTokens(user.id!!, user.role)
+        return jwtProviderPort.generateTokens(requireNotNull(user.id).toString(), user.role)
     }
 
 }

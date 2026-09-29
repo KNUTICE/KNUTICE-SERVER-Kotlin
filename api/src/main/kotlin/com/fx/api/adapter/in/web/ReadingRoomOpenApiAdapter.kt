@@ -27,24 +27,20 @@ class ReadingRoomOpenApiAdapter(
 ) : ReadingRoomOpenApiSwagger {
 
     @GetMapping("/status")
-    override suspend fun getReadingRoomStatus(
+    override fun getReadingRoomStatus(
         @RequestHeader fcmToken: String
     ): ResponseEntity<Api<List<ReadingRoomStatusResponse>>> =
-        Api.OK(ReadingRoomStatusResponse.from(
-            readingRoomQueryUseCase.getReadingRoomStatus(fcmToken)
-        ))
+        Api.OK(ReadingRoomStatusResponse.from(readingRoomQueryUseCase.getReadingRoomStatus(fcmToken)))
 
     @GetMapping("/{readingRoom}")
-    override suspend fun getReadingRoomSeats(
+    override fun getReadingRoomSeats(
         @RequestHeader fcmToken: String,
         @PathVariable readingRoom: ReadingRoom
     ): ResponseEntity<Api<List<ReadingRoomSeatResponse>>> =
-        Api.OK(ReadingRoomSeatResponse.from(
-            readingRoomQueryUseCase.getReadingRoomSeats(fcmToken, readingRoom)
-        ))
+        Api.OK(ReadingRoomSeatResponse.from(readingRoomQueryUseCase.getReadingRoomSeats(fcmToken, readingRoom)))
 
     @PostMapping("/seat-alerts")
-    override suspend fun createSeatAlert(
+    override fun createSeatAlert(
         @RequestHeader fcmToken: String,
         @RequestBody createSeatAlertRequest: CreateSeatAlertRequest
     ): ResponseEntity<Api<SeatAlertResponse>> =
@@ -56,9 +52,7 @@ class ReadingRoomOpenApiAdapter(
     override fun getSeatAlerts(
         @RequestHeader fcmToken: String
     ): ResponseEntity<Api<List<SeatAlertResponse>>> =
-        Api.OK(SeatAlertResponse.from(
-            readingRoomQueryUseCase.getSeatAlerts(fcmToken)
-        ))
+        Api.OK(SeatAlertResponse.from(readingRoomQueryUseCase.getSeatAlerts(fcmToken)))
 
     @DeleteMapping("/seat-alerts/{alertId}")
     override fun deleteSeatAlert(

@@ -2,7 +2,6 @@ package com.fx.api.adapter.`in`.web.dto.readingrooms
 
 import com.fx.readingroom.domain.ReadingRoom
 import com.fx.readingroom.domain.SeatAlert
-import com.fx.readingroom.domain.SeatAlert.SeatAlertStatus
 import java.time.LocalDateTime
 
 /**
@@ -12,22 +11,26 @@ import java.time.LocalDateTime
  * @since 2026-02-15
  */
 data class SeatAlertResponse(
-
-    val alertId: String, // 알림 ID
+    /** TSID 를 문자열로 내보낸다 (JS 숫자 정밀도 한계). */
+    val alertId: String,
     val readingRoom: ReadingRoom,
-    val seatNumber: Int, // 좌석 번호
-    val status: SeatAlertStatus, // 알림 상태
-    val createdAt: LocalDateTime // 알림 생성 시간
-
+    val seatNumber: Int,
+    /** 조회되는 알림은 모두 활성 알림이다. 응답 호환을 위해 `ACTIVE` 를 그대로 내보낸다. */
+    val status: String,
+    val createdAt: LocalDateTime
 ) {
+
     companion object {
+
+        private const val ACTIVE = "ACTIVE"
+
         fun from(seatAlert: SeatAlert): SeatAlertResponse =
             SeatAlertResponse(
-                alertId = seatAlert.id!!,
+                alertId = requireNotNull(seatAlert.id).toString(),
                 readingRoom = seatAlert.readingRoom,
                 seatNumber = seatAlert.seatNumber,
-                status = seatAlert.status,
-                createdAt = seatAlert.createdAt!!
+                status = ACTIVE,
+                createdAt = requireNotNull(seatAlert.createdAt)
             )
 
         fun from(seatAlerts: List<SeatAlert>): List<SeatAlertResponse> =

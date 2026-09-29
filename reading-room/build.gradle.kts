@@ -1,7 +1,6 @@
 val commonApiVersion = rootProject.extra["commonApiVersion"] as String
 val jsoupVersion = rootProject.extra["jsoupVersion"] as String
 val slackApiVersion = rootProject.extra["slackApiVersion"] as String
-val ktorVersion = rootProject.extra["ktorVersion"] as String
 
 dependencies {
     implementation(project(":common"))
@@ -9,17 +8,13 @@ dependencies {
 
     implementation("io.github.seob7:common-api:$commonApiVersion")
 
-    // Ktor Client (논블로킹 HTTP)
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
-
-    // Ktor JSON Serialization
-    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    // RestClient (열람실 사이트 호출)
+    implementation("org.springframework.boot:spring-boot-starter-restclient")
 
     // Web (Boot 4 : spring-boot-starter-web 은 deprecated)
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
 
-    // Jsoup (Crawler)
+    // Jsoup (CSRF 토큰 추출)
     implementation("org.jsoup:jsoup:$jsoupVersion")
 
     // Validation
@@ -27,6 +22,10 @@ dependencies {
 
     // Slack
     implementation("com.slack.api:slack-api-client:$slackApiVersion")
+
+    // Test : 실제 MySQL(Testcontainers)로 JPA 슬라이스 테스트
+    testImplementation(testFixtures(project(":persistence-common")))
+    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 }
 
 kotlin {

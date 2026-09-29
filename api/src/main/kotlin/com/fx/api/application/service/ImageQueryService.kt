@@ -7,10 +7,12 @@ import com.fx.api.domain.ImageType
 import com.fx.api.exception.ImageException
 import com.fx.api.exception.errorcode.ImageErrorCode
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class ImageQueryService(
-    private val imagePersistencePort: ImagePersistencePort
+    private val imagePersistencePort: ImagePersistencePort,
 ) : ImageQueryUseCase {
 
     override fun getImages(type: ImageType): List<Image> {

@@ -1,70 +1,63 @@
 package com.fx.api.application.service
 
 import com.fx.api.application.port.out.FcmTokenPersistencePort
-import com.fx.common.domain.*
+import com.fx.api.fixture.TopicFixture
+import com.fx.common.application.port.`in`.CatalogQueryUseCase
+import com.fx.common.domain.DeviceType
+import com.fx.common.domain.TopicType
+import com.fx.common.domain.fcmtoken.FcmToken
 import com.fx.common.exception.FcmTokenException
 import com.fx.common.exception.errorcode.FcmTokenErrorCode
+import com.fx.persistence.withId
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.matchers.shouldBe
+import io.kotest.matchers.collections.shouldContainExactly
 import io.mockk.every
 import io.mockk.mockk
 
 class FcmTokenQueryServiceTest : BehaviorSpec({
 
-    val fcmTokenPersistencePort = mockk<FcmTokenPersistencePort>(relaxed = true)
-    val fcmTokenQueryService = FcmTokenQueryService(fcmTokenPersistencePort)
+    val fcmTokenPersistencePort = mockk<FcmTokenPersistencePort>()
+    val catalogQueryUseCase = mockk<CatalogQueryUseCase>()
+    every { catalogQueryUseCase.getTopicCatalog() } returns TopicFixture.CATALOG
+    val fcmTokenQueryService = FcmTokenQueryService(fcmTokenPersistencePort, catalogQueryUseCase)
 
-    val fcmTokenValue = "fcmToken"
-    val fcmToken = FcmToken(
-        fcmToken = fcmTokenValue,
-        subscribedNoticeTopics = setOf(NoticeType.GENERAL_NEWS, NoticeType.SCHOLARSHIP_NEWS),
-        subscribedMajorTopics = setOf(MajorType.COMPUTER_SCIENCE, MajorType.COMPUTER_ENGINEERING),
-        subscribedMealTopics = setOf(MealType.STUDENT_CAFETERIA, MealType.STAFF_CAFETERIA),
-        deviceType = DeviceType.iOS,
-        isActive = true
-    )
+    Given("구독 토픽 조회") {
+        val token = FcmToken("fcmToken", DeviceType.iOS).withId(1L)
+        every { fcmTokenPersistencePort.getByToken(token.token) } returns token
+        // 9999 는 삭제된 토픽이라 카탈로그에 없다
+        every { fcmTokenPersistencePort.findSubscribedTopicCodes(1L) } returns setOf(900, 2, 300, 1, 9999)
 
-    Given("토픽 조회") {
-        every { fcmTokenPersistencePort.findByFcmToken(fcmTokenValue) } returns fcmToken
-
-        When("Notice 토픽 조회") {
-            val result = fcmTokenQueryService.getMyTopics(fcmTokenValue, TopicType.NOTICE)
-
-            Then("Notice 토픽만 반환") {
-                result shouldBe setOf(NoticeType.GENERAL_NEWS.name, NoticeType.SCHOLARSHIP_NEWS.name)
+        When("공지 토픽을 조회하면") {
+            Then("공지 토픽만 code 오름차순으로 반환한다") {
+                fcmTokenQueryService.getMyTopics(token.token, TopicType.NOTICE)
+                    .map { it.name } shouldContainExactly listOf("GENERAL_NEWS", "SCHOLARSHIP_NEWS")
             }
         }
 
-        When("Major 토픽 조회") {
-            val result = fcmTokenQueryService.getMyTopics(fcmTokenValue, TopicType.MAJOR)
-
-            Then("Major 토픽만 반환") {
-                result shouldBe setOf(MajorType.COMPUTER_SCIENCE.name, MajorType.COMPUTER_ENGINEERING.name)
+        When("학과 토픽을 조회하면") {
+            Then("학과 토픽만 반환한다") {
+                fcmTokenQueryService.getMyTopics(token.token, TopicType.MAJOR)
+                    .map { it.name } shouldContainExactly listOf("COMPUTER_SOFTWARE")
             }
         }
 
-        When("Meal 토픽 조회") {
-            val result = fcmTokenQueryService.getMyTopics(fcmTokenValue, TopicType.MEAL)
-
-            Then("Meal 토픽만 반환") {
-                result shouldBe setOf(MealType.STUDENT_CAFETERIA.name, MealType.STAFF_CAFETERIA.name)
+        When("학식 토픽을 조회하면") {
+            Then("학식 토픽만 반환하고 카탈로그에 없는 구독은 뺀다") {
+                fcmTokenQueryService.getMyTopics(token.token, TopicType.MEAL)
+                    .map { it.name } shouldContainExactly listOf("STUDENT_CAFETERIA")
             }
         }
     }
 
-    Given("토큰이 존재하지 않은 경우") {
-        every { fcmTokenPersistencePort.findByFcmToken(fcmTokenValue) } returns null
+    Given("토큰이 존재하지 않는 경우") {
+        every { fcmTokenPersistencePort.getByToken("unknown") } throws FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
 
-        When("토픽을 조회") {
-            Then("예외가 발생") {
-                val exception = shouldThrow<FcmTokenException> {
-                    fcmTokenQueryService.getMyTopics(fcmTokenValue, TopicType.NOTICE)
-                }
-                exception.baseErrorCode shouldBe FcmTokenErrorCode.TOKEN_NOT_FOUND
+        When("토픽을 조회하면") {
+            Then("FcmTokenException 이 발생한다") {
+                shouldThrow<FcmTokenException> { fcmTokenQueryService.getMyTopics("unknown", TopicType.NOTICE) }
             }
         }
     }
-
 
 })

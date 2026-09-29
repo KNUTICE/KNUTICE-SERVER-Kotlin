@@ -11,6 +11,7 @@ import com.fx.common.annotation.ApiResponseExplanations
 import io.github.seob7.Api
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.Parameters
 import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
+import java.util.Locale
 
 @Tag(name = "TOPIC 관리 API")
 interface TopicOpenApiSwagger {
@@ -70,14 +72,16 @@ interface TopicOpenApiSwagger {
         summary = "Type 별 Topic 조회",
         description = "각 타입의 토픽들을 조회합니다.<br> type 만 주어지면 해당 카테고리(NOTICE, MAJOR, MEAL)의 전체 토픽을 반환합니다.<br> topic 또는 topicId 가 주어지면 해당 토픽 하나만 반환합니다."
     )
-    fun getTopicsByType(
-        @Parameter(
+    @Parameters(
+        Parameter(
             name = "Accept-Language",
-            description = "언어 설정 (ko-KR, en-US, ja-JP)",
+            description = "언어 설정 (ko-KR, en-US, ja-JP). 지원하지 않는 언어는 한국어로 응답합니다.",
             `in` = ParameterIn.HEADER,
             schema = Schema(type = "string", allowableValues = ["ko-KR", "en-US", "ja-JP"], defaultValue = "ko-KR")
         )
-        @RequestHeader(value = "Accept-Language", required = false, defaultValue = "ko-KR") acceptLanguage: String,
+    )
+    fun getTopicsByType(
+        @Parameter(hidden = true) locale: Locale,
         @Parameter(description = "조회할 토픽 카테고리 (topic/topicId 미지정 시 필수)")
         @RequestParam(required = false) type: TopicType?,
         @Parameter(description = "조회할 토픽 이름 (ex. GENERAL_NEWS)")

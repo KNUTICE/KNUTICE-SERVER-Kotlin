@@ -2,29 +2,29 @@ package com.fx.api.application.service
 
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase
 import com.fx.api.application.port.out.FcmTokenPersistencePort
+import com.fx.common.application.port.`in`.CatalogQueryUseCase
 import com.fx.common.domain.TopicType
-import com.fx.common.exception.FcmTokenException
-import com.fx.common.exception.errorcode.FcmTokenErrorCode
-import com.fx.common.domain.FcmToken
+import com.fx.common.domain.catalog.TopicView
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class FcmTokenQueryService(
-    private val fcmTokenPersistencePort: FcmTokenPersistencePort
-): FcmTokenQueryUseCase {
+    private val fcmTokenPersistencePort: FcmTokenPersistencePort,
+    private val catalogQueryUseCase: CatalogQueryUseCase,
+) : FcmTokenQueryUseCase {
 
-    override fun getMyTopics(fcmToken: String, type: TopicType): Set<String> {
-        val token = findTokenOrThrow(fcmToken)
-        val subscribedTopics = when (type) {
-            TopicType.NOTICE -> token.subscribedNoticeTopics
-            TopicType.MAJOR -> token.subscribedMajorTopics
-            TopicType.MEAL -> token.subscribedMealTopics
-        }
-        return subscribedTopics.map { it.name }.toSet()
+    override fun getMyTopics(fcmToken: String, type: TopicType): List<TopicView> {
+        val token = fcmTokenPersistencePort.getByToken(fcmToken)
+        val subscribedCodes = fcmTokenPersistencePort.findSubscribedTopicCodes(requireNotNull(token.id))
+        val catalog = catalogQueryUseCase.getTopicCatalog()
+
+        // 삭제된 토픽의 구독은 카탈로그에 없으므로 빠진다
+        return subscribedCodes
+            .mapNotNull(catalog::findByCode)
+            .filter { it.topicType == type }
+            .sortedBy { it.code }
     }
-
-    private fun findTokenOrThrow(fcmToken: String): FcmToken =
-        fcmTokenPersistencePort.findByFcmToken(fcmToken)
-            ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
 
 }

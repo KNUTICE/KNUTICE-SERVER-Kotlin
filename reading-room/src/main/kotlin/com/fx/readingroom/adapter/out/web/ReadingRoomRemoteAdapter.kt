@@ -1,111 +1,148 @@
 package com.fx.readingroom.adapter.out.web
 
 import com.fx.common.annotation.hexagonal.WebOutputAdapter
+import com.fx.common.exception.ConnectionException
+import com.fx.common.exception.errorcode.ConnectionErrorCode
 import com.fx.readingroom.adapter.out.web.dto.ReadingRoomSeatRemoteResponse
 import com.fx.readingroom.adapter.out.web.dto.ReadingRoomStatusRemoteResponse
 import com.fx.readingroom.application.port.out.ReadingRoomRemotePort
 import com.fx.readingroom.domain.ReadingRoom
 import com.fx.readingroom.domain.ReadingRoomSeat
 import com.fx.readingroom.domain.ReadingRoomStatus
-import io.ktor.client.HttpClient
-import io.ktor.client.call.NoTransformationFoundException
-import io.ktor.client.call.body
-import io.ktor.client.request.forms.FormDataContent
-import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.client.request.parameter
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.Parameters
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.MediaType
+import org.springframework.http.client.JdkClientHttpRequestFactory
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.web.client.RestClient
+import org.springframework.web.client.RestClientException
+import tools.jackson.core.JacksonException
+import tools.jackson.databind.json.JsonMapper
+import java.net.CookieManager
+import java.net.http.HttpClient
+import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
 
+/**
+ * 열람실 좌석 사이트 호출.
+ *
+ * 좌석 조회는 CSRF 토큰과 같은 세션 쿠키가 필요하므로, JDK HttpClient 에 [CookieManager] 를 달아
+ * 이 어댑터의 모든 요청이 쿠키를 공유하게 한다.
+ * 사이트가 JSON 대신 HTML 을 돌려주는 경우가 있어, 응답은 문자열로 받아 직접 파싱하고 한 번 다시 시도한다.
+ * 연결 실패 · 오류 응답은 [ConnectionException] (503) 으로 바꾼다.
+ */
 @WebOutputAdapter
 class ReadingRoomRemoteAdapter(
-    private val httpClient: HttpClient, // 위에서 설정한 HttpCookies가 설치된 빈
+    restClientBuilder: RestClient.Builder,
+    private val jsonMapper: JsonMapper,
     @param:Value("\${reading-room.root-url}") private val rootUrl: String,
     @param:Value("\${reading-room.endpoints.seats}") private val seatsEndpoint: String,
     @param:Value("\${reading-room.endpoints.status}") private val statusEndpoint: String,
-    ) : ReadingRoomRemotePort {
+    @Value("\${reading-room.timeout.connect}") connectTimeout: Duration,
+    @Value("\${reading-room.timeout.read}") readTimeout: Duration,
+) : ReadingRoomRemotePort {
 
     private val log = LoggerFactory.getLogger(ReadingRoomRemoteAdapter::class.java)
 
-    /**
-     * 초기 접속을 통해 CSRF 토큰을 추출하고 세션을 수립합니다.
-     * 발급된 세션 쿠키는 Ktor의 [HttpCookies] 플러그인에 의해 자동으로 저장 및 관리됩니다.
-     */
-    override suspend fun getCsrfToken(): String = coroutineScope {
-        val response = httpClient.get(rootUrl)
-        val html: String = response.body()
-        val document = withContext(Dispatchers.Default) { Jsoup.parse(html) }
+    private val restClient: RestClient = restClientBuilder.clone()
+        .requestFactory(
+            JdkClientHttpRequestFactory(
+                HttpClient.newBuilder()
+                    .cookieHandler(CookieManager())
+                    .connectTimeout(connectTimeout)
+                    .build()
+            ).apply { setReadTimeout(readTimeout) }
+        )
+        .build()
 
-        document.getElementById("token")?.attr("value")
+    override fun getCsrfToken(): String {
+        val html = call {
+            restClient.get()
+                .uri(rootUrl)
+                .retrieve()
+                .body(String::class.java)
+        }
+
+        return Jsoup.parse(html).getElementById("token")?.attr("value")
             ?: throw IllegalStateException("CSRF 토큰을 찾을 수 없습니다.")
     }
 
-    /**
-     * 열람실별 전체 현황(요약 정보) 조회
-     */
-    override suspend fun getReadingRoomStatus(): List<ReadingRoomStatus> = coroutineScope {
-        var response: ReadingRoomStatusRemoteResponse
-
-        try {
-            response = httpClient.get("$rootUrl$statusEndpoint") {
-                parameter("caller", "nicom")
-            }.body()
-        } catch (e: NoTransformationFoundException) {
-            // dslee (2026.02.10) : try 구문에서 html 응답이 오는 경우, 재시도 처리
-            log.error("열람실 현황 조회 중 응답 변환 실패, HTML 응답 수신. 재시도 시도 - ${e.message}")
-            response = httpClient.get("$rootUrl$statusEndpoint") {
-                parameter("caller", "nicom")
-            }.body()
+    override fun getReadingRoomStatus(): List<ReadingRoomStatus> {
+        val response = withOneRetry("열람실 현황 조회") {
+            val body = call {
+                restClient.get()
+                    .uri("$rootUrl$statusEndpoint?caller={caller}", CALLER)
+                    .retrieve()
+                    .body(String::class.java)
+            }
+            jsonMapper.readValue(body, ReadingRoomStatusRemoteResponse::class.java)
         }
-        response.result.items.map { item ->
+
+        return response.result.items.map { item ->
             ReadingRoomStatus(
-                roomId = ReadingRoom.Companion.from(item.room_no),
+                roomId = ReadingRoom.from(item.roomNo),
                 roomName = item.name,
-                totalSeat = item.total_count,
-                availableSeat = item.remain_count,
-                occupiedSeat = item.usage_count,
+                totalSeat = item.totalCount,
+                availableSeat = item.remainCount,
+                occupiedSeat = item.usageCount,
                 rowCount = item.rows,
-                columnCount = item.cols
+                columnCount = item.cols,
             )
         }
     }
 
-    /**
-     * 특정 열람실의 상세 좌석 정보 조회
-     */
-    override suspend fun getReadingRoomSeats(readingRoom: ReadingRoom, csrfToken: String): List<ReadingRoomSeat> =
-        coroutineScope {
-            val response: ReadingRoomSeatRemoteResponse =
-                httpClient.post("$rootUrl$seatsEndpoint") {
-                    header("x-csrf-token", csrfToken)
-                    setBody(FormDataContent(Parameters.Companion.build {
-                        append("caller", "nicom")
-                        append("room_no", readingRoom.roomId.toString())
-                    }))
-                }.body()
-
-            response.result.items.map { item ->
-                ReadingRoomSeat(
-                    roomId = ReadingRoom.Companion.from(item.room_no),
-                    seatNumber = item.number,
-                    row = item.y_pos,
-                    column = item.x_pos,
-                    isAvailable = item.use_type == 0,
-                    userMaskedName = item.user_name,
-                    returnAt = Instant.ofEpochMilli(item.seat_return)
-                        .atZone(ZoneId.of("Asia/Seoul"))
-                        .toLocalDateTime()
-                )
-            }
+    override fun getReadingRoomSeats(readingRoom: ReadingRoom, csrfToken: String): List<ReadingRoomSeat> {
+        val form = LinkedMultiValueMap<String, String>().apply {
+            add("caller", CALLER)
+            add("room_no", readingRoom.roomId.toString())
         }
+
+        val body = call {
+            restClient.post()
+                .uri("$rootUrl$seatsEndpoint")
+                .header("x-csrf-token", csrfToken)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(form)
+                .retrieve()
+                .body(String::class.java)
+        }
+        val response = jsonMapper.readValue(body, ReadingRoomSeatRemoteResponse::class.java)
+
+        return response.result.items.map { item ->
+            ReadingRoomSeat(
+                roomId = ReadingRoom.from(item.roomNo),
+                seatNumber = item.number,
+                row = item.yPos,
+                column = item.xPos,
+                isAvailable = item.useType == 0,
+                userMaskedName = item.userName,
+                returnAt = Instant.ofEpochMilli(item.seatReturn).atZone(SEOUL).toLocalDateTime(),
+            )
+        }
+    }
+
+    private fun call(request: () -> String?): String =
+        try {
+            request().orEmpty()
+        } catch (e: RestClientException) {
+            log.warn("열람실 사이트 호출 실패 - {}", e.message)
+            throw ConnectionException(ConnectionErrorCode.REMOTE_SERVER_UNAVAILABLE)
+        }
+
+    /** 사이트가 JSON 대신 HTML 을 돌려주면 파싱이 실패한다. 이 경우 한 번만 다시 요청한다. */
+    private fun <T> withOneRetry(action: String, request: () -> T): T =
+        try {
+            request()
+        } catch (e: JacksonException) {
+            log.warn("{} 응답 파싱 실패 (HTML 응답 추정). 한 번 다시 시도합니다. - {}", action, e.message)
+            request()
+        }
+
+    companion object {
+        private const val CALLER = "nicom"
+        private val SEOUL: ZoneId = ZoneId.of("Asia/Seoul")
+    }
 
 }

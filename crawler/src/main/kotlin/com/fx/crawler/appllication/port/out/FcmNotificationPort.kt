@@ -3,7 +3,7 @@ package com.fx.crawler.appllication.port.out
 import com.fx.common.domain.FcmToken
 import com.fx.common.domain.Meal
 import com.fx.common.domain.Notice
-import com.fx.readingroom.domain.SeatAlert
+import com.fx.crawler.legacy.readingroom.SeatAlert
 
 interface FcmNotificationPort {
 

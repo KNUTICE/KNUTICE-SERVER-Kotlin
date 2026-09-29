@@ -10,7 +10,7 @@ import com.fx.common.domain.Meal
 import com.fx.common.domain.Notice
 import com.fx.common.domain.SlackMessage
 import com.fx.common.domain.SlackType
-import com.fx.readingroom.domain.SeatAlert
+import com.fx.crawler.legacy.readingroom.SeatAlert
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.MessagingErrorCode
 import com.google.firebase.messaging.MulticastMessage

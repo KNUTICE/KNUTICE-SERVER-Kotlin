@@ -26,7 +26,7 @@ class UserOpenApiAdapter(
         @RequestBody @Valid signUpRequest: UserSignUpRequest
     ): ResponseEntity<Api<UserIdResponse>> =
         Api.OK(UserIdResponse(
-            userCommandUseCase.signUp(signUpRequest.toCommand()).id),
+            userCommandUseCase.signUp(signUpRequest.toCommand()).id?.toString()),
             "회원가입이 완료되었습니다.",
             HttpStatus.CREATED,
         )

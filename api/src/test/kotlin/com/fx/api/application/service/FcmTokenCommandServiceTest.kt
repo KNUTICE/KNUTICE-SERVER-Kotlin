@@ -4,163 +4,197 @@ import com.fx.api.application.port.`in`.dto.FcmTokenSaveCommand
 import com.fx.api.application.port.`in`.dto.FcmTokenUpdateCommand
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
+import com.fx.api.fixture.TopicFixture
+import com.fx.common.application.port.`in`.CatalogQueryUseCase
+import com.fx.common.domain.DeviceType
+import com.fx.common.domain.TopicType
+import com.fx.common.domain.fcmtoken.FcmToken
 import com.fx.common.exception.FcmTokenException
+import com.fx.common.exception.TopicException
 import com.fx.common.exception.errorcode.FcmTokenErrorCode
-import com.fx.common.domain.*
+import com.fx.persistence.withId
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.*
+import io.mockk.clearMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 
 class FcmTokenCommandServiceTest : BehaviorSpec({
 
     val fcmTokenPersistencePort = mockk<FcmTokenPersistencePort>(relaxed = true)
-    val fcmTokenCommandService = FcmTokenCommandService(fcmTokenPersistencePort)
+    val catalogQueryUseCase = mockk<CatalogQueryUseCase>()
+    every { catalogQueryUseCase.getTopicCatalog() } returns TopicFixture.CATALOG
+    val fcmTokenCommandService = FcmTokenCommandService(
+        fcmTokenPersistencePort, catalogQueryUseCase, TopicResolver(catalogQueryUseCase)
+    )
 
     Given("새로운 토큰 저장") {
-        val fcmTokenSaveCommand = FcmTokenSaveCommand(
-            fcmToken = "newFcmToken",
-            deviceType = DeviceType.iOS
-        )
+        val command = FcmTokenSaveCommand(fcmToken = "newFcmToken", deviceType = DeviceType.iOS)
 
         When("존재하지 않은 토큰인 경우") {
             clearMocks(fcmTokenPersistencePort)
-            every {
-                fcmTokenPersistencePort.findByFcmToken(fcmTokenSaveCommand.fcmToken)
-            } returns null
+            every { fcmTokenPersistencePort.findByToken(command.fcmToken) } returns null
 
-            Then("새로운 FCM 토큰이 생성돼 저장") {
-                val result = fcmTokenCommandService.saveFcmToken(fcmTokenSaveCommand)
-                result shouldBe true
+            Then("앱에 노출된 공지 · 학식 토픽을 구독한 새 토큰이 저장된다") {
+                fcmTokenCommandService.saveFcmToken(command) shouldBe true
 
                 verify(exactly = 1) {
-                    fcmTokenPersistencePort.saveFcmToken(match {
-                        it.fcmToken == fcmTokenSaveCommand.fcmToken && it.isActive
-                    })
+                    fcmTokenPersistencePort.create(
+                        match { it.token == command.fcmToken && it.isActive && it.deviceType == DeviceType.iOS },
+                        match { topics ->
+                            topics.map { it.name }.toSet() == setOf("GENERAL_NEWS", "SCHOLARSHIP_NEWS", "STUDENT_CAFETERIA")
+                        }
+                    )
                 }
             }
         }
 
         When("이미 토큰이 존재하는 경우") {
             clearMocks(fcmTokenPersistencePort)
-            val existingToken = FcmToken.createFcmToken(
-                fcmTokenSaveCommand.fcmToken,
-                fcmTokenSaveCommand.deviceType
-            ).copy(isActive = false)
-            every {
-                fcmTokenPersistencePort.findByFcmToken(fcmTokenSaveCommand.fcmToken)
-            } returns existingToken
+            val existing = FcmToken(command.fcmToken, DeviceType.iOS).withId(1L).apply { deactivate() }
+            every { fcmTokenPersistencePort.findByToken(command.fcmToken) } returns existing
 
-            Then("기존 토큰의 isActive 가 true 로 업데이트된다") {
-                val result = fcmTokenCommandService.saveFcmToken(fcmTokenSaveCommand)
-                result shouldBe true
-
-                verify(exactly = 1) {
-                    fcmTokenPersistencePort.saveFcmToken(match {
-                        it.fcmToken == fcmTokenSaveCommand.fcmToken && it.isActive
-                    })
-                }
+            Then("기존 토큰을 다시 활성화하고 새로 만들지 않는다") {
+                fcmTokenCommandService.saveFcmToken(command) shouldBe true
+                existing.isActive shouldBe true
+                verify(exactly = 0) { fcmTokenPersistencePort.create(any(), any()) }
             }
         }
 
-    }
-
-    Given("Silent Push 요청으로 토큰이 업데이트되는 경우") {
-        val fcmTokenUpdateCommand = FcmTokenUpdateCommand(
-            oldFcmToken = "oldFcmToken",
-            newFcmToken = "newFcmToken",
-            deviceType = DeviceType.iOS
-        )
-
-        When("oldFcmToken 이 존재하는 경우") {
-            clearMocks(fcmTokenPersistencePort)
-            val oldFcmToken = FcmToken.createFcmToken(
-                fcmTokenUpdateCommand.oldFcmToken,
-                fcmTokenUpdateCommand.deviceType
-            )
-            every {
-                fcmTokenPersistencePort.findByFcmToken(fcmTokenUpdateCommand.oldFcmToken)
-            } returns oldFcmToken
-
-            Then("oldFcmToken 은 isActive=false, newFcmToken 은 저장") {
-                val result = fcmTokenCommandService.updateFcmToken(fcmTokenUpdateCommand)
-                result shouldBe true
-
-                verifyOrder {
-                    fcmTokenPersistencePort.saveFcmToken(match {
-                        !it.isActive && it.fcmToken == fcmTokenUpdateCommand.oldFcmToken
-                    })
-                    fcmTokenPersistencePort.saveFcmToken(match {
-                        it.fcmToken == fcmTokenUpdateCommand.newFcmToken && it.isActive
-                    })
-                }
-            }
-        }
-
-        When("oldFcmToken 이 존재하지 않는 경우") {
-            clearMocks(fcmTokenPersistencePort)
-            every {
-                fcmTokenPersistencePort.findByFcmToken(fcmTokenUpdateCommand.oldFcmToken)
-            } returns null
-
-            Then("새로운 newFcmToken 생성") {
-                val result = fcmTokenCommandService.updateFcmToken(fcmTokenUpdateCommand)
-                result shouldBe true
-
-                verify(exactly = 1) {
-                    fcmTokenPersistencePort.saveFcmToken(match {
-                        it.fcmToken == fcmTokenUpdateCommand.newFcmToken && it.isActive
-                    })
-                }
-            }
-        }
-
-    }
-
-    Given("Topic 변경") {
-        val fcmTokenStr = "fcmToken"
-        val noticeTopicUpdateCommand = TopicUpdateCommand(
-            fcmToken = fcmTokenStr,
-            topicType = TopicType.NOTICE,
-            topic = NoticeType.GENERAL_NEWS,
-            enabled = false
-        )
-
-        When("Fcm token 이 존재하지 않는 경우") {
-            clearMocks(fcmTokenPersistencePort)
-            every {
-                fcmTokenPersistencePort.atomicUpdateTopic(any())
-            } returns false
-
-            Then("FcmTokenException 예외 발생") {
+        When("토큰이 비어 있는 경우") {
+            Then("TOKEN_INVALID 예외가 발생한다") {
                 val exception = shouldThrow<FcmTokenException> {
-                    fcmTokenCommandService.updateTopic(noticeTopicUpdateCommand)
+                    fcmTokenCommandService.saveFcmToken(FcmTokenSaveCommand(fcmToken = "   ", deviceType = DeviceType.AOS))
                 }
-                exception.baseErrorCode shouldBe FcmTokenErrorCode.TOKEN_NOT_FOUND
-            }
-        }
-
-        When("Fcm token 이 존재하는 경우") {
-            clearMocks(fcmTokenPersistencePort)
-            every {
-                fcmTokenPersistencePort.atomicUpdateTopic(any())
-            } returns true
-
-            Then("GENERAL_NEWS Topic 제거 요청이 원자적으로 전달된다") {
-                val result = fcmTokenCommandService.updateTopic(noticeTopicUpdateCommand)
-                result shouldBe true
-
-                verify(exactly = 1) {
-                    fcmTokenPersistencePort.atomicUpdateTopic(match {
-                        it.fcmToken == noticeTopicUpdateCommand.fcmToken &&
-                        it.topicType == noticeTopicUpdateCommand.topicType &&
-                        it.topic == noticeTopicUpdateCommand.topic &&
-                        !it.enabled
-                    })
-                }
+                exception.baseErrorCode shouldBe FcmTokenErrorCode.TOKEN_INVALID
             }
         }
     }
 
+    Given("앱이 새 토큰을 받아 토큰을 갱신하는 경우") {
+        val command = FcmTokenUpdateCommand(oldFcmToken = "oldFcmToken", newFcmToken = "newFcmToken", deviceType = DeviceType.iOS)
+
+        When("기존 토큰만 있는 경우") {
+            clearMocks(fcmTokenPersistencePort)
+            val oldToken = FcmToken(command.oldFcmToken, DeviceType.AOS).withId(1L)
+            every { fcmTokenPersistencePort.findByToken(command.oldFcmToken) } returns oldToken
+            every { fcmTokenPersistencePort.findByToken(command.newFcmToken) } returns null
+
+            Then("같은 행의 토큰 값을 바꿔 id · 구독을 유지한다") {
+                fcmTokenCommandService.updateFcmToken(command) shouldBe true
+                oldToken.token shouldBe command.newFcmToken
+                oldToken.isActive shouldBe true
+                verify(exactly = 0) { fcmTokenPersistencePort.create(any(), any()) }
+                verify(exactly = 0) { fcmTokenPersistencePort.copySubscriptions(any(), any()) }
+            }
+        }
+
+        When("기존 토큰과 새 토큰이 모두 있는 경우") {
+            clearMocks(fcmTokenPersistencePort)
+            val oldToken = FcmToken(command.oldFcmToken, DeviceType.iOS).withId(1L)
+            val newToken = FcmToken(command.newFcmToken, DeviceType.iOS).withId(2L).apply { deactivate() }
+            every { fcmTokenPersistencePort.findByToken(command.oldFcmToken) } returns oldToken
+            every { fcmTokenPersistencePort.findByToken(command.newFcmToken) } returns newToken
+
+            Then("새 토큰의 구독을 기존 토큰과 같게 맞추고 기존 토큰은 비활성화한다") {
+                fcmTokenCommandService.updateFcmToken(command) shouldBe true
+                verify(exactly = 1) { fcmTokenPersistencePort.copySubscriptions(1L, 2L) }
+                newToken.isActive shouldBe true
+                oldToken.isActive shouldBe false
+            }
+        }
+
+        When("새 토큰만 있는 경우") {
+            clearMocks(fcmTokenPersistencePort)
+            val newToken = FcmToken(command.newFcmToken, DeviceType.iOS).withId(2L).apply { deactivate() }
+            every { fcmTokenPersistencePort.findByToken(command.oldFcmToken) } returns null
+            every { fcmTokenPersistencePort.findByToken(command.newFcmToken) } returns newToken
+
+            Then("새 토큰을 활성화하고 구독은 그대로 둔다") {
+                fcmTokenCommandService.updateFcmToken(command) shouldBe true
+                newToken.isActive shouldBe true
+                verify(exactly = 0) { fcmTokenPersistencePort.create(any(), any()) }
+            }
+        }
+
+        When("두 토큰 모두 없는 경우") {
+            clearMocks(fcmTokenPersistencePort)
+            every { fcmTokenPersistencePort.findByToken(any()) } returns null
+
+            Then("기본 토픽을 구독한 새 토큰을 만든다") {
+                fcmTokenCommandService.updateFcmToken(command) shouldBe true
+                verify(exactly = 1) { fcmTokenPersistencePort.create(match { it.token == command.newFcmToken }, any()) }
+            }
+        }
+    }
+
+    Given("토픽 구독 변경") {
+        val token = FcmToken("fcmToken", DeviceType.iOS).withId(1L)
+
+        When("토큰이 존재하지 않는 경우") {
+            clearMocks(fcmTokenPersistencePort)
+            every { fcmTokenPersistencePort.getByToken("unknown") } throws FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+
+            Then("FcmTokenException 이 발생한다") {
+                shouldThrow<FcmTokenException> {
+                    fcmTokenCommandService.updateTopic(
+                        TopicUpdateCommand(fcmToken = "unknown", topicType = TopicType.NOTICE, topicName = "GENERAL_NEWS", enabled = true)
+                    )
+                }
+            }
+        }
+
+        When("v1 토픽 이름으로 구독하는 경우") {
+            clearMocks(fcmTokenPersistencePort)
+            every { fcmTokenPersistencePort.getByToken(token.token) } returns token
+
+            Then("해당 토픽을 구독한다") {
+                fcmTokenCommandService.updateTopic(
+                    TopicUpdateCommand(fcmToken = token.token, topicType = TopicType.NOTICE, topicName = "GENERAL_NEWS", enabled = true)
+                ) shouldBe true
+                verify(exactly = 1) { fcmTokenPersistencePort.subscribe(1L, TopicFixture.GENERAL_NEWS) }
+            }
+        }
+
+        When("v2 토픽 코드로 해제하는 경우") {
+            clearMocks(fcmTokenPersistencePort)
+            every { fcmTokenPersistencePort.getByToken(token.token) } returns token
+
+            Then("해당 토픽 구독을 해제한다") {
+                fcmTokenCommandService.updateTopic(
+                    TopicUpdateCommand(fcmToken = token.token, topicType = TopicType.MAJOR, topicId = 300, enabled = false)
+                ) shouldBe true
+                verify(exactly = 1) { fcmTokenPersistencePort.unsubscribe(1L, 300) }
+            }
+        }
+
+        When("v1 토픽 이름이 요청한 유형에 속하지 않는 경우") {
+            clearMocks(fcmTokenPersistencePort)
+            every { fcmTokenPersistencePort.getByToken(token.token) } returns token
+
+            Then("TopicException 이 발생한다") {
+                shouldThrow<TopicException> {
+                    fcmTokenCommandService.updateTopic(
+                        TopicUpdateCommand(fcmToken = token.token, topicType = TopicType.MAJOR, topicName = "GENERAL_NEWS", enabled = true)
+                    )
+                }
+            }
+        }
+
+        When("존재하지 않는 토픽 코드인 경우") {
+            clearMocks(fcmTokenPersistencePort)
+            every { fcmTokenPersistencePort.getByToken(token.token) } returns token
+
+            Then("TopicException 이 발생한다") {
+                shouldThrow<TopicException> {
+                    fcmTokenCommandService.updateTopic(
+                        TopicUpdateCommand(fcmToken = token.token, topicType = TopicType.NOTICE, topicId = 9999, enabled = true)
+                    )
+                }
+            }
+        }
+    }
 
 })

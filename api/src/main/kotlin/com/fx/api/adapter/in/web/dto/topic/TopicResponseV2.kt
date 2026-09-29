@@ -1,20 +1,17 @@
 package com.fx.api.adapter.`in`.web.dto.topic
 
-import com.fx.common.domain.CrawlableType
-import org.springframework.context.MessageSource
+import com.fx.common.domain.catalog.TopicView
+import com.fx.common.domain.i18n.Language
 
+/** v2 구독 토픽 조회. 토픽 객체 목록 (code 오름차순). */
 data class TopicResponseV2(
     val subscribedTopics: List<TypeResponse>
 ) {
-    companion object {
-        fun from(subscribedTopics: Set<String>, messageSource: MessageSource): TopicResponseV2 {
-            val types = subscribedTopics
-                .map { CrawlableType.fromString(it) }
-                .sortedBy { it.code }
 
-            return TopicResponseV2(
-                subscribedTopics = types.map { TypeResponse.from(it, messageSource) }
-            )
-        }
+    companion object {
+
+        fun from(subscribedTopics: List<TopicView>, language: Language): TopicResponseV2 =
+            TopicResponseV2(TypeResponse.from(subscribedTopics.sortedBy { it.code }, language))
     }
+
 }

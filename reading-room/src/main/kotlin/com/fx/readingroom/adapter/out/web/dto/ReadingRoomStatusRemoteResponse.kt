@@ -1,20 +1,22 @@
 package com.fx.readingroom.adapter.out.web.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class ReadingRoomStatusRemoteResponse(
-    val result: StatusData
+    @param:JsonProperty("result") val result: StatusData,
 )
 
 data class StatusData(
-    val CODE: String,
-    val items: List<StatusItem> = emptyList()
+    @param:JsonProperty("CODE") val code: String,
+    @param:JsonProperty("items") val items: List<StatusItem> = emptyList(),
 )
 
 data class StatusItem(
-    val room_no: Int,
-    val name: String,
-    val total_count: Int,
-    val usage_count: Int,
-    val remain_count: Int,
-    val rows: Int,
-    val cols: Int
+    @param:JsonProperty("room_no") val roomNo: Int,
+    @param:JsonProperty("name") val name: String,
+    @param:JsonProperty("total_count") val totalCount: Int,
+    @param:JsonProperty("usage_count") val usageCount: Int,
+    @param:JsonProperty("remain_count") val remainCount: Int,
+    @param:JsonProperty("rows") val rows: Int,
+    @param:JsonProperty("cols") val cols: Int,
 )

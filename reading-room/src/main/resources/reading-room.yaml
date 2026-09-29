@@ -3,3 +3,7 @@ reading-room:
   endpoints:
     seats: ${READING_ROOM_SEATS_ENDPOINT}
     status: ${READING_ROOM_STATUS_ENDPOINT}
+  # 1분 주기 빈자리 체크가 사이트 지연에 막히지 않도록 짧게 둔다
+  timeout:
+    connect: 5s
+    read: 10s

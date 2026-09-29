@@ -5,8 +5,11 @@ import com.fx.common.domain.DeviceType
 
 interface TipPersistencePort {
 
-    fun saveTip(tip: Tip)
-    fun deleteById(tipId: String)
-    fun getTips(deviceType: DeviceType): List<Tip>
+    fun save(tip: Tip): Tip
+
+    fun deleteById(tipId: Long)
+
+    /** 최근 등록 순. */
+    fun findAllByDeviceType(deviceType: DeviceType): List<Tip>
 
 }

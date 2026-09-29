@@ -5,81 +5,97 @@ import com.fx.api.application.port.`in`.dto.FcmTokenSaveCommand
 import com.fx.api.application.port.`in`.dto.FcmTokenUpdateCommand
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
-import com.fx.api.application.port.out.dto.TopicUpdateQuery
+import com.fx.common.application.port.`in`.CatalogQueryUseCase
+import com.fx.common.domain.TopicType
+import com.fx.common.domain.catalog.TopicView
+import com.fx.common.domain.fcmtoken.FcmToken
 import com.fx.common.exception.FcmTokenException
+import com.fx.common.exception.TopicException
 import com.fx.common.exception.errorcode.FcmTokenErrorCode
-import com.fx.common.domain.FcmToken
+import com.fx.common.exception.errorcode.TopicErrorCode
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class FcmTokenCommandService(
-    private val fcmTokenPersistencePort: FcmTokenPersistencePort
+    private val fcmTokenPersistencePort: FcmTokenPersistencePort,
+    private val catalogQueryUseCase: CatalogQueryUseCase,
+    private val topicResolver: TopicResolver,
 ) : FcmTokenCommandUseCase {
 
+    /** 이미 있는 토큰이면 다시 활성화하고, 없으면 기본 토픽을 구독시켜 새로 만든다. */
+    @Transactional
     override fun saveFcmToken(fcmTokenSaveCommand: FcmTokenSaveCommand): Boolean {
-        if (fcmTokenSaveCommand.fcmToken.isBlank()) { // 빈 토큰 "   " 처리
-            throw FcmTokenException(FcmTokenErrorCode.TOKEN_INVALID)
-        }
+        requireValidToken(fcmTokenSaveCommand.fcmToken)
 
-        val fcmToken = fcmTokenPersistencePort.findByFcmToken(fcmTokenSaveCommand.fcmToken)
-            ?.copy(isActive = true) // 존재하는 경우 isActive = true
-            ?: FcmToken.createFcmToken( // 없으면 새로 생성
-                fcmToken = fcmTokenSaveCommand.fcmToken,
-                deviceType = fcmTokenSaveCommand.deviceType
+        fcmTokenPersistencePort.findByToken(fcmTokenSaveCommand.fcmToken)
+            ?.activate()
+            ?: fcmTokenPersistencePort.create(
+                FcmToken(fcmTokenSaveCommand.fcmToken, fcmTokenSaveCommand.deviceType),
+                defaultTopics(),
             )
-
-        fcmTokenPersistencePort.saveFcmToken(fcmToken)
         return true
     }
 
     /**
-     * oldFcmToken 을 newFcmToken 으로 topic 정보 업데이트
-     * oldFcmToken 이 존재하지 않는 경우 새로운 newFcmToken 생성
-     * oldFcmToken 이 존재하는 경우 oldFcmToken 을 isActive = false 처리, 토픽 정보를 newFcmToken 으로 업데이트 후 저장
+     * 앱이 새 토큰을 받았을 때 기존 토큰의 구독을 새 토큰으로 옮긴다.
+     *
+     * - 기존 토큰만 있으면 그 행의 토큰 값을 바꾼다 (id · 구독 · 좌석 알림이 그대로 이어진다).
+     * - 둘 다 있으면 새 토큰의 구독을 기존 토큰과 같게 맞추고 기존 토큰은 비활성화한다.
+     * - 새 토큰만 있으면 활성화하고, 둘 다 없으면 기본 토픽으로 새로 만든다.
      */
     @Transactional
     override fun updateFcmToken(fcmTokenUpdateCommand: FcmTokenUpdateCommand): Boolean {
-        if (fcmTokenUpdateCommand.newFcmToken.isEmpty()) { // 헤더로 넘어온 빈 토큰 "   " 처리
+        requireValidToken(fcmTokenUpdateCommand.newFcmToken)
+
+        val oldToken = fcmTokenPersistencePort.findByToken(fcmTokenUpdateCommand.oldFcmToken)
+        val newToken = fcmTokenPersistencePort.findByToken(fcmTokenUpdateCommand.newFcmToken)
+
+        when {
+            oldToken != null && newToken != null && oldToken.id != newToken.id -> {
+                fcmTokenPersistencePort.copySubscriptions(requireNotNull(oldToken.id), requireNotNull(newToken.id))
+                newToken.activate()
+                oldToken.deactivate()
+            }
+            oldToken != null -> oldToken.changeToken(fcmTokenUpdateCommand.newFcmToken)
+            newToken != null -> newToken.activate()
+            else -> fcmTokenPersistencePort.create(
+                FcmToken(fcmTokenUpdateCommand.newFcmToken, fcmTokenUpdateCommand.deviceType),
+                defaultTopics(),
+            )
+        }
+        return true
+    }
+
+    @Transactional
+    override fun updateTopic(topicUpdateCommand: TopicUpdateCommand): Boolean {
+        val fcmToken = fcmTokenPersistencePort.getByToken(topicUpdateCommand.fcmToken)
+        val topic = topicResolver.byNameOrCode(
+            topicName = topicUpdateCommand.topicName,
+            topicId = topicUpdateCommand.topicId,
+            expectedTypeForName = topicUpdateCommand.topicType,
+        ) ?: throw TopicException(TopicErrorCode.TOPIC_NOT_FOUND)
+
+        val fcmTokenId = requireNotNull(fcmToken.id)
+        if (topicUpdateCommand.enabled) {
+            fcmTokenPersistencePort.subscribe(fcmTokenId, topic)
+        } else {
+            fcmTokenPersistencePort.unsubscribe(fcmTokenId, topic.code)
+        }
+        return true
+    }
+
+    /** 새 토큰은 앱에 노출된 공지 · 학식 토픽을 모두 구독한 상태로 시작한다. 학과는 사용자가 고른다. */
+    private fun defaultTopics(): List<TopicView> =
+        catalogQueryUseCase.getTopicCatalog().topics.filter {
+            it.visible && (it.topicType == TopicType.NOTICE || it.topicType == TopicType.MEAL)
+        }
+
+    private fun requireValidToken(token: String) {
+        if (token.isBlank()) {
             throw FcmTokenException(FcmTokenErrorCode.TOKEN_INVALID)
         }
-
-        fcmTokenPersistencePort.findByFcmToken(fcmTokenUpdateCommand.oldFcmToken)
-            ?.let { oldFcmToken ->
-                fcmTokenPersistencePort.saveFcmToken(oldFcmToken.copy(isActive = false))
-
-                // oldFcmToken 정보를 newFcmToken 으로 복사
-                fcmTokenPersistencePort.saveFcmToken(
-                    FcmToken.updateFcmToken(
-                        newFcmToken = fcmTokenUpdateCommand.newFcmToken,
-                        oldFcmToken = oldFcmToken,
-                    )
-                )
-            }
-            ?: run {
-                val newToken = FcmToken.createFcmToken(
-                    fcmToken = fcmTokenUpdateCommand.newFcmToken,
-                    deviceType = fcmTokenUpdateCommand.deviceType
-                )
-                fcmTokenPersistencePort.saveFcmToken(newToken)
-            }
-        return true
     }
-
-    override fun updateTopic(topicUpdateCommand: TopicUpdateCommand): Boolean {
-        val updated = fcmTokenPersistencePort.atomicUpdateTopic(
-            TopicUpdateQuery(
-                fcmToken = topicUpdateCommand.fcmToken,
-                topicType = topicUpdateCommand.topicType,
-                topic = topicUpdateCommand.topic,
-                enabled = topicUpdateCommand.enabled
-            )
-        )
-        if (!updated) {
-            throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
-        }
-        return true
-    }
-
 
 }

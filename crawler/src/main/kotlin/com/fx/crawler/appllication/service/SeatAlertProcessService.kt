@@ -3,10 +3,10 @@ package com.fx.crawler.appllication.service
 import com.fx.crawler.appllication.port.`in`.NotificationUseCase
 import com.fx.crawler.appllication.port.`in`.readingroom.SeatAlertProcessUseCase
 import com.fx.readingroom.application.port.out.ReadingRoomRemotePort
-import com.fx.readingroom.application.port.out.SeatAlertPersistencePort
+import com.fx.crawler.legacy.readingroom.SeatAlertPersistencePort
 import com.fx.readingroom.domain.ReadingRoom
-import com.fx.readingroom.domain.SeatAlert
-import com.fx.readingroom.domain.SeatAlert.SeatAlertStatus
+import com.fx.crawler.legacy.readingroom.SeatAlert
+import com.fx.crawler.legacy.readingroom.SeatAlert.SeatAlertStatus
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope

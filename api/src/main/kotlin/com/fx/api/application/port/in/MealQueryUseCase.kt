@@ -1,10 +1,10 @@
 package com.fx.api.application.port.`in`
 
-import com.fx.common.domain.Meal
-import com.fx.common.domain.MealType
+import com.fx.api.domain.Meal
 
 interface MealQueryUseCase {
 
-    suspend fun getMeals(type: MealType): List<Meal>
+    /** [mealTopicName] 학식 토픽(예: `STUDENT_CAFETERIA`)의 식단. */
+    fun getMeals(mealTopicName: String): List<Meal>
 
 }

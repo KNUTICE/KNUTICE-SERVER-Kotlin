@@ -1,11 +1,9 @@
 package com.fx.api.application.port.out
 
-import com.fx.common.domain.MealType
-
 interface NotificationWebPort {
 
     fun notifyNotice(fcmToken: String, nttId: Long): Boolean
 
-    fun notifyMeal(fcmToken: String, mealType: MealType): Boolean
+    fun notifyMeal(fcmToken: String, mealTopicName: String): Boolean
 
 }

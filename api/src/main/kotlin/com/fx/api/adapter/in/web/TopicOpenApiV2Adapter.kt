@@ -7,30 +7,35 @@ import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase
 import com.fx.common.annotation.hexagonal.WebInputAdapter
 import com.fx.common.domain.TopicType
+import com.fx.common.domain.i18n.Language
 import io.github.seob7.Api
 import jakarta.validation.Valid
-import org.springframework.context.MessageSource
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import java.util.Locale
 
 @WebInputAdapter
 @RequestMapping("/open-api/v2/topics")
 class TopicOpenApiV2Adapter(
     private val fcmTokenQueryUseCase: FcmTokenQueryUseCase,
     private val fcmTokenCommandUseCase: FcmTokenCommandUseCase,
-    private val messageSource: MessageSource
 ) : TopicOpenApiV2Swagger {
 
     @GetMapping
     override fun getMyTopics(
         @RequestHeader fcmToken: String,
-        @RequestParam type: TopicType
+        @RequestParam type: TopicType,
+        locale: Locale
     ): ResponseEntity<Api<TopicResponseV2>> =
         Api.OK(
-            TopicResponseV2.from(fcmTokenQueryUseCase.getMyTopics(fcmToken, type), messageSource),
+            TopicResponseV2.from(fcmTokenQueryUseCase.getMyTopics(fcmToken, type), Language.from(locale)),
             "토픽 조회 성공"
         )
-
 
     @PatchMapping
     override fun updateTopic(
@@ -39,9 +44,8 @@ class TopicOpenApiV2Adapter(
         @RequestBody @Valid topicUpdateRequestV2: TopicUpdateRequestV2
     ): ResponseEntity<Api<Boolean>> =
         Api.OK(
-            fcmTokenCommandUseCase.updateTopic(
-                topicUpdateRequestV2.toCommand(fcmToken, type)
-            ), "토픽 업데이트 성공"
+            fcmTokenCommandUseCase.updateTopic(topicUpdateRequestV2.toCommand(fcmToken, type)),
+            "토픽 업데이트 성공"
         )
 
 }

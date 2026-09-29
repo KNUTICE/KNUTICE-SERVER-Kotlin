@@ -5,41 +5,36 @@ import com.fx.api.application.port.`in`.dto.ReportSaveCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.ReportPersistencePort
 import com.fx.api.domain.Report
-import com.fx.common.exception.FcmTokenException
-import com.fx.common.exception.errorcode.FcmTokenErrorCode
 import com.fx.common.application.port.out.WebhookPort
 import com.fx.common.domain.SlackMessage
 import com.fx.common.domain.SlackType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class ReportCommandService(
     private val reportPersistencePort: ReportPersistencePort,
     private val fcmTokenPersistencePort: FcmTokenPersistencePort,
-    private val webhookPort: WebhookPort
-): ReportCommandUseCase {
+    private val webhookPort: WebhookPort,
+) : ReportCommandUseCase {
 
-    private val backgroundScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    /** 문의를 저장하고 Slack 으로 알린다. Slack 전송은 기다리지 않는다. */
+    @Transactional
+    override fun saveReport(reportSaveCommand: ReportSaveCommand): Boolean {
+        val fcmToken = fcmTokenPersistencePort.getByToken(reportSaveCommand.fcmToken)
 
-    override suspend fun saveReport(reportSaveCommand: ReportSaveCommand): Boolean = coroutineScope {
-        if (!fcmTokenPersistencePort.existsByFcmToken(reportSaveCommand.fcmToken)) {
-            throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
-        }
-
-        val savedReport = reportPersistencePort.saveReport(Report.createReport(reportSaveCommand))
-
-        backgroundScope.launch {
-            webhookPort.notifySlack(createSlackMessage(savedReport))
-        }
-
-        return@coroutineScope true
+        val report = reportPersistencePort.save(
+            Report(
+                fcmTokenId = requireNotNull(fcmToken.id),
+                content = reportSaveCommand.content,
+                deviceName = reportSaveCommand.deviceName,
+                version = reportSaveCommand.version,
+            )
+        )
+        webhookPort.notifySlack(createSlackMessage(report))
+        return true
     }
-
 
     private fun createSlackMessage(report: Report): SlackMessage =
         SlackMessage.create(

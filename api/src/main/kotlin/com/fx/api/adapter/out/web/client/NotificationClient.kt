@@ -1,6 +1,5 @@
 package com.fx.api.adapter.out.web.client
 
-import com.fx.common.domain.MealType
 import io.github.seob7.Api
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
@@ -37,13 +36,13 @@ interface NotificationClient {
      * 특정 학식에 대해 대상 사용자(fcmToken)에게 푸시 알림을 전송합니다.
      *
      * @param fcmToken 대상 사용자의 FCM 토큰
-     * @param mealType 알림을 전송할 학식 종류
+     * @param mealType 알림을 전송할 학식 토픽 이름 (예: STUDENT_CAFETERIA)
      * @return Api<Boolean> - 전송 성공 여부
      */
     @PostExchange("/meal/{mealType}")
     fun notifyMeal(
         @RequestHeader("fcmToken") fcmToken: String,
-        @PathVariable("mealType") mealType: MealType
+        @PathVariable("mealType") mealType: String
     ): ResponseEntity<Api<Boolean>>
 
 }

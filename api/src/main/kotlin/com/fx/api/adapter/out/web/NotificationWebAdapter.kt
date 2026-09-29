@@ -3,7 +3,6 @@ package com.fx.api.adapter.out.web
 import com.fx.api.adapter.out.web.client.NotificationClient
 import com.fx.api.application.port.out.NotificationWebPort
 import com.fx.common.annotation.hexagonal.WebOutputAdapter
-import com.fx.common.domain.MealType
 import com.fx.common.exception.NotificationException
 import com.fx.common.exception.errorcode.NotificationErrorCode
 
@@ -21,9 +20,9 @@ class NotificationWebAdapter(
         }
     }
 
-    override fun notifyMeal(fcmToken: String, mealType: MealType): Boolean {
+    override fun notifyMeal(fcmToken: String, mealTopicName: String): Boolean {
         return try {
-            val response = notificationClient.notifyMeal(fcmToken, mealType)
+            val response = notificationClient.notifyMeal(fcmToken, mealTopicName)
             response.body?.metaData?.isSuccess ?: false
         } catch (e: Exception) {
             throw NotificationException(NotificationErrorCode.NOTIFICATION_SEND_FAILED)

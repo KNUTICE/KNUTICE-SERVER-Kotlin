@@ -1,51 +1,31 @@
 package com.fx.api.adapter.`in`.web.dto.topic
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fx.common.domain.CrawlableType
-import com.fx.common.domain.MajorType
-import com.fx.common.domain.MealType
-import com.fx.common.domain.NoticeType
-import org.springframework.context.MessageSource
-import org.springframework.context.i18n.LocaleContextHolder
+import com.fx.common.domain.catalog.TopicView
+import com.fx.common.domain.i18n.Language
 
-//@JsonInclude(JsonInclude.Include.NON_NULL) // dslee - null 인 필드는 응답에서 제외함
+/**
+ * 토픽 한 건. 표시명 · 단과대 이름은 요청 언어로 해석하고 번역이 없으면 한국어를 쓴다.
+ * 단과대는 학과 토픽에만 있고, 없으면 `null` 을 그대로 내보낸다.
+ */
 data class TypeResponse(
     val topic: String,
     val topicId: Int,
     val name: String,
     val college: String? = null
 ) {
+
     companion object {
-        fun fromNoticeTypes(): List<TypeResponse> =
-            NoticeType.entries.map { TypeResponse(topic = it.name, topicId = it.code, name = it.category) }
 
-        fun fromMajorTypes(messageSource: MessageSource): List<TypeResponse> {
-            return MajorType.entries.map {
-                val locale = LocaleContextHolder.getLocale()
-                TypeResponse(
-                    topic = it.name,
-                    topicId = it.code,
-                    name = messageSource.getMessage("topic.${it.name.lowercase()}", null, it.category, locale) ?: it.category,
-                    college = messageSource.getMessage("college.${it.college.lowercase()}", null, it.college, locale) ?: it.college
-                )
-            }
-        }
+        fun from(topic: TopicView, language: Language): TypeResponse =
+            TypeResponse(
+                topic = topic.name,
+                topicId = topic.code,
+                name = topic.displayName.resolve(language),
+                college = topic.college?.displayName?.resolve(language)
+            )
 
-        fun fromMealTypes(): List<TypeResponse> =
-            MealType.entries.map { TypeResponse(topic = it.name, topicId = it.code, name = it.category) }
-
-        fun from(type: CrawlableType, messageSource: MessageSource): TypeResponse =
-            when (type) {
-                is MajorType -> {
-                    val locale = LocaleContextHolder.getLocale()
-                    TypeResponse(
-                        topic = type.topicName,
-                        topicId = type.code,
-                        name = messageSource.getMessage("topic.${type.name.lowercase()}", null, type.category, locale) ?: type.category,
-                        college = messageSource.getMessage("college.${type.college.lowercase()}", null, type.college, locale) ?: type.college
-                    )
-                }
-                else -> TypeResponse(topic = type.topicName, topicId = type.code, name = type.category)
-            }
+        fun from(topics: List<TopicView>, language: Language): List<TypeResponse> =
+            topics.map { from(it, language) }
     }
+
 }

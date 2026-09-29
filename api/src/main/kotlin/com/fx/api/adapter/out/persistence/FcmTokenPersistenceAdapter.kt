@@ -1,53 +1,65 @@
 package com.fx.api.adapter.out.persistence
 
 import com.fx.api.application.port.out.FcmTokenPersistencePort
-import com.fx.api.application.port.out.dto.TopicUpdateQuery
-import com.fx.common.adapter.out.persistence.document.FcmTokenDocument
-import com.fx.common.adapter.out.persistence.repository.FcmTokenMongoRepository
+import com.fx.common.adapter.out.persistence.repository.FcmTokenRepository
+import com.fx.common.adapter.out.persistence.repository.FcmTokenSubscriptionRepository
 import com.fx.common.annotation.PersistenceAdapter
-import com.fx.common.domain.DeviceType
-import com.fx.common.domain.FcmToken
-import com.fx.common.domain.TopicType
-import org.springframework.data.mongodb.core.MongoTemplate
-import org.springframework.data.mongodb.core.query.Criteria
-import org.springframework.data.mongodb.core.query.Query
-import org.springframework.data.mongodb.core.query.Update
+import com.fx.common.domain.catalog.TopicView
+import com.fx.common.domain.fcmtoken.FcmToken
+import com.fx.common.domain.fcmtoken.FcmTokenSubscription
+import com.fx.common.exception.FcmTokenException
+import com.fx.common.exception.errorcode.FcmTokenErrorCode
+import io.hypersistence.tsid.TSID
+import java.time.Clock
+import java.time.LocalDateTime
 
 @PersistenceAdapter
 class FcmTokenPersistenceAdapter(
-    private val fcmTokenMongoRepository: FcmTokenMongoRepository,
-    private val mongoTemplate: MongoTemplate
-): FcmTokenPersistencePort {
+    private val fcmTokenRepository: FcmTokenRepository,
+    private val fcmTokenSubscriptionRepository: FcmTokenSubscriptionRepository,
+    private val clock: Clock,
+) : FcmTokenPersistencePort {
 
-    override fun saveFcmToken(fcmToken: FcmToken) {
-        fcmTokenMongoRepository.save(FcmTokenDocument.from(fcmToken))
+    override fun findByToken(token: String): FcmToken? =
+        fcmTokenRepository.findByToken(token)
+
+    override fun getByToken(token: String): FcmToken =
+        fcmTokenRepository.findByToken(token)
+            ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+
+    override fun existsByToken(token: String): Boolean =
+        fcmTokenRepository.existsByToken(token)
+
+    override fun create(fcmToken: FcmToken, topics: List<TopicView>): FcmToken {
+        val saved = fcmTokenRepository.save(fcmToken)
+        val fcmTokenId = requireNotNull(saved.id)
+        fcmTokenSubscriptionRepository.saveAll(topics.map { FcmTokenSubscription.of(fcmTokenId, it) })
+        return saved
     }
 
-    override fun findByFcmToken(fcmToken: String): FcmToken? =
-        fcmTokenMongoRepository.findById(fcmToken).orElse(null)?.toDomain()
+    override fun findSubscribedTopicCodes(fcmTokenId: Long): Set<Int> =
+        fcmTokenSubscriptionRepository.findAllByFcmTokenId(fcmTokenId).mapTo(mutableSetOf()) { it.topicCode }
 
-    override fun existsByFcmToken(fcmToken: String): Boolean =
-        fcmTokenMongoRepository.existsById(fcmToken)
+    override fun subscribe(fcmTokenId: Long, topic: TopicView) {
+        fcmTokenSubscriptionRepository.insertIfAbsent(
+            id = TSID.fast().toLong(),
+            fcmTokenId = fcmTokenId,
+            topicCode = topic.code,
+            topicName = topic.name,
+            now = LocalDateTime.now(clock),
+        )
+    }
 
-    override fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long =
-        fcmTokenMongoRepository.countByIsActiveAndDeviceType(isActive, deviceType)
+    override fun unsubscribe(fcmTokenId: Long, topicCode: Int) {
+        fcmTokenSubscriptionRepository.deleteByFcmTokenIdAndTopicCode(fcmTokenId, topicCode)
+    }
 
-    // 배타락으로 Lost Update 발생 방지
-    override fun atomicUpdateTopic(topicUpdateQuery: TopicUpdateQuery): Boolean {
-        val field = when (topicUpdateQuery.topicType) {
-            TopicType.NOTICE -> "subscribedNoticeTopics"
-            TopicType.MAJOR  -> "subscribedMajorTopics"
-            TopicType.MEAL   -> "subscribedMealTopics"
-        }
-
-        val mongoQuery = Query.query(Criteria.where("_id").`is`(topicUpdateQuery.fcmToken))
-        val update = if (topicUpdateQuery.enabled) {
-            Update().addToSet(field, topicUpdateQuery.topic.topicName)
-        } else {
-            Update().pull(field, topicUpdateQuery.topic.topicName)
-        }
-
-        return mongoTemplate.updateFirst(mongoQuery, update, FcmTokenDocument::class.java).matchedCount > 0
+    override fun copySubscriptions(fromFcmTokenId: Long, toFcmTokenId: Long) {
+        val source = fcmTokenSubscriptionRepository.findAllByFcmTokenId(fromFcmTokenId)
+        fcmTokenSubscriptionRepository.deleteAllByFcmTokenId(toFcmTokenId)
+        fcmTokenSubscriptionRepository.saveAll(
+            source.map { FcmTokenSubscription(toFcmTokenId, it.topicCode, it.topicName) }
+        )
     }
 
 }

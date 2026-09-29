@@ -35,7 +35,7 @@ interface ReadingRoomOpenApiSwagger {
     )
     @Operation(summary = "열람실 정보 조회", description = "열람실에 대한 정보를 조회합니다. <br>" +
             "행/열 정보는 Front 렌더링에 사용됩니다.")
-    suspend fun getReadingRoomStatus(
+    fun getReadingRoomStatus(
         @RequestHeader fcmToken: String
     ): ResponseEntity<Api<List<ReadingRoomStatusResponse>>>
 
@@ -54,7 +54,7 @@ interface ReadingRoomOpenApiSwagger {
             "**사용중이 아닌 경우 사용자 이름은 null 값이 반환됩니다.** <br>" +
             "X: colume (열) <br>" +
             "Y: row (행)")
-    suspend fun getReadingRoomSeats(
+    fun getReadingRoomSeats(
         @RequestHeader fcmToken: String,
         @PathVariable readingRoom: ReadingRoom
     ): ResponseEntity<Api<List<ReadingRoomSeatResponse>>>
@@ -90,7 +90,7 @@ interface ReadingRoomOpenApiSwagger {
     )
     @Operation(summary = "빈자리 알림 등록", description = "빈자리 알림을 등록합니다. <br>" +
             "빈자리 알림 등록은 **최대 5개**까지 가능합니다")
-    suspend fun createSeatAlert(
+    fun createSeatAlert(
         @RequestHeader fcmToken: String,
         @RequestBody createSeatAlertRequest: CreateSeatAlertRequest
     ): ResponseEntity<Api<SeatAlertResponse>>

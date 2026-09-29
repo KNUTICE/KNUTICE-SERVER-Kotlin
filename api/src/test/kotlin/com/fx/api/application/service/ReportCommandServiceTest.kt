@@ -5,60 +5,54 @@ import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.ReportPersistencePort
 import com.fx.api.domain.Report
 import com.fx.common.application.port.out.WebhookPort
+import com.fx.common.domain.DeviceType
+import com.fx.common.domain.SlackType
+import com.fx.common.domain.fcmtoken.FcmToken
 import com.fx.common.exception.FcmTokenException
 import com.fx.common.exception.errorcode.FcmTokenErrorCode
+import com.fx.persistence.withId
 import io.kotest.assertions.throwables.shouldThrow
-import kotlinx.coroutines.runBlocking
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.clearMocks
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 
 class ReportCommandServiceTest : BehaviorSpec({
 
-    val reportPersistencePort = mockk<ReportPersistencePort>(relaxed = true)
-    val fcmTokenPersistencePort = mockk<FcmTokenPersistencePort>(relaxed = true)
+    val reportPersistencePort = mockk<ReportPersistencePort>()
+    val fcmTokenPersistencePort = mockk<FcmTokenPersistencePort>()
     val webhookPort = mockk<WebhookPort>(relaxed = true)
     val reportCommandService = ReportCommandService(reportPersistencePort, fcmTokenPersistencePort, webhookPort)
 
+    val command = ReportSaveCommand(fcmToken = "fcmToken", content = "문의 내용입니다", deviceName = "iPhone", version = "1.8.0")
+
     Given("문의사항 저장") {
-        val reportSaveCommand = ReportSaveCommand(
-            fcmToken = "fcmToken",
-            content = "content",
-            deviceName = "galaxy s23",
-            version = "ver3.1"
-        )
-        val report = Report.createReport(reportSaveCommand)
 
-        When("문의사항 저장") {
-            coEvery { fcmTokenPersistencePort.existsByFcmToken(reportSaveCommand.fcmToken) } returns true
-            coEvery { reportPersistencePort.saveReport(report) } returns report
-//            coEvery { webhookPort.notifySlack(any()) }
+        When("토큰이 존재하면") {
+            clearMocks(reportPersistencePort, fcmTokenPersistencePort, webhookPort)
+            every { fcmTokenPersistencePort.getByToken("fcmToken") } returns FcmToken("fcmToken", DeviceType.iOS).withId(1L)
+            val saved = slot<Report>()
+            every { reportPersistencePort.save(capture(saved)) } answers { saved.captured }
 
-            Then("정상적으로 저장되고 Slack 알림 호출") {
-                runBlocking {
-                    val result = reportCommandService.saveReport(reportSaveCommand)
-                    result shouldBe true
-                }
-
-                coVerify(exactly = 1) {
-                    reportPersistencePort.saveReport(report)
-//                    webhookPort.notifySlack(any())
-                }
+            Then("토큰 ID 로 저장하고 Slack 으로 알린다") {
+                reportCommandService.saveReport(command) shouldBe true
+                saved.captured.fcmTokenId shouldBe 1L
+                saved.captured.content shouldBe command.content
+                verify(exactly = 1) { webhookPort.notifySlack(match { it.type == SlackType.REPORT }) }
             }
         }
 
-        When("FCM 토큰이 존재하지 않는 경우") {
-            coEvery { fcmTokenPersistencePort.existsByFcmToken(reportSaveCommand.fcmToken) } returns false
+        When("토큰이 존재하지 않으면") {
+            clearMocks(reportPersistencePort, fcmTokenPersistencePort, webhookPort)
+            every { fcmTokenPersistencePort.getByToken("fcmToken") } throws FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
 
-            Then("FcmTokenException 발생") {
-                runBlocking {
-                    val exception = shouldThrow<FcmTokenException> {
-                        reportCommandService.saveReport(reportSaveCommand)
-                    }
-                    exception.baseErrorCode shouldBe FcmTokenErrorCode.TOKEN_NOT_FOUND
-                }
+            Then("FcmTokenException 이 발생하고 저장 · 알림을 하지 않는다") {
+                shouldThrow<FcmTokenException> { reportCommandService.saveReport(command) }
+                verify(exactly = 0) { reportPersistencePort.save(any()) }
+                verify(exactly = 0) { webhookPort.notifySlack(any()) }
             }
         }
     }

@@ -1,12 +1,15 @@
 package com.fx.api.application.port.`in`
 
-import com.fx.api.domain.NoticeQuery
-import com.fx.common.domain.Notice
+import com.fx.api.application.port.`in`.dto.NoticeSearchCommand
+import com.fx.common.domain.notice.Notice
 
 interface NoticeQueryUseCase {
 
-    fun getNotices(noticeQuery: NoticeQuery): List<Notice>
+    fun getNotices(noticeSearchCommand: NoticeSearchCommand): List<Notice>
+
     fun getNotice(nttId: Long): Notice
-    fun getNoticeSummary(nttId: Long): Notice
+
+    /** 공지의 AI 요약. */
+    fun getNoticeSummary(nttId: Long): String
 
 }

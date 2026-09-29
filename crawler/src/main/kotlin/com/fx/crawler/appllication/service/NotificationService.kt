@@ -18,7 +18,7 @@ import com.fx.common.exception.NotificationException
 import com.fx.common.exception.errorcode.FcmTokenErrorCode
 import com.fx.common.exception.errorcode.NoticeErrorCode
 import com.fx.common.exception.errorcode.NotificationErrorCode
-import com.fx.readingroom.domain.SeatAlert
+import com.fx.crawler.legacy.readingroom.SeatAlert
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

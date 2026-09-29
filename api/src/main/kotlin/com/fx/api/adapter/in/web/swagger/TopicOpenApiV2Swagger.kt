@@ -9,12 +9,17 @@ import com.fx.common.exception.errorcode.FcmTokenErrorCode
 import com.fx.common.exception.errorcode.TopicErrorCode
 import io.github.seob7.Api
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.Parameters
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
+import java.util.Locale
 
 @Tag(name = "TOPIC 관리 API")
 interface TopicOpenApiV2Swagger {
@@ -34,9 +39,18 @@ interface TopicOpenApiV2Swagger {
         description = "Topic 을 조회합니다.<br> type 는 NOTICE, MAJOR, MEAL 입니다. <br> [2026.01.21] 해당 API 는 Integer topicIds 를 반환합니다. <br>" +
                 "[2026.07.21] subscribedTopics(topic·topicId·name·college 객체 리스트)로 변경되었습니다. "
     )
+    @Parameters(
+        Parameter(
+            name = "Accept-Language",
+            description = "언어 설정 (ko-KR, en-US, ja-JP). 지원하지 않는 언어는 한국어로 응답합니다.",
+            `in` = ParameterIn.HEADER,
+            schema = Schema(type = "string", allowableValues = ["ko-KR", "en-US", "ja-JP"], defaultValue = "ko-KR")
+        )
+    )
     fun getMyTopics(
         @RequestHeader fcmToken: String,
-        @RequestParam type: TopicType
+        @RequestParam type: TopicType,
+        @Parameter(hidden = true) locale: Locale
     ): ResponseEntity<Api<TopicResponseV2>>
 
     @ApiResponseExplanations(
