@@ -19,6 +19,10 @@ dependencies {
 
     // QueryDSL Q클래스 생성
     ksp("io.github.openfeign.querydsl:querydsl-ksp-codegen:$querydslVersion")
+
+    // Test : 실제 MySQL(Testcontainers)로 JPA 슬라이스 테스트
+    testImplementation(testFixtures(project(":persistence-common")))
+    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 }
 
 kotlin {

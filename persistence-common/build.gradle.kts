@@ -1,5 +1,7 @@
 plugins {
     id("java-library")
+    // 다른 모듈의 영속성 테스트가 MySQL 컨테이너 설정(MySqlContainerConfig)을 함께 쓴다
+    id("java-test-fixtures")
 }
 
 val querydslVersion = rootProject.extra["querydslVersion"] as String
@@ -29,10 +31,13 @@ dependencies {
     }
     api("com.mysema.commons:mysema-commons-lang:$mysemaCommonsLangVersion")
 
-    // Test : 실제 MySQL(Testcontainers)로 JPA 슬라이스 테스트
+    // Test fixtures : 실제 MySQL(Testcontainers) 컨테이너 설정
+    testFixturesImplementation("org.springframework.boot:spring-boot-test")
+    testFixturesApi("org.springframework.boot:spring-boot-testcontainers")
+    testFixturesApi("org.testcontainers:testcontainers-mysql")
+
+    // Test : JPA 슬라이스 테스트
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
-    testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:testcontainers-mysql")
     kspTest("io.github.openfeign.querydsl:querydsl-ksp-codegen:$querydslVersion")
 }
 
