@@ -1,6 +1,6 @@
 package com.fx.readingroom.adapter.out.persistence.document
 
-import com.fx.global.adapter.out.persistence.base.MongoBaseDocument
+import com.fx.common.adapter.out.persistence.base.MongoBaseDocument
 import com.fx.readingroom.domain.ReadingRoom
 import com.fx.readingroom.domain.SeatAlert
 import com.fx.readingroom.domain.SeatAlert.SeatAlertStatus

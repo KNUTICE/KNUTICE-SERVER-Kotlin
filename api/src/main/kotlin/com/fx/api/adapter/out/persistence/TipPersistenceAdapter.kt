@@ -4,8 +4,8 @@ import com.fx.api.adapter.out.persistence.document.TipDocument
 import com.fx.api.adapter.out.persistence.repository.TipMongoRepository
 import com.fx.api.application.port.out.TipPersistencePort
 import com.fx.api.domain.Tip
-import com.fx.global.annotation.PersistenceAdapter
-import com.fx.global.domain.DeviceType
+import com.fx.common.annotation.PersistenceAdapter
+import com.fx.common.domain.DeviceType
 
 @PersistenceAdapter
 class TipPersistenceAdapter(

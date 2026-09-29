@@ -1,7 +1,7 @@
 package com.fx.crawler.appllication.port.out
 
-import com.fx.global.domain.Meal
-import com.fx.global.domain.MealType
+import com.fx.common.domain.Meal
+import com.fx.common.domain.MealType
 
 interface MealParsePort {
 

@@ -13,7 +13,7 @@ import java.io.IOException
 
 @Configuration
 class FcmConfig(
-    @Value("\${firebase.secret.key.path}")
+    @param:Value("\${firebase.secret.key.path}")
     private val fcmKeyPath: String
 ) {
 

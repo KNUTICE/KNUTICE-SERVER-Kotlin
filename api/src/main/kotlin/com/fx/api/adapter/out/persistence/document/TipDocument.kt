@@ -1,8 +1,8 @@
 package com.fx.api.adapter.out.persistence.document
 
 import com.fx.api.domain.Tip
-import com.fx.global.adapter.out.persistence.base.MongoBaseDocument
-import com.fx.global.domain.DeviceType
+import com.fx.common.adapter.out.persistence.base.MongoBaseDocument
+import com.fx.common.domain.DeviceType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 

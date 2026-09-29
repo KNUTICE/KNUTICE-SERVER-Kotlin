@@ -1,9 +1,9 @@
 package com.fx.api.adapter.`in`.web.dto.topic
 
-import com.fx.global.domain.MajorType
-import com.fx.global.domain.MealType
-import com.fx.global.domain.NoticeType
-import com.fx.global.exception.TopicException
+import com.fx.common.domain.MajorType
+import com.fx.common.domain.MealType
+import com.fx.common.domain.NoticeType
+import com.fx.common.exception.TopicException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldBeSortedBy

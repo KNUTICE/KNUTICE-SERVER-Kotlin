@@ -1,6 +1,6 @@
 package com.fx.crawler.adapter.out.persistence.repository;
 
-import com.fx.global.adapter.out.persistence.document.DailyApiLogStatisticsDocument
+import com.fx.common.adapter.out.persistence.document.DailyApiLogStatisticsDocument
 import org.springframework.data.mongodb.repository.MongoRepository
 
 

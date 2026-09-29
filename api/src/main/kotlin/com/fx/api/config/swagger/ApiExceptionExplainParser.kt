@@ -1,7 +1,7 @@
 package com.fx.api.config.swagger
 
-import com.fx.global.annotation.ApiExceptionExplanation
-import com.fx.global.annotation.ApiResponseExplanations
+import com.fx.common.annotation.ApiExceptionExplanation
+import com.fx.common.annotation.ApiResponseExplanations
 import io.github.seob7.Api
 import io.github.seob7.BaseErrorCode
 import io.github.seob7.MetaData

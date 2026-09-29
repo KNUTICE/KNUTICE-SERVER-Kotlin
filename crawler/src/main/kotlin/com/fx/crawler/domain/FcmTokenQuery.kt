@@ -1,9 +1,9 @@
 package com.fx.crawler.domain
 
-import com.fx.global.domain.DeviceType
-import com.fx.global.domain.MajorType
-import com.fx.global.domain.MealType
-import com.fx.global.domain.NoticeType
+import com.fx.common.domain.DeviceType
+import com.fx.common.domain.MajorType
+import com.fx.common.domain.MealType
+import com.fx.common.domain.NoticeType
 import org.springframework.data.domain.Pageable
 import java.time.LocalDateTime
 

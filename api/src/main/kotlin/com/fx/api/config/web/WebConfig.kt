@@ -10,8 +10,8 @@ import java.nio.file.Path
 
 @Configuration
 class WebConfig(
-    @Value("\${file.upload-dir}") private val uploadDir: Path,
-    @Value("\${file.context-path}") private val contextPath: String,
+    @param:Value("\${file.upload-dir}") private val uploadDir: Path,
+    @param:Value("\${file.context-path}") private val contextPath: String,
     private val apiLogInterceptor: ApiLogInterceptor
 ) : WebMvcConfigurer {
 

@@ -1,10 +1,10 @@
 package com.fx.api.adapter.`in`.web.dto.topic
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fx.global.domain.CrawlableType
-import com.fx.global.domain.MajorType
-import com.fx.global.domain.MealType
-import com.fx.global.domain.NoticeType
+import com.fx.common.domain.CrawlableType
+import com.fx.common.domain.MajorType
+import com.fx.common.domain.MealType
+import com.fx.common.domain.NoticeType
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
 

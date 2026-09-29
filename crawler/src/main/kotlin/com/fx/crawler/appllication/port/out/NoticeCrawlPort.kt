@@ -1,7 +1,7 @@
 package com.fx.crawler.appllication.port.out
 
-import com.fx.global.domain.CrawlableType
-import com.fx.global.domain.Notice
+import com.fx.common.domain.CrawlableType
+import com.fx.common.domain.Notice
 
 interface NoticeCrawlPort {
 

@@ -4,7 +4,7 @@ import com.fx.api.adapter.out.persistence.document.ReportDocument
 import com.fx.api.adapter.out.persistence.repository.ReportMongoRepository
 import com.fx.api.application.port.out.ReportPersistencePort
 import com.fx.api.domain.Report
-import com.fx.global.annotation.PersistenceAdapter
+import com.fx.common.annotation.PersistenceAdapter
 
 @PersistenceAdapter
 class ReportPersistenceAdapter(

@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web.dto.notice
 
-import com.fx.global.domain.Notice
+import com.fx.common.domain.Notice
 
 data class NoticeSummaryResponse(
 

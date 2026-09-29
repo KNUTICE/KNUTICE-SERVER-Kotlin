@@ -6,11 +6,11 @@ import com.fx.api.adapter.`in`.web.dto.topic.TypeResponse
 import com.fx.api.adapter.`in`.web.swagger.TopicOpenApiSwagger
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase
-import com.fx.global.domain.CrawlableType
-import com.fx.global.domain.TopicType
-import com.fx.global.annotation.hexagonal.WebInputAdapter
-import com.fx.global.exception.TopicException
-import com.fx.global.exception.errorcode.TopicErrorCode
+import com.fx.common.domain.CrawlableType
+import com.fx.common.domain.TopicType
+import com.fx.common.annotation.hexagonal.WebInputAdapter
+import com.fx.common.exception.TopicException
+import com.fx.common.exception.errorcode.TopicErrorCode
 import io.github.seob7.Api
 import jakarta.validation.Valid
 import org.springframework.context.MessageSource

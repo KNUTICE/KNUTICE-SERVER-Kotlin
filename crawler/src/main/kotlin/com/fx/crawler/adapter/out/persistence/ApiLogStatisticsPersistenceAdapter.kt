@@ -2,9 +2,9 @@ package com.fx.crawler.adapter.out.persistence
 
 import com.fx.crawler.adapter.out.persistence.repository.ApiLogStatisticsMongoRepository
 import com.fx.crawler.appllication.port.out.ApiLogStatisticsPersistencePort
-import com.fx.global.adapter.out.persistence.document.DailyApiLogStatisticsDocument
-import com.fx.global.annotation.PersistenceAdapter
-import com.fx.global.domain.DailyApiLogStatistics
+import com.fx.common.adapter.out.persistence.document.DailyApiLogStatisticsDocument
+import com.fx.common.annotation.PersistenceAdapter
+import com.fx.common.domain.DailyApiLogStatistics
 
 @PersistenceAdapter
 class ApiLogStatisticsPersistenceAdapter(

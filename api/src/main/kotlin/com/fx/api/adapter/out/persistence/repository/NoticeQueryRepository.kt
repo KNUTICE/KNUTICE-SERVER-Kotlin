@@ -1,8 +1,8 @@
 package com.fx.api.adapter.out.persistence.repository
 
 import com.fx.api.domain.NoticeQuery
-import com.fx.global.adapter.out.persistence.document.NoticeDocument
-import com.fx.global.adapter.out.persistence.document.QNoticeDocument
+import com.fx.common.adapter.out.persistence.document.NoticeDocument
+import com.fx.common.adapter.out.persistence.document.QNoticeDocument
 import com.querydsl.core.types.Order
 import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.Predicate

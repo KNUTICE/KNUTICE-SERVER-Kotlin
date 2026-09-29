@@ -4,7 +4,7 @@ import com.fx.api.adapter.`in`.web.dto.image.ImageResponse
 import com.fx.api.adapter.`in`.web.swagger.ImageApiSwagger
 import com.fx.api.application.port.`in`.ImageCommandUseCase
 import com.fx.api.domain.ImageType
-import com.fx.global.annotation.hexagonal.WebInputAdapter
+import com.fx.common.annotation.hexagonal.WebInputAdapter
 import io.github.seob7.Api
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity

@@ -1,8 +1,8 @@
 package com.fx.api.config.ktor
 
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fx.global.exception.ConnectionException
-import com.fx.global.exception.errorcode.ConnectionErrorCode
+import com.fx.common.exception.ConnectionException
+import com.fx.common.exception.errorcode.ConnectionErrorCode
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*

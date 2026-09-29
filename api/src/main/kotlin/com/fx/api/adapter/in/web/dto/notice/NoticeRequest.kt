@@ -1,9 +1,9 @@
 package com.fx.api.adapter.`in`.web.dto.notice
 
 import com.fx.api.application.port.`in`.dto.NoticeCommand
-import com.fx.global.domain.CrawlableType
-import com.fx.global.domain.TopicType
-import com.fx.global.utils.TopicUtils
+import com.fx.common.domain.CrawlableType
+import com.fx.common.domain.TopicType
+import com.fx.common.utils.TopicUtils
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import org.hibernate.validator.constraints.URL

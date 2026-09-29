@@ -1,29 +1,32 @@
-dependencies {
-    implementation(project(":global"))
+val commonApiVersion = rootProject.extra["commonApiVersion"] as String
+val jsoupVersion = rootProject.extra["jsoupVersion"] as String
+val slackApiVersion = rootProject.extra["slackApiVersion"] as String
+val ktorVersion = rootProject.extra["ktorVersion"] as String
 
-    implementation("io.github.seob7:common-api:0.0.2")
+dependencies {
+    implementation(project(":common"))
+    implementation(project(":persistence-common"))
+
+    implementation("io.github.seob7:common-api:$commonApiVersion")
 
     // Ktor Client (논블로킹 HTTP)
-    implementation("io.ktor:ktor-client-cio:2.3.6")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
 
     // Ktor JSON Serialization
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.13")
-    implementation("io.ktor:ktor-serialization-jackson:2.3.13")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 
-    // Mongo
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-
-    // Web
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    // Web (Boot 4 : spring-boot-starter-web 은 deprecated)
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
 
     // Jsoup (Crawler)
-    implementation("org.jsoup:jsoup:1.21.2")
+    implementation("org.jsoup:jsoup:$jsoupVersion")
 
     // Validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // Slack
-    implementation("com.slack.api:slack-api-client:1.45.4")
+    implementation("com.slack.api:slack-api-client:$slackApiVersion")
 }
 
 kotlin {

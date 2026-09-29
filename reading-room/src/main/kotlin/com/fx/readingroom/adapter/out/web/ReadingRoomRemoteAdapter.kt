@@ -1,6 +1,6 @@
 package com.fx.readingroom.adapter.out.web
 
-import com.fx.global.annotation.hexagonal.WebOutputAdapter
+import com.fx.common.annotation.hexagonal.WebOutputAdapter
 import com.fx.readingroom.adapter.out.web.dto.ReadingRoomSeatRemoteResponse
 import com.fx.readingroom.adapter.out.web.dto.ReadingRoomStatusRemoteResponse
 import com.fx.readingroom.application.port.out.ReadingRoomRemotePort
@@ -29,9 +29,9 @@ import java.time.ZoneId
 @WebOutputAdapter
 class ReadingRoomRemoteAdapter(
     private val httpClient: HttpClient, // 위에서 설정한 HttpCookies가 설치된 빈
-    @Value("\${reading-room.root-url}") private val rootUrl: String,
-    @Value("\${reading-room.endpoints.seats}") private val seatsEndpoint: String,
-    @Value("\${reading-room.endpoints.status}") private val statusEndpoint: String,
+    @param:Value("\${reading-room.root-url}") private val rootUrl: String,
+    @param:Value("\${reading-room.endpoints.seats}") private val seatsEndpoint: String,
+    @param:Value("\${reading-room.endpoints.status}") private val statusEndpoint: String,
     ) : ReadingRoomRemotePort {
 
     private val log = LoggerFactory.getLogger(ReadingRoomRemoteAdapter::class.java)

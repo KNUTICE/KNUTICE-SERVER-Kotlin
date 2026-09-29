@@ -1,6 +1,6 @@
 package com.fx.api.config.converter
 
-import com.fx.global.domain.CrawlableType
+import com.fx.common.domain.CrawlableType
 import org.springframework.core.convert.converter.Converter
 import org.springframework.stereotype.Component
 

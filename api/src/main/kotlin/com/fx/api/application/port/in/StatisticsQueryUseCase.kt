@@ -1,8 +1,8 @@
 package com.fx.api.application.port.`in`
 
 import com.fx.api.domain.DailyTopicCount
-import com.fx.global.domain.DailyApiLogStatistics
-import com.fx.global.domain.DailyStatistics
+import com.fx.common.domain.DailyApiLogStatistics
+import com.fx.common.domain.DailyStatistics
 import java.time.LocalDate
 
 interface StatisticsQueryUseCase {

@@ -1,9 +1,9 @@
 package com.fx.api.adapter.`in`.web.dto.topic
 
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
-import com.fx.global.domain.CrawlableType
-import com.fx.global.domain.TopicType
-import com.fx.global.utils.TopicUtils
+import com.fx.common.domain.CrawlableType
+import com.fx.common.domain.TopicType
+import com.fx.common.utils.TopicUtils
 
 data class TopicUpdateRequest (
 

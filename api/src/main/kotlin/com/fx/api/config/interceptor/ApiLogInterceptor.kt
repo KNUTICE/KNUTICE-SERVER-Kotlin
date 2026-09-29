@@ -2,7 +2,7 @@ package com.fx.api.config.interceptor
 
 import com.fx.api.application.port.`in`.ApiLogCommandUseCase
 import com.fx.api.application.port.`in`.dto.ApiLogSaveCommand
-import com.fx.global.domain.DeviceType
+import com.fx.common.domain.DeviceType
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Component

@@ -2,8 +2,8 @@ package com.fx.api.adapter.`in`.web
 
 import com.fx.api.adapter.`in`.web.swagger.NotificationApiSwagger
 import com.fx.api.application.port.`in`.NotificationUseCase
-import com.fx.global.annotation.hexagonal.WebInputAdapter
-import com.fx.global.domain.MealType
+import com.fx.common.annotation.hexagonal.WebInputAdapter
+import com.fx.common.domain.MealType
 import io.github.seob7.Api
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity

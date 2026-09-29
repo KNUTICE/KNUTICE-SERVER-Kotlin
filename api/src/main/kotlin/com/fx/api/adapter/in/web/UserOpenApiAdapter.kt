@@ -6,7 +6,7 @@ import com.fx.api.adapter.`in`.web.dto.user.UserLoginRequest
 import com.fx.api.adapter.`in`.web.dto.user.UserSignUpRequest
 import com.fx.api.adapter.`in`.web.swagger.UserOpenApiSwagger
 import com.fx.api.application.port.`in`.UserCommandUseCase
-import com.fx.global.annotation.hexagonal.WebInputAdapter
+import com.fx.common.annotation.hexagonal.WebInputAdapter
 import io.github.seob7.Api
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus

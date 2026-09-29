@@ -1,7 +1,7 @@
 package com.fx.api.application.port.out
 
 import com.fx.api.domain.NoticeQuery
-import com.fx.global.domain.Notice
+import com.fx.common.domain.Notice
 import java.time.LocalDateTime
 
 interface NoticePersistencePort {

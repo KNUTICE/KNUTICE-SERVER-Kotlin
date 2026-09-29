@@ -1,7 +1,7 @@
 package com.fx.api.domain
 
 import com.fx.api.application.port.`in`.dto.TipSaveCommand
-import com.fx.global.domain.DeviceType
+import com.fx.common.domain.DeviceType
 import java.time.LocalDateTime
 
 data class Tip(

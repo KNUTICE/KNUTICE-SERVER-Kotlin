@@ -1,7 +1,7 @@
 package com.fx.api.adapter.`in`.web.dto.tip
 
 import com.fx.api.domain.Tip
-import com.fx.global.domain.DeviceType
+import com.fx.common.domain.DeviceType
 import java.time.LocalDateTime
 
 data class TipResponse(

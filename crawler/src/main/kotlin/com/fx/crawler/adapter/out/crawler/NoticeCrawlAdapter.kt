@@ -2,8 +2,8 @@ package com.fx.crawler.adapter.out.crawler
 
 import com.fx.crawler.appllication.port.out.NoticeCrawlPort
 import com.fx.crawler.common.annotation.CrawlAdapter
-import com.fx.global.domain.CrawlableType
-import com.fx.global.domain.Notice
+import com.fx.common.domain.CrawlableType
+import com.fx.common.domain.Notice
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO

@@ -6,9 +6,9 @@ import com.fx.api.application.port.`in`.dto.FcmTokenUpdateCommand
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.dto.TopicUpdateQuery
-import com.fx.global.exception.FcmTokenException
-import com.fx.global.exception.errorcode.FcmTokenErrorCode
-import com.fx.global.domain.FcmToken
+import com.fx.common.exception.FcmTokenException
+import com.fx.common.exception.errorcode.FcmTokenErrorCode
+import com.fx.common.domain.FcmToken
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

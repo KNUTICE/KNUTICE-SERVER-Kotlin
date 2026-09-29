@@ -1,0 +1,27 @@
+server:
+  port: ${CRAWLER_PORT}
+
+spring:
+  config:
+    import:
+      - "classpath:common.yaml"        # common : Slack 웹훅, 로깅, Actuator
+      - "classpath:mongodb.yaml"       # persistence-common : MongoDB 연결
+      - "classpath:reading-room.yaml"  # reading-room : 열람실 원격 API
+
+  application:
+    name: KNUTICE-CRAWLER
+  ai:
+    openai:
+      api-key: ${GEMINI_API_KEY}  # https://aistudio.google.com/apikey
+      chat:
+        # Spring AI 2.0 은 OpenAI 공식 Java SDK 기반이라 completions-path 설정이 없다.
+        # SDK 가 base-url 뒤에 /chat/completions 를 붙인다 → .../v1beta/openai/chat/completions
+        base-url: https://generativelanguage.googleapis.com/v1beta/openai
+        options:
+          model: gemini-2.5-flash-lite
+          temperature: 0
+
+firebase:
+  secret:
+    key:
+      path: ${FIREBASE_KEY_PATH}

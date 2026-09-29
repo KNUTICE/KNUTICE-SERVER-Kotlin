@@ -1,7 +1,7 @@
 package com.fx.crawler.adapter.out.message.factory
 
-import com.fx.global.domain.Meal
-import com.fx.global.domain.Notice
+import com.fx.common.domain.Meal
+import com.fx.common.domain.Notice
 import com.fx.readingroom.domain.SeatAlert
 import com.google.firebase.messaging.*
 

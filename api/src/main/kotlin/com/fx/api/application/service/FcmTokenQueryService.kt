@@ -2,10 +2,10 @@ package com.fx.api.application.service
 
 import com.fx.api.application.port.`in`.FcmTokenQueryUseCase
 import com.fx.api.application.port.out.FcmTokenPersistencePort
-import com.fx.global.domain.TopicType
-import com.fx.global.exception.FcmTokenException
-import com.fx.global.exception.errorcode.FcmTokenErrorCode
-import com.fx.global.domain.FcmToken
+import com.fx.common.domain.TopicType
+import com.fx.common.exception.FcmTokenException
+import com.fx.common.exception.errorcode.FcmTokenErrorCode
+import com.fx.common.domain.FcmToken
 import org.springframework.stereotype.Service
 
 @Service

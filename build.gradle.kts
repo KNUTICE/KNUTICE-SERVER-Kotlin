@@ -1,10 +1,17 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
-	kotlin("jvm") version "1.9.25" apply false
-	kotlin("plugin.spring") version "1.9.25" apply false
-	kotlin("plugin.jpa") version "1.9.25" apply false
-	id("org.springframework.boot") version "3.5.5" apply false
+	// Kotlin
+	kotlin("jvm") version "2.3.21" apply false
+	kotlin("plugin.spring") version "2.3.21" apply false
+	kotlin("plugin.jpa") version "2.3.21" apply false
+
+	// Spring Boot
+	id("org.springframework.boot") version "4.1.1" apply false
 	id("io.spring.dependency-management") version "1.1.7" apply false
-	id("com.google.devtools.ksp") version "1.9.25-1.0.20" apply false
+
+	// QueryDSL Q클래스 생성
+	id("com.google.devtools.ksp") version "2.3.12" apply false
 }
 
 allprojects {
@@ -14,6 +21,21 @@ allprojects {
 		mavenCentral()
 	}
 }
+
+// 버전 전역 관리 (Spring Boot BOM 이 관리하지 않는 라이브러리)
+extra["commonApiVersion"] = "0.0.2"
+extra["querydslVersion"] = "7.7"
+extra["springAiVersion"] = "2.0.1"
+extra["springdocVersion"] = "3.1.1"
+extra["firebaseAdminVersion"] = "9.11.0"
+extra["jsoupVersion"] = "1.23.2"
+extra["commonsTextVersion"] = "1.15.0"
+extra["slackApiVersion"] = "1.51.0"
+extra["jjwtVersion"] = "0.13.0"
+extra["kotestVersion"] = "6.2.5"
+extra["mockkVersion"] = "1.14.11"
+extra["mysemaCommonsLangVersion"] = "0.2.4"
+extra["ktorVersion"] = "2.3.13"
 
 subprojects {
 	apply(plugin = "org.jetbrains.kotlin.jvm")
@@ -25,18 +47,19 @@ subprojects {
 
 	configure<JavaPluginExtension> {
 		toolchain {
-			languageVersion.set(JavaLanguageVersion.of(21))
+			languageVersion.set(JavaLanguageVersion.of(25))
 		}
 	}
 
 	dependencies {
-		"implementation"("com.fasterxml.jackson.module:jackson-module-kotlin")
+		// Boot 4 기본 JSON 라이브러리는 Jackson 3 (tools.jackson)
+		"implementation"("tools.jackson.module:jackson-module-kotlin")
 		"implementation"("org.jetbrains.kotlin:kotlin-reflect")
 		"testImplementation"("org.springframework.boot:spring-boot-starter-test")
 	}
 
 	// 기본적으로 bootJar 는 끄고 각 모듈에서 필요한 경우에만 켜도록 설정
-	tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+	tasks.withType<BootJar> {
 		enabled = false
 	}
 

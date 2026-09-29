@@ -1,9 +1,9 @@
 package com.fx.crawler.adapter.out.persistence
 
 import com.fx.crawler.appllication.port.out.ApiLogPersistencePort
-import com.fx.global.adapter.out.persistence.document.DailyApiLogStatisticsDocument
-import com.fx.global.annotation.PersistenceAdapter
-import com.fx.global.domain.DailyApiLogStatistics
+import com.fx.common.adapter.out.persistence.document.DailyApiLogStatisticsDocument
+import com.fx.common.annotation.PersistenceAdapter
+import com.fx.common.domain.DailyApiLogStatistics
 import org.bson.Document
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.aggregation.Aggregation

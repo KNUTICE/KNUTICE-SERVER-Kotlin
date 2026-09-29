@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web.dto.meal
 
-import com.fx.global.domain.Meal
+import com.fx.common.domain.Meal
 import java.time.LocalDate
 
 /**

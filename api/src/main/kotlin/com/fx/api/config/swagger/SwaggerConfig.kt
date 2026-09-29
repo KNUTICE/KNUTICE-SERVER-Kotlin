@@ -14,9 +14,9 @@ import org.springframework.web.method.HandlerMethod
 
 @Configuration
 class SwaggerConfig(
-    @Value("\${url.scheme}") private val urlScheme: String,
-    @Value("\${url.host}") private val urlHost: String,
-    @Value("\${server.port}") private val port: String
+    @param:Value("\${url.scheme}") private val urlScheme: String,
+    @param:Value("\${url.host}") private val urlHost: String,
+    @param:Value("\${server.port}") private val port: String
 ) {
 
     @Bean

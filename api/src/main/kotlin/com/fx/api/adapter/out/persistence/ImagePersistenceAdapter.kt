@@ -5,7 +5,7 @@ import com.fx.api.adapter.out.persistence.repository.ImageMongoRepository
 import com.fx.api.application.port.out.ImagePersistencePort
 import com.fx.api.domain.Image
 import com.fx.api.domain.ImageType
-import com.fx.global.annotation.PersistenceAdapter
+import com.fx.common.annotation.PersistenceAdapter
 
 @PersistenceAdapter
 class ImagePersistenceAdapter(

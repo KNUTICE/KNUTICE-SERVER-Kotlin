@@ -3,9 +3,9 @@ package com.fx.crawler.adapter.`in`.scheduler
 import com.fx.crawler.appllication.port.`in`.NoticeCrawlUseCase
 import com.fx.crawler.appllication.port.`in`.NotificationUseCase
 import com.fx.crawler.common.annotation.ScheduleAdapter
-import com.fx.global.domain.CrawlableType
-import com.fx.global.domain.MajorType
-import com.fx.global.domain.NoticeType
+import com.fx.common.domain.CrawlableType
+import com.fx.common.domain.MajorType
+import com.fx.common.domain.NoticeType
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled

@@ -1,7 +1,7 @@
 package com.fx.crawler.adapter.out.ai
 
 import com.fx.crawler.appllication.port.out.NoticeSummaryPort
-import com.fx.global.domain.Notice
+import com.fx.common.domain.Notice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

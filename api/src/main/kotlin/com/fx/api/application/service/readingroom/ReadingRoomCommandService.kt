@@ -7,9 +7,9 @@ import com.fx.readingroom.application.port.out.ReadingRoomRemotePort
 import com.fx.readingroom.application.port.out.SeatAlertPersistencePort
 import com.fx.readingroom.domain.SeatAlert
 import com.fx.readingroom.domain.SeatAlert.SeatAlertStatus
-import com.fx.global.exception.FcmTokenException
+import com.fx.common.exception.FcmTokenException
 import com.fx.readingroom.exception.ReadingRoomException
-import com.fx.global.exception.errorcode.FcmTokenErrorCode
+import com.fx.common.exception.errorcode.FcmTokenErrorCode
 import com.fx.readingroom.exception.errorcode.ReadingRoomErrorCode
 import com.mongodb.DuplicateKeyException
 import org.slf4j.LoggerFactory

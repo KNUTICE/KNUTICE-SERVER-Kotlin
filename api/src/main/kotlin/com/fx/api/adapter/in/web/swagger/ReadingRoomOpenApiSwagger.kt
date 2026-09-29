@@ -4,10 +4,10 @@ import com.fx.api.adapter.`in`.web.dto.readingrooms.CreateSeatAlertRequest
 import com.fx.api.adapter.`in`.web.dto.readingrooms.ReadingRoomSeatResponse
 import com.fx.api.adapter.`in`.web.dto.readingrooms.ReadingRoomStatusResponse
 import com.fx.api.adapter.`in`.web.dto.readingrooms.SeatAlertResponse
-import com.fx.global.annotation.ApiExceptionExplanation
-import com.fx.global.annotation.ApiResponseExplanations
+import com.fx.common.annotation.ApiExceptionExplanation
+import com.fx.common.annotation.ApiResponseExplanations
 import com.fx.readingroom.domain.ReadingRoom
-import com.fx.global.exception.errorcode.FcmTokenErrorCode
+import com.fx.common.exception.errorcode.FcmTokenErrorCode
 import com.fx.readingroom.exception.errorcode.ReadingRoomErrorCode
 import io.github.seob7.Api
 import io.swagger.v3.oas.annotations.Operation

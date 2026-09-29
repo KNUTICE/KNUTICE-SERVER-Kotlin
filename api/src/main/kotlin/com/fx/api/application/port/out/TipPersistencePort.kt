@@ -1,7 +1,7 @@
 package com.fx.api.application.port.out
 
 import com.fx.api.domain.Tip
-import com.fx.global.domain.DeviceType
+import com.fx.common.domain.DeviceType
 
 interface TipPersistencePort {
 

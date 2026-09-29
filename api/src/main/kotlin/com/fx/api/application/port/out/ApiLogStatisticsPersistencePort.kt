@@ -1,6 +1,6 @@
 package com.fx.api.application.port.out
 
-import com.fx.global.domain.DailyApiLogStatistics
+import com.fx.common.domain.DailyApiLogStatistics
 import org.springframework.data.domain.Pageable
 import java.time.LocalDate
 

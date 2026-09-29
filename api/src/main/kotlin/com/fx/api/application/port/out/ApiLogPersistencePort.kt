@@ -1,7 +1,7 @@
 package com.fx.api.application.port.out
 
 import com.fx.api.domain.DailyTopicCount
-import com.fx.global.domain.ApiLog
+import com.fx.common.domain.ApiLog
 import java.time.LocalDateTime
 
 interface ApiLogPersistencePort {

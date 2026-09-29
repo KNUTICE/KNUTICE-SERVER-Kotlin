@@ -3,9 +3,9 @@ package com.fx.api.application.port.`in`
 import com.fx.api.application.port.`in`.dto.FcmTokenSaveCommand
 import com.fx.api.application.port.`in`.dto.FcmTokenUpdateCommand
 import com.fx.api.application.port.`in`.dto.TopicUpdateCommand
-import com.fx.global.domain.MajorType
-import com.fx.global.domain.MealType
-import com.fx.global.domain.NoticeType
+import com.fx.common.domain.MajorType
+import com.fx.common.domain.MealType
+import com.fx.common.domain.NoticeType
 
 interface FcmTokenCommandUseCase {
 

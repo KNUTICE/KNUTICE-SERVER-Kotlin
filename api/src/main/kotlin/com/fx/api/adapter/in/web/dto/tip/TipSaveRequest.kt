@@ -1,7 +1,7 @@
 package com.fx.api.adapter.`in`.web.dto.tip
 
 import com.fx.api.application.port.`in`.dto.TipSaveCommand
-import com.fx.global.domain.DeviceType
+import com.fx.common.domain.DeviceType
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 

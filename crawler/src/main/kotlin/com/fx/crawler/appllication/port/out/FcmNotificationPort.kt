@@ -1,8 +1,8 @@
 package com.fx.crawler.appllication.port.out
 
-import com.fx.global.domain.FcmToken
-import com.fx.global.domain.Meal
-import com.fx.global.domain.Notice
+import com.fx.common.domain.FcmToken
+import com.fx.common.domain.Meal
+import com.fx.common.domain.Notice
 import com.fx.readingroom.domain.SeatAlert
 
 interface FcmNotificationPort {

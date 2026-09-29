@@ -1,8 +1,8 @@
 package com.fx.api.application.port.out
 
 import com.fx.api.application.port.out.dto.TopicUpdateQuery
-import com.fx.global.domain.DeviceType
-import com.fx.global.domain.FcmToken
+import com.fx.common.domain.DeviceType
+import com.fx.common.domain.FcmToken
 
 interface FcmTokenPersistencePort {
 

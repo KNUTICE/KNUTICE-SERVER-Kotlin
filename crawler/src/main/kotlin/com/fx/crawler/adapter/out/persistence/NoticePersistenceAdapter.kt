@@ -1,10 +1,10 @@
 package com.fx.crawler.adapter.out.persistence
 
-import com.fx.global.adapter.out.persistence.document.NoticeDocument
+import com.fx.common.adapter.out.persistence.document.NoticeDocument
 import com.fx.crawler.appllication.port.out.NoticePersistencePort
-import com.fx.global.adapter.out.persistence.repository.NoticeMongoRepository
-import com.fx.global.annotation.PersistenceAdapter
-import com.fx.global.domain.Notice
+import com.fx.common.adapter.out.persistence.repository.NoticeMongoRepository
+import com.fx.common.annotation.PersistenceAdapter
+import com.fx.common.domain.Notice
 import java.time.LocalDateTime
 
 @PersistenceAdapter

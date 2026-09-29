@@ -3,9 +3,9 @@ package com.fx.api.application.service
 import com.fx.api.application.port.`in`.NoticeCommandUseCase
 import com.fx.api.application.port.`in`.dto.NoticeCommand
 import com.fx.api.application.port.out.NoticePersistencePort
-import com.fx.global.exception.NoticeException
-import com.fx.global.exception.errorcode.NoticeErrorCode
-import com.fx.global.domain.Notice
+import com.fx.common.exception.NoticeException
+import com.fx.common.exception.errorcode.NoticeErrorCode
+import com.fx.common.domain.Notice
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime

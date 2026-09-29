@@ -2,10 +2,10 @@ package com.fx.api.application.service
 
 import com.fx.api.application.port.`in`.MealQueryUseCase
 import com.fx.api.application.port.out.MealRemotePort
-import com.fx.global.domain.Meal
-import com.fx.global.domain.MealType
-import com.fx.global.exception.MealException
-import com.fx.global.exception.errorcode.MealErrorCode
+import com.fx.common.domain.Meal
+import com.fx.common.domain.MealType
+import com.fx.common.exception.MealException
+import com.fx.common.exception.errorcode.MealErrorCode
 import org.springframework.stereotype.Service
 
 @Service

@@ -1,6 +1,6 @@
 package com.fx.api.application.port.`in`.dto
 
-import com.fx.global.domain.CrawlableType
+import com.fx.common.domain.CrawlableType
 import java.time.LocalDate
 
 data class NoticeCommand(

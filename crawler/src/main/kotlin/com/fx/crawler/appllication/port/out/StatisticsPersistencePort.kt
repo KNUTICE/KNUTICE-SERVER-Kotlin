@@ -1,6 +1,6 @@
 package com.fx.crawler.appllication.port.out
 
-import com.fx.global.domain.DailyStatistics
+import com.fx.common.domain.DailyStatistics
 
 interface StatisticsPersistencePort {
 

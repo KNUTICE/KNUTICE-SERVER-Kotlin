@@ -3,9 +3,9 @@ package com.fx.api.adapter.out.persistence
 import com.fx.api.adapter.out.persistence.repository.ApiLogMongoRepository
 import com.fx.api.application.port.out.ApiLogPersistencePort
 import com.fx.api.domain.DailyTopicCount
-import com.fx.global.adapter.out.persistence.document.ApiLogDocument
-import com.fx.global.domain.ApiLog
-import com.fx.global.annotation.PersistenceAdapter
+import com.fx.common.adapter.out.persistence.document.ApiLogDocument
+import com.fx.common.domain.ApiLog
+import com.fx.common.annotation.PersistenceAdapter
 import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.MongoExpression
 import org.springframework.data.mongodb.core.MongoTemplate

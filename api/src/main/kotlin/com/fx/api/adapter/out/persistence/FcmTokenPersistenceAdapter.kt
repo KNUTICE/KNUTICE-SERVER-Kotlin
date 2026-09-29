@@ -2,12 +2,12 @@ package com.fx.api.adapter.out.persistence
 
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.dto.TopicUpdateQuery
-import com.fx.global.adapter.out.persistence.document.FcmTokenDocument
-import com.fx.global.adapter.out.persistence.repository.FcmTokenMongoRepository
-import com.fx.global.annotation.PersistenceAdapter
-import com.fx.global.domain.DeviceType
-import com.fx.global.domain.FcmToken
-import com.fx.global.domain.TopicType
+import com.fx.common.adapter.out.persistence.document.FcmTokenDocument
+import com.fx.common.adapter.out.persistence.repository.FcmTokenMongoRepository
+import com.fx.common.annotation.PersistenceAdapter
+import com.fx.common.domain.DeviceType
+import com.fx.common.domain.FcmToken
+import com.fx.common.domain.TopicType
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query

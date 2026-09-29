@@ -8,8 +8,8 @@ import com.fx.readingroom.domain.ReadingRoomSeat
 import com.fx.readingroom.domain.ReadingRoomStatus
 import com.fx.readingroom.domain.ReadingRoom
 import com.fx.readingroom.domain.SeatAlert
-import com.fx.global.exception.FcmTokenException
-import com.fx.global.exception.errorcode.FcmTokenErrorCode
+import com.fx.common.exception.FcmTokenException
+import com.fx.common.exception.errorcode.FcmTokenErrorCode
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 

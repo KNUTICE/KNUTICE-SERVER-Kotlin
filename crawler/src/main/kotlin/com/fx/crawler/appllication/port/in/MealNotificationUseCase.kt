@@ -1,6 +1,6 @@
 package com.fx.crawler.appllication.port.`in`
 
-import com.fx.global.domain.Meal
+import com.fx.common.domain.Meal
 
 interface MealNotificationUseCase {
 

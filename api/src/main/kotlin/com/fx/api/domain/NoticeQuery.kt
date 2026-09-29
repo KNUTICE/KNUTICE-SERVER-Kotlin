@@ -1,6 +1,6 @@
 package com.fx.api.domain
 
-import com.fx.global.domain.CrawlableType
+import com.fx.common.domain.CrawlableType
 import org.springframework.data.domain.Pageable
 
 data class NoticeQuery(

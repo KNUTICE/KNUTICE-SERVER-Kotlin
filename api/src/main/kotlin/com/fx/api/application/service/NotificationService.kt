@@ -4,11 +4,11 @@ import com.fx.api.application.port.`in`.NotificationUseCase
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.NoticePersistencePort
 import com.fx.api.application.port.out.NotificationWebPort
-import com.fx.global.domain.MealType
-import com.fx.global.exception.FcmTokenException
-import com.fx.global.exception.NoticeException
-import com.fx.global.exception.errorcode.FcmTokenErrorCode
-import com.fx.global.exception.errorcode.NoticeErrorCode
+import com.fx.common.domain.MealType
+import com.fx.common.exception.FcmTokenException
+import com.fx.common.exception.NoticeException
+import com.fx.common.exception.errorcode.FcmTokenErrorCode
+import com.fx.common.exception.errorcode.NoticeErrorCode
 import org.springframework.stereotype.Service
 
 @Service

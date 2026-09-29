@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableScheduling
 @EnableMongoAuditing
 @EnableMongoRepositories(basePackages = ["com.fx"])
-@ComponentScan(basePackages = ["com.fx.crawler", "com.fx.crawler.adapter", "com.fx.global", "com.fx.readingroom"])
+@ComponentScan(basePackages = ["com.fx.crawler", "com.fx.crawler.adapter", "com.fx.common", "com.fx.readingroom"])
 @SpringBootApplication
 class CrawlerApplication
 

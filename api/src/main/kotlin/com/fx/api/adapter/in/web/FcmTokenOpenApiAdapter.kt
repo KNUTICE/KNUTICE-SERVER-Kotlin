@@ -4,7 +4,7 @@ import com.fx.api.adapter.`in`.web.dto.fcm.FcmTokenSaveRequest
 import com.fx.api.adapter.`in`.web.dto.fcm.FcmTokenUpdateRequest
 import com.fx.api.adapter.`in`.web.swagger.FcmTokenOpenApiSwagger
 import com.fx.api.application.port.`in`.FcmTokenCommandUseCase
-import com.fx.global.annotation.hexagonal.WebInputAdapter
+import com.fx.common.annotation.hexagonal.WebInputAdapter
 import io.github.seob7.Api
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory

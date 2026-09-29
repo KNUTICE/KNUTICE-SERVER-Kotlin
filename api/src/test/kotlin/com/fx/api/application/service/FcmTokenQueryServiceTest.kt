@@ -1,9 +1,9 @@
 package com.fx.api.application.service
 
 import com.fx.api.application.port.out.FcmTokenPersistencePort
-import com.fx.global.domain.*
-import com.fx.global.exception.FcmTokenException
-import com.fx.global.exception.errorcode.FcmTokenErrorCode
+import com.fx.common.domain.*
+import com.fx.common.exception.FcmTokenException
+import com.fx.common.exception.errorcode.FcmTokenErrorCode
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe

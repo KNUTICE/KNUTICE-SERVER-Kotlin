@@ -4,11 +4,11 @@ import com.fx.crawler.appllication.port.`in`.NoticeCrawlUseCase
 import com.fx.crawler.appllication.port.out.NoticeCrawlPort
 import com.fx.crawler.appllication.port.out.NoticePersistencePort
 import com.fx.crawler.appllication.port.out.NoticeSummaryPort
-import com.fx.global.application.port.out.WebhookPort
-import com.fx.global.domain.CrawlableType
-import com.fx.global.domain.Notice
-import com.fx.global.domain.SlackMessage
-import com.fx.global.domain.SlackType
+import com.fx.common.application.port.out.WebhookPort
+import com.fx.common.domain.CrawlableType
+import com.fx.common.domain.Notice
+import com.fx.common.domain.SlackMessage
+import com.fx.common.domain.SlackType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

@@ -6,7 +6,7 @@ import com.fx.api.domain.TokenInfo
 import com.fx.api.domain.UserRole
 import com.fx.api.exception.JwtException
 import com.fx.api.exception.errorcode.JwtErrorCode
-import com.fx.global.annotation.SecurityAdapter
+import com.fx.common.annotation.SecurityAdapter
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
@@ -20,9 +20,9 @@ import kotlin.toString
 
 @SecurityAdapter
 class JwtProvider(
-    @Value("\${jwt.secret.key}") private val secretKey: String,
-    @Value("\${jwt.access-token.plus-hour}") private val accessTokenPlusHour: Long,
-    @Value("\${jwt.refresh-token.plus-hour}") private val refreshTokenPlusHour: Long,
+    @param:Value("\${jwt.secret.key}") private val secretKey: String,
+    @param:Value("\${jwt.access-token.plus-hour}") private val accessTokenPlusHour: Long,
+    @param:Value("\${jwt.refresh-token.plus-hour}") private val refreshTokenPlusHour: Long,
 ) : JwtProviderPort {
 
     private val key = Keys.hmacShaKeyFor(secretKey.toByteArray())

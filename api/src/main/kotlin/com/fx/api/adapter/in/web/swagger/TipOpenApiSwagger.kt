@@ -2,9 +2,9 @@ package com.fx.api.adapter.`in`.web.swagger
 
 import com.fx.api.adapter.`in`.web.dto.tip.TipResponse
 import com.fx.api.exception.errorcode.TipErrorCode
-import com.fx.global.annotation.ApiExceptionExplanation
-import com.fx.global.annotation.ApiResponseExplanations
-import com.fx.global.domain.DeviceType
+import com.fx.common.annotation.ApiExceptionExplanation
+import com.fx.common.annotation.ApiResponseExplanations
+import com.fx.common.domain.DeviceType
 import io.github.seob7.Api
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

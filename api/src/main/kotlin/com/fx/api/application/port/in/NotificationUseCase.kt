@@ -1,6 +1,6 @@
 package com.fx.api.application.port.`in`
 
-import com.fx.global.domain.MealType
+import com.fx.common.domain.MealType
 
 /**
  * 공지 알림 전송을 위한 Input Port 입니다.

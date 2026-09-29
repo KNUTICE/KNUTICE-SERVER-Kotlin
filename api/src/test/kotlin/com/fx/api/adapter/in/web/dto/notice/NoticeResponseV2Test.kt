@@ -1,7 +1,7 @@
 package com.fx.api.adapter.`in`.web.dto.notice
 
-import com.fx.global.domain.Notice
-import com.fx.global.domain.NoticeType
+import com.fx.common.domain.Notice
+import com.fx.common.domain.NoticeType
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import java.time.LocalDate

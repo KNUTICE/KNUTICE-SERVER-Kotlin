@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web.dto.statistics
 
-import com.fx.global.domain.DailyStatistics
+import com.fx.common.domain.DailyStatistics
 import java.time.LocalDate
 
 data class StatisticsResponse(

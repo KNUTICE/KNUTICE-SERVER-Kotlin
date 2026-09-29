@@ -7,9 +7,9 @@ import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.NoticePersistencePort
 import com.fx.api.application.port.out.StatisticsPersistencePort
 import com.fx.api.domain.DailyTopicCount
-import com.fx.global.domain.DailyApiLogStatistics
-import com.fx.global.domain.DailyStatistics
-import com.fx.global.domain.DeviceType
+import com.fx.common.domain.DailyApiLogStatistics
+import com.fx.common.domain.DailyStatistics
+import com.fx.common.domain.DeviceType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext

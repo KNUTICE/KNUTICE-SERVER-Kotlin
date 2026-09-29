@@ -2,8 +2,8 @@ package com.fx.crawler.appllication.service
 
 import com.fx.crawler.appllication.port.`in`.MealParseUseCase
 import com.fx.crawler.appllication.port.out.MealParsePort
-import com.fx.global.domain.Meal
-import com.fx.global.domain.MealType
+import com.fx.common.domain.Meal
+import com.fx.common.domain.MealType
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope

@@ -18,8 +18,8 @@ import org.springframework.web.filter.CorsFilter
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtProviderPort: JwtProviderPort,
-    @Value("\${url.allowed-origins[0]}") private val allowedOrigin0: String,
-    @Value("\${url.allowed-origins[1]}") private val allowedOrigin1: String,
+    @param:Value("\${url.allowed-origins[0]}") private val allowedOrigin0: String,
+    @param:Value("\${url.allowed-origins[1]}") private val allowedOrigin1: String,
 ) {
 
     private val WHITE_LIST = arrayOf(

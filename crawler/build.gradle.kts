@@ -1,58 +1,54 @@
-extra["springAiVersion"] = "1.0.2"
+val commonApiVersion = rootProject.extra["commonApiVersion"] as String
+val springAiVersion = rootProject.extra["springAiVersion"] as String
+val firebaseAdminVersion = rootProject.extra["firebaseAdminVersion"] as String
+val jsoupVersion = rootProject.extra["jsoupVersion"] as String
+val commonsTextVersion = rootProject.extra["commonsTextVersion"] as String
+val ktorVersion = rootProject.extra["ktorVersion"] as String
 
 dependencies {
-    implementation(project(":global"))
+    implementation(project(":common"))
+    implementation(project(":persistence-common"))
     implementation(project(":reading-room"))
 
-    implementation("io.github.seob7:common-api:0.0.2")
+    implementation("io.github.seob7:common-api:$commonApiVersion")
 
     // Ktor Client (논블로킹 HTTP)
-    implementation("io.ktor:ktor-client-cio:2.3.6")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
 
     // Ktor JSON Serialization
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.13")
-    implementation("io.ktor:ktor-serialization-jackson:2.3.13")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 
-    // Mongo
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-
-    // Web
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    // Web (Boot 4 : spring-boot-starter-web 은 deprecated)
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
 
     // Webflux - WebClient 용도
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
     // Firebase
-    implementation("com.google.firebase:firebase-admin:9.5.0")
+    implementation("com.google.firebase:firebase-admin:$firebaseAdminVersion")
 
     // Jsoup (Crawler)
-    implementation("org.jsoup:jsoup:1.21.2")
+    implementation("org.jsoup:jsoup:$jsoupVersion")
 
     // Apache text
-    implementation("org.apache.commons:commons-text:1.14.0")
+    implementation("org.apache.commons:commons-text:$commonsTextVersion")
 
-    // Gemini
+    // Gemini (Spring AI 2.0 : OpenAI 공식 Java SDK 기반)
     implementation("org.springframework.ai:spring-ai-starter-model-openai")
 
-    // Coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
+    // Coroutine (버전은 Spring Boot BOM 이 관리)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
     // Prometheus
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
-
-    // 2026-04-25 : OpenFeign QueryDSL 7.1 로 변경
-    implementation("io.github.openfeign.querydsl:querydsl-mongodb:7.1") {
-        exclude(group = "org.mongodb", module = "mongo-java-driver")
-    }
-    ksp("io.github.openfeign.querydsl:querydsl-ksp-codegen:7.1")
-    implementation("com.mysema.commons:mysema-commons-lang:0.2.4")
 }
 
 dependencyManagement {
     imports {
-        mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
+        mavenBom("org.springframework.ai:spring-ai-bom:$springAiVersion")
     }
 }
 
@@ -70,10 +66,3 @@ allOpen {
 
 tasks.bootJar { enabled = true }
 tasks.jar { enabled = false }
-
-// QueryDSL QClass 생성 경로
-kotlin {
-    sourceSets.main {
-        kotlin.srcDir("build/generated/ksp/main/kotlin")
-    }
-}

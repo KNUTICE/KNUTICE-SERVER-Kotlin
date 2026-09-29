@@ -1,6 +1,6 @@
 package com.fx.api.application.port.`in`.dto
 
-import com.fx.global.domain.TopicType
+import com.fx.common.domain.TopicType
 import java.time.LocalDate
 
 data class NoticeNotificationCommand(

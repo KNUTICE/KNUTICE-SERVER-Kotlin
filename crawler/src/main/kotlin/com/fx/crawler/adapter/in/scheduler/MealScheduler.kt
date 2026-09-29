@@ -3,7 +3,7 @@ package com.fx.crawler.adapter.`in`.scheduler
 import com.fx.crawler.appllication.port.`in`.MealNotificationUseCase
 import com.fx.crawler.appllication.port.`in`.MealParseUseCase
 import com.fx.crawler.common.annotation.ScheduleAdapter
-import com.fx.global.domain.MealType
+import com.fx.common.domain.MealType
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled

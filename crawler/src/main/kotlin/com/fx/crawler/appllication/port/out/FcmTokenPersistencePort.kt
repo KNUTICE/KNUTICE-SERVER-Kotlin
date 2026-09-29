@@ -1,8 +1,8 @@
 package com.fx.crawler.appllication.port.out
 
-import com.fx.global.domain.FcmToken
+import com.fx.common.domain.FcmToken
 import com.fx.crawler.domain.FcmTokenQuery
-import com.fx.global.domain.DeviceType
+import com.fx.common.domain.DeviceType
 
 interface FcmTokenPersistencePort {
 

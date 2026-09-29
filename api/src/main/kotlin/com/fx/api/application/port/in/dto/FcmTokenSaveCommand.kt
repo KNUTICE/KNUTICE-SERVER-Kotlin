@@ -1,6 +1,6 @@
 package com.fx.api.application.port.`in`.dto
 
-import com.fx.global.domain.DeviceType
+import com.fx.common.domain.DeviceType
 
 data class FcmTokenSaveCommand(
     val fcmToken: String,

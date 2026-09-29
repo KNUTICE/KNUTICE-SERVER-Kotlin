@@ -1,6 +1,6 @@
 package com.fx.crawler.appllication.port.`in`
 
-import com.fx.global.domain.Notice
+import com.fx.common.domain.Notice
 import com.fx.readingroom.domain.SeatAlert
 
 interface NotificationUseCase {

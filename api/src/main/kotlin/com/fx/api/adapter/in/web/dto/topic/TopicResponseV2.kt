@@ -1,6 +1,6 @@
 package com.fx.api.adapter.`in`.web.dto.topic
 
-import com.fx.global.domain.CrawlableType
+import com.fx.common.domain.CrawlableType
 import org.springframework.context.MessageSource
 
 data class TopicResponseV2(

@@ -1,12 +1,12 @@
 package com.fx.crawler.adapter.out.persistence.repository
 
 import com.fx.crawler.domain.FcmTokenQuery
-import com.fx.global.adapter.out.persistence.document.FcmTokenDocument
-import com.fx.global.adapter.out.persistence.document.QFcmTokenDocument
-import com.fx.global.domain.DeviceType
-import com.fx.global.domain.MajorType
-import com.fx.global.domain.MealType
-import com.fx.global.domain.NoticeType
+import com.fx.common.adapter.out.persistence.document.FcmTokenDocument
+import com.fx.common.adapter.out.persistence.document.QFcmTokenDocument
+import com.fx.common.domain.DeviceType
+import com.fx.common.domain.MajorType
+import com.fx.common.domain.MealType
+import com.fx.common.domain.NoticeType
 import com.querydsl.core.types.Order
 import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.dsl.BooleanExpression

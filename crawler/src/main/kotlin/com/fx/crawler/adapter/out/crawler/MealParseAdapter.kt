@@ -1,14 +1,14 @@
 package com.fx.crawler.adapter.out.crawler
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.fx.crawler.appllication.port.out.MealParsePort
 import com.fx.crawler.common.annotation.CrawlAdapter
-import com.fx.global.domain.Meal
-import com.fx.global.domain.MealType
+import com.fx.common.domain.Meal
+import com.fx.common.domain.MealType
 import org.apache.commons.text.StringEscapeUtils
 import org.slf4j.LoggerFactory
 import org.springframework.web.reactive.function.client.WebClient
+import tools.jackson.module.kotlin.jacksonObjectMapper
+import tools.jackson.module.kotlin.readValue
 import java.time.LocalDate
 
 /**

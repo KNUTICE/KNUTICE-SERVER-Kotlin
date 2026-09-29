@@ -7,7 +7,7 @@ import com.fx.api.application.port.out.TipPersistencePort
 import com.fx.api.domain.Tip
 import com.fx.api.exception.TipException
 import com.fx.api.exception.errorcode.TipErrorCode
-import com.fx.global.domain.DeviceType
+import com.fx.common.domain.DeviceType
 import org.springframework.stereotype.Service
 
 @Service

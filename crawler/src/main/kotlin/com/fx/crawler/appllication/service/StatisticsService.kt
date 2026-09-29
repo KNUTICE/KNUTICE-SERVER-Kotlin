@@ -6,11 +6,11 @@ import com.fx.crawler.appllication.port.out.ApiLogStatisticsPersistencePort
 import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort
 import com.fx.crawler.appllication.port.out.NoticePersistencePort
 import com.fx.crawler.appllication.port.out.StatisticsPersistencePort
-import com.fx.global.application.port.out.WebhookPort
-import com.fx.global.domain.DailyStatistics
-import com.fx.global.domain.DeviceType
-import com.fx.global.domain.SlackMessage
-import com.fx.global.domain.SlackType
+import com.fx.common.application.port.out.WebhookPort
+import com.fx.common.domain.DailyStatistics
+import com.fx.common.domain.DeviceType
+import com.fx.common.domain.SlackMessage
+import com.fx.common.domain.SlackType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

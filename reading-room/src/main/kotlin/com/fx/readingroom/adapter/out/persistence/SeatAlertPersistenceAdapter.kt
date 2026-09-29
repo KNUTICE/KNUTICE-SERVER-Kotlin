@@ -1,6 +1,6 @@
 package com.fx.readingroom.adapter.out.persistence
 
-import com.fx.global.annotation.PersistenceAdapter
+import com.fx.common.annotation.PersistenceAdapter
 import com.fx.readingroom.adapter.out.persistence.document.SeatAlertDocument
 import com.fx.readingroom.adapter.out.persistence.repository.SeatAlertMongoRepository
 import com.fx.readingroom.application.port.out.SeatAlertPersistencePort

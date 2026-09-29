@@ -4,11 +4,11 @@ import com.fx.api.application.port.`in`.dto.ReportSaveCommand
 import com.fx.api.application.port.out.FcmTokenPersistencePort
 import com.fx.api.application.port.out.ReportPersistencePort
 import com.fx.api.domain.Report
-import com.fx.global.application.port.out.WebhookPort
-import com.fx.global.exception.FcmTokenException
-import com.fx.global.exception.errorcode.FcmTokenErrorCode
+import com.fx.common.application.port.out.WebhookPort
+import com.fx.common.exception.FcmTokenException
+import com.fx.common.exception.errorcode.FcmTokenErrorCode
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.common.runBlocking
+import kotlinx.coroutines.runBlocking
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery

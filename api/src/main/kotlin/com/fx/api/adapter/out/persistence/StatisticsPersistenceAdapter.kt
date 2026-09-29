@@ -1,9 +1,9 @@
 package com.fx.api.adapter.out.persistence
 
 import com.fx.api.application.port.out.StatisticsPersistencePort
-import com.fx.global.adapter.out.persistence.persistence.StatisticsMongoRepository
-import com.fx.global.annotation.PersistenceAdapter
-import com.fx.global.domain.DailyStatistics
+import com.fx.common.adapter.out.persistence.persistence.StatisticsMongoRepository
+import com.fx.common.annotation.PersistenceAdapter
+import com.fx.common.domain.DailyStatistics
 import org.springframework.data.domain.Pageable
 import java.time.LocalDate
 
