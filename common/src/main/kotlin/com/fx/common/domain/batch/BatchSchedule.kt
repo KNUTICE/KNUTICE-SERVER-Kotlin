@@ -73,7 +73,8 @@ class BatchSchedule(
     var lastFiredAt: LocalDateTime? = null
         protected set
 
-    fun batchCron(): BatchCron = BatchCron.parse(cron)
+    fun batchCron(): BatchCron =
+        BatchCron.parse(cron)
 
     /** cron 을 바꾸고 다음 발화 시각을 다시 계산한다. */
     fun changeCron(cron: String, now: LocalDateTime) {

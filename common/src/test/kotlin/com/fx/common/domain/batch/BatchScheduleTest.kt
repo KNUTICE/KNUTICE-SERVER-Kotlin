@@ -9,14 +9,15 @@ class BatchScheduleTest {
 
     private val now = LocalDateTime.of(2026, 9, 30, 10, 7)
 
-    private fun schedule(enabled: Boolean = true) = BatchSchedule(
-        scheduleKey = "notice-crawl-notice",
-        jobName = BatchJobNames.NOTICE_CRAWL,
-        jobParameters = """{"topicType":"NOTICE"}""",
-        cron = "0 0/15 * * * *",
-        enabled = enabled,
-        description = "공지 크롤링",
-    )
+    private fun schedule(enabled: Boolean = true) =
+        BatchSchedule(
+            scheduleKey = "notice-crawl-notice",
+            jobName = BatchJobNames.NOTICE_CRAWL,
+            jobParameters = """{"topicType":"NOTICE"}""",
+            cron = "0 0/15 * * * *",
+            enabled = enabled,
+            description = "공지 크롤링",
+        )
 
     @Test
     fun `잘못된 cron 으로는 만들 수 없다`() {

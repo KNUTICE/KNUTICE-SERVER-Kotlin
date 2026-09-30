@@ -58,7 +58,9 @@ abstract class CrawlerIntegrationTest {
     @BeforeEach
     fun resetState() {
         listOf("notice", "notice_content", "fcm_token", "fcm_token_subscription", "seat_alert", "batch_run_request")
-            .forEach { jdbcTemplate.update("DELETE FROM $it") }
+            .forEach {
+                jdbcTemplate.update("DELETE FROM $it")
+            }
         pushPort.reset()
         noticeCrawlPort.reset()
         mealPort.reset()
@@ -68,9 +70,15 @@ abstract class CrawlerIntegrationTest {
     }
 
     fun run(job: Job, parameters: Map<String, String> = emptyMap()): JobExecution {
-        val utils = JobOperatorTestUtils(jobOperator, jobRepository).apply { this.job = job }
+        val utils = JobOperatorTestUtils(jobOperator, jobRepository).apply {
+            this.job = job
+        }
         val jobParameters: JobParameters = JobParametersBuilder(utils.uniqueJobParameters)
-            .apply { parameters.forEach { (name, value) -> addString(name, value) } }
+            .apply {
+                parameters.forEach { (name, value) ->
+                    addString(name, value)
+                }
+            }
             .toJobParameters()
         return utils.startJob(jobParameters)
     }

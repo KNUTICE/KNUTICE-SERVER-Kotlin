@@ -19,43 +19,59 @@ class FcmTokenQueryServiceTest : BehaviorSpec({
 
     val fcmTokenPersistencePort = mockk<FcmTokenPersistencePort>()
     val catalogQueryUseCase = mockk<CatalogQueryUseCase>()
-    every { catalogQueryUseCase.getTopicCatalog() } returns TopicFixture.CATALOG
+    every {
+        catalogQueryUseCase.getTopicCatalog()
+    } returns TopicFixture.CATALOG
     val fcmTokenQueryService = FcmTokenQueryService(fcmTokenPersistencePort, catalogQueryUseCase)
 
     Given("구독 토픽 조회") {
         val token = FcmToken("fcmToken", DeviceType.iOS).withId(1L)
-        every { fcmTokenPersistencePort.getByToken(token.token) } returns token
+        every {
+            fcmTokenPersistencePort.getByToken(token.token)
+        } returns token
         // 9999 는 삭제된 토픽이라 카탈로그에 없다
-        every { fcmTokenPersistencePort.findSubscribedTopicCodes(1L) } returns setOf(900, 2, 300, 1, 9999)
+        every {
+            fcmTokenPersistencePort.findSubscribedTopicCodes(1L)
+        } returns setOf(900, 2, 300, 1, 9999)
 
         When("공지 토픽을 조회하면") {
             Then("공지 토픽만 code 오름차순으로 반환한다") {
                 fcmTokenQueryService.getMyTopics(token.token, TopicType.NOTICE)
-                    .map { it.name } shouldContainExactly listOf("GENERAL_NEWS", "SCHOLARSHIP_NEWS")
+                    .map {
+                        it.name
+                    } shouldContainExactly listOf("GENERAL_NEWS", "SCHOLARSHIP_NEWS")
             }
         }
 
         When("학과 토픽을 조회하면") {
             Then("학과 토픽만 반환한다") {
                 fcmTokenQueryService.getMyTopics(token.token, TopicType.MAJOR)
-                    .map { it.name } shouldContainExactly listOf("COMPUTER_SOFTWARE")
+                    .map {
+                        it.name
+                    } shouldContainExactly listOf("COMPUTER_SOFTWARE")
             }
         }
 
         When("학식 토픽을 조회하면") {
             Then("학식 토픽만 반환하고 카탈로그에 없는 구독은 뺀다") {
                 fcmTokenQueryService.getMyTopics(token.token, TopicType.MEAL)
-                    .map { it.name } shouldContainExactly listOf("STUDENT_CAFETERIA")
+                    .map {
+                        it.name
+                    } shouldContainExactly listOf("STUDENT_CAFETERIA")
             }
         }
     }
 
     Given("토큰이 존재하지 않는 경우") {
-        every { fcmTokenPersistencePort.getByToken("unknown") } throws FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+        every {
+            fcmTokenPersistencePort.getByToken("unknown")
+        } throws FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
 
         When("토픽을 조회하면") {
             Then("FcmTokenException 이 발생한다") {
-                shouldThrow<FcmTokenException> { fcmTokenQueryService.getMyTopics("unknown", TopicType.NOTICE) }
+                shouldThrow<FcmTokenException> {
+                    fcmTokenQueryService.getMyTopics("unknown", TopicType.NOTICE)
+                }
             }
         }
     }

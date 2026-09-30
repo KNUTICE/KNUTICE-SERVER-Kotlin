@@ -49,7 +49,8 @@ class SeatAlert(
     @Column(name = "expires_at", nullable = false, updatable = false, comment = "만료 시각")
     val expiresAt: LocalDateTime = expiresAt
 
-    fun isExpired(now: LocalDateTime): Boolean = !now.isBefore(expiresAt)
+    fun isExpired(now: LocalDateTime): Boolean =
+        !now.isBefore(expiresAt)
 
     fun isSameSeat(readingRoom: ReadingRoom, seatNumber: Int): Boolean =
         this.readingRoom == readingRoom && this.seatNumber == seatNumber

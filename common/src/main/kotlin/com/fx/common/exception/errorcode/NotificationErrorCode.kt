@@ -11,7 +11,9 @@ enum class NotificationErrorCode(
     NOTIFICATION_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "알림 전송에 실패했습니다.")
     ;
 
-    override fun getHttpStatus(): HttpStatus = httpStatus
-    override fun getMessage(): String = message
+    override fun getHttpStatus(): HttpStatus =
+        httpStatus
+    override fun getMessage(): String =
+        message
 
 }

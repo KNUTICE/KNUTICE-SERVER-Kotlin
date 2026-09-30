@@ -68,7 +68,9 @@ class PushSendStepConfig(
         jsonMapper: JsonMapper,
     ): ItemWriter<PushTarget> {
         val messages = jsonMapper.readValue<LocalizedPushMessages>(messagesJson)
-        return ItemWriter { chunk -> pushSendUseCase.send(chunk.items, messages) }
+        return ItemWriter { chunk ->
+            pushSendUseCase.send(chunk.items, messages)
+        }
     }
 
     @Bean

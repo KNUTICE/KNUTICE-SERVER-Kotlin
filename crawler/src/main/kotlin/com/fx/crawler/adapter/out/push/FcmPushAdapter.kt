@@ -32,12 +32,16 @@ class FcmPushAdapter(
 
     override fun send(targets: List<PushTarget>, message: PushMessage): List<Long> =
         targets.chunked(MAX_TOKENS_PER_MULTICAST).flatMap { batch ->
-            sendWithRetry(batch) { tokens -> FcmMessageFactory.notification(tokens, message) }
+            sendWithRetry(batch) { tokens ->
+                FcmMessageFactory.notification(tokens, message)
+            }
         }
 
     override fun sendSilent(targets: List<PushTarget>): List<Long> =
         targets.chunked(MAX_TOKENS_PER_MULTICAST).flatMap { batch ->
-            sendWithRetry(batch) { tokens -> FcmMessageFactory.silent(tokens) }
+            sendWithRetry(batch) { tokens ->
+                FcmMessageFactory.silent(tokens)
+            }
         }
 
     private fun sendWithRetry(targets: List<PushTarget>, messageOf: (List<String>) -> MulticastMessage): List<Long> {
@@ -48,7 +52,9 @@ class FcmPushAdapter(
 
         for (attempt in 1..properties.push.maxAttempts) {
             val response = try {
-                firebaseMessaging.sendEachForMulticast(messageOf(pending.map { it.token }))
+                firebaseMessaging.sendEachForMulticast(messageOf(pending.map {
+                    it.token
+                }))
             } catch (e: Exception) {
                 log.error("FCM 전송 중 예외 발생 - 대상 {}건", pending.size, e)
                 notifySlack("FCM 전송 중 예외 발생 (대상 ${pending.size}건) : ${e.message}")

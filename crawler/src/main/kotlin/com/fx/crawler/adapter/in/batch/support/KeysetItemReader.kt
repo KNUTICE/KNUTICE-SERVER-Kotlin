@@ -26,7 +26,9 @@ class KeysetItemReader<T : Any>(
     private var exhausted = false
 
     init {
-        require(pageSize > 0) { "페이지 크기는 1 이상이어야 합니다." }
+        require(pageSize > 0) {
+            "페이지 크기는 1 이상이어야 합니다."
+        }
     }
 
     override fun open(executionContext: ExecutionContext) {
@@ -46,7 +48,9 @@ class KeysetItemReader<T : Any>(
     }
 
     override fun update(executionContext: ExecutionContext) {
-        lastReadKey?.let { executionContext.putLong(lastKeyName, it) }
+        lastReadKey?.let {
+            executionContext.putLong(lastKeyName, it)
+        }
     }
 
     private fun fetchNextPage() {
@@ -54,7 +58,9 @@ class KeysetItemReader<T : Any>(
         if (page.size < pageSize) {
             exhausted = true
         }
-        page.lastOrNull()?.let { lastFetchedKey = keyOf(it) }
+        page.lastOrNull()?.let {
+            lastFetchedKey = keyOf(it)
+        }
         buffer.addAll(page)
     }
 

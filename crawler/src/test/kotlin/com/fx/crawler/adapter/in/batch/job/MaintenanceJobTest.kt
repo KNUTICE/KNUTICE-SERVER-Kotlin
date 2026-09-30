@@ -41,6 +41,7 @@ class MaintenanceJobTest : CrawlerIntegrationTest() {
     private fun countExecution(jobExecutionId: Long) =
         count("SELECT COUNT(*) FROM BATCH_JOB_EXECUTION WHERE JOB_EXECUTION_ID = ?", jobExecutionId)
 
-    private fun count(sql: String, id: Long): Int = jdbcTemplate.queryForObject(sql, Int::class.java, id)!!
+    private fun count(sql: String, id: Long): Int =
+        jdbcTemplate.queryForObject(sql, Int::class.java, id)!!
 
 }

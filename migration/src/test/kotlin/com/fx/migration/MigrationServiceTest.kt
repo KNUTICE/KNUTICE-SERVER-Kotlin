@@ -46,7 +46,9 @@ class MigrationServiceTest @Autowired constructor(
     fun reset() {
         mongoTemplate.db.drop()
         listOf("report", "image", "tip", "users", "fcm_token_subscription", "fcm_token", "notice_content", "notice")
-            .forEach { jdbcTemplate.update("DELETE FROM $it") }
+            .forEach {
+                jdbcTemplate.update("DELETE FROM $it")
+            }
     }
 
     @Test
@@ -56,7 +58,9 @@ class MigrationServiceTest @Autowired constructor(
         val report = migrationService.migrate()
 
         assertThat(report.successful).isTrue()
-        val results = report.collections.associateBy { it.name }
+        val results = report.collections.associateBy {
+            it.name
+        }
         assertThat(results.getValue("notice").skipped).containsExactly(entry("모르는 토픽: REMOVED_TOPIC", 1))
         assertThat(results.getValue("notice").notes).containsEntry("제목 500자 초과로 자름", 1)
         assertThat(results.getValue("fcm_token").notes).containsEntry("모르는 구독 토픽: UNKNOWN_TOPIC", 1)
@@ -74,8 +78,9 @@ class MigrationServiceTest @Autowired constructor(
         insertLegacyData()
         migrationService.migrate()
 
-        assertThatThrownBy { migrationService.migrate() }
-            .isInstanceOf(IllegalStateException::class.java)
+        assertThatThrownBy {
+            migrationService.migrate()
+        }.isInstanceOf(IllegalStateException::class.java)
             .hasMessageContaining("notice")
     }
 
@@ -105,7 +110,9 @@ class MigrationServiceTest @Autowired constructor(
 
     private fun assertFcmTokens() {
         val tokens = jdbcTemplate.queryForList("SELECT token, device_type, is_active, language FROM fcm_token ORDER BY token")
-        assertThat(tokens.map { listOf(it["token"], it["device_type"], it["is_active"], it["language"]) }).containsExactly(
+        assertThat(tokens.map {
+            listOf(it["token"], it["device_type"], it["is_active"], it["language"])
+        }).containsExactly(
             listOf("deleted-token", "UNKNOWN", false, "ko"),
             listOf("token-1", "iOS", true, "ko"),
             listOf("token-2", "AOS", false, "ko"),
@@ -126,7 +133,9 @@ class MigrationServiceTest @Autowired constructor(
         val reports = jdbcTemplate.queryForList(
             "SELECT r.content, t.token FROM report r JOIN fcm_token t ON t.id = r.fcm_token_id ORDER BY r.id"
         )
-        assertThat(reports.map { it["content"] to it["token"] }).containsExactly(
+        assertThat(reports.map {
+            it["content"] to it["token"]
+        }).containsExactly(
             "알림이 안 와요" to "token-1",
             "앱을 지운 뒤 남긴 문의" to "deleted-token",
         )
@@ -184,14 +193,18 @@ class MigrationServiceTest @Autowired constructor(
     }
 
     /** 레거시 앱(Spring Data MongoDB)이 `LocalDateTime` 을 저장하던 방식 : 시스템 타임존(KST) 기준 시각의 UTC Date */
-    private fun legacyDateTime(value: LocalDateTime): Date = Date.from(value.atZone(seoul).toInstant())
+    private fun legacyDateTime(value: LocalDateTime): Date =
+        Date.from(value.atZone(seoul).toInstant())
 
     /** 레거시 앱이 `LocalDate` 를 저장하던 방식 : KST 자정 = 전날 15:00Z */
-    private fun legacyDate(value: LocalDate): Date = Date.from(value.atStartOfDay(seoul).toInstant())
+    private fun legacyDate(value: LocalDate): Date =
+        Date.from(value.atStartOfDay(seoul).toInstant())
 
-    private fun dateTime(sql: String): LocalDateTime? = jdbcTemplate.queryForObject(sql, LocalDateTime::class.java)
+    private fun dateTime(sql: String): LocalDateTime? =
+        jdbcTemplate.queryForObject(sql, LocalDateTime::class.java)
 
-    private fun count(sql: String): Int = jdbcTemplate.queryForObject(sql, Int::class.java)!!
+    private fun count(sql: String): Int =
+        jdbcTemplate.queryForObject(sql, Int::class.java)!!
 
     private fun subscribedCodes(token: String): List<Int> =
         jdbcTemplate.queryForList(

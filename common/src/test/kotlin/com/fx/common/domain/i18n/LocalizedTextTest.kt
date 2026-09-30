@@ -25,8 +25,9 @@ class LocalizedTextTest {
 
     @Test
     fun `한국어는 비어 있을 수 없다`() {
-        assertThatThrownBy { LocalizedText(ko = " ") }
-            .isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy {
+            LocalizedText(ko = " ")
+        }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
     @Test

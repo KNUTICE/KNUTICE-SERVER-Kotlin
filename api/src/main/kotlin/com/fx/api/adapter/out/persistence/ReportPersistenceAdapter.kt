@@ -10,6 +10,7 @@ class ReportPersistenceAdapter(
     private val reportRepository: ReportRepository,
 ) : ReportPersistencePort {
 
-    override fun save(report: Report): Report = reportRepository.save(report)
+    override fun save(report: Report): Report =
+        reportRepository.save(report)
 
 }

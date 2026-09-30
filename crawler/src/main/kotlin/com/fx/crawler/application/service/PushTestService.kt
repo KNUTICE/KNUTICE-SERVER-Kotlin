@@ -41,7 +41,9 @@ class PushTestService(
     /** 오늘 식단이 없으면 보낼 알림이 없으므로 발송 실패로 응답한다. */
     override fun sendMeal(fcmToken: String, mealTopicName: String) {
         val topic = catalogQueryUseCase.getTopicCatalog().findByName(mealTopicName)
-            ?.takeIf { it.topicType == TopicType.MEAL }
+            ?.takeIf {
+                it.topicType == TopicType.MEAL
+            }
             ?: throw TopicException(TopicErrorCode.TOPIC_NOT_FOUND)
         val target = fcmTokenPersistencePort.getTargetByToken(fcmToken)
         val meal = mealPort.fetchMeal(topic, LocalDate.now(clock))

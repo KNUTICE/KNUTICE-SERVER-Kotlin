@@ -24,7 +24,9 @@ class NoticeQueryService(
             NoticeQuery(
                 nttId = noticeSearchCommand.nttId,
                 topicCode = topic?.code,
-                keyword = noticeSearchCommand.keyword?.takeIf { it.isNotBlank() },
+                keyword = noticeSearchCommand.keyword?.takeIf {
+                    it.isNotBlank()
+                },
                 size = noticeSearchCommand.size,
             )
         )
@@ -34,13 +36,16 @@ class NoticeQueryService(
         return notices
     }
 
-    override fun getNotice(nttId: Long): Notice = noticePersistencePort.getNotice(nttId)
+    override fun getNotice(nttId: Long): Notice =
+        noticePersistencePort.getNotice(nttId)
 
     override fun getNoticeSummary(nttId: Long): String {
         val notice = noticePersistencePort.getNotice(nttId)
         return noticePersistencePort.findNoticeContent(requireNotNull(notice.id))
             ?.contentSummary
-            ?.takeIf { it.isNotBlank() }
+            ?.takeIf {
+                it.isNotBlank()
+            }
             ?: throw NoticeException(NoticeErrorCode.SUMMARY_CONTENT_NOT_FOUND)
     }
 

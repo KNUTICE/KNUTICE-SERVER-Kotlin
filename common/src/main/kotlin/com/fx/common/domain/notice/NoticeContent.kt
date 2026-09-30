@@ -40,7 +40,9 @@ class NoticeContent(
     }
 
     fun changeSummary(contentSummary: String?) {
-        this.contentSummary = contentSummary?.takeIf { it.isNotBlank() }
+        this.contentSummary = contentSummary?.takeIf {
+            it.isNotBlank()
+        }
     }
 
 }

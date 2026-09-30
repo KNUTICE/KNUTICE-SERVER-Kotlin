@@ -29,12 +29,18 @@ class NoticeQueryRepository(
             .fetch()
 
     private fun topicCodeEq(topicCode: Int?): BooleanExpression? =
-        topicCode?.let { notice.topicCode.eq(it) }
+        topicCode?.let {
+            notice.topicCode.eq(it)
+        }
 
     private fun titleContains(keyword: String?): BooleanExpression? =
-        keyword?.let { notice.title.contains(it) }
+        keyword?.let {
+            notice.title.contains(it)
+        }
 
     private fun nttIdLt(nttId: Long?): BooleanExpression? =
-        nttId?.let { notice.nttId.lt(it) }
+        nttId?.let {
+            notice.nttId.lt(it)
+        }
 
 }

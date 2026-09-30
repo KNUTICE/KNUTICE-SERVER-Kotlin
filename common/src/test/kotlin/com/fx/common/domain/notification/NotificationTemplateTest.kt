@@ -25,8 +25,9 @@ class NotificationTemplateTest {
     fun `placeholder 가 빠진 문구는 거부한다`() {
         val missing = LocalizedText(ko = "{title} 외 소식이 있습니다.")
 
-        assertThatThrownBy { NotificationTemplate(NotificationTemplateKey.NOTICE_BODY_MULTIPLE, missing, "설명") }
-            .isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy {
+            NotificationTemplate(NotificationTemplateKey.NOTICE_BODY_MULTIPLE, missing, "설명")
+        }.isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("count")
     }
 
@@ -34,8 +35,9 @@ class NotificationTemplateTest {
     fun `모르는 placeholder 가 있는 번역은 거부한다`() {
         val template = NotificationTemplate(NotificationTemplateKey.SEAT_ALERT_TITLE, LocalizedText("빈자리 알림"), "설명")
 
-        assertThatThrownBy { template.changeText(LocalizedText(ko = "빈자리 알림", ja = "{seatNumber} 空席")) }
-            .isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy {
+            template.changeText(LocalizedText(ko = "빈자리 알림", ja = "{seatNumber} 空席"))
+        }.isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("seatNumber")
         assertThat(template.text).isEqualTo(LocalizedText("빈자리 알림"))
     }
@@ -58,8 +60,9 @@ class NotificationTemplateTest {
     fun `DB 에 없는 키로 문구를 만들면 실패한다`() {
         val catalog = NotificationTemplateCatalog(emptyMap())
 
-        assertThatThrownBy { catalog.render(NotificationTemplateKey.MEAL_EMPTY, Language.KO) }
-            .isInstanceOf(IllegalStateException::class.java)
+        assertThatThrownBy {
+            catalog.render(NotificationTemplateKey.MEAL_EMPTY, Language.KO)
+        }.isInstanceOf(IllegalStateException::class.java)
     }
 
 }

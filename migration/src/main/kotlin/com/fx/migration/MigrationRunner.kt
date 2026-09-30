@@ -20,6 +20,7 @@ class MigrationRunner(
         exitCode = if (migrationService.migrate().successful) 0 else 1
     }
 
-    override fun getExitCode(): Int = exitCode
+    override fun getExitCode(): Int =
+        exitCode
 
 }

@@ -13,7 +13,9 @@ enum class NoticeErrorCode(
     ALREADY_EXISTS(HttpStatus.CONFLICT, "게시글이 이미 존재합니다.");
     ;
 
-    override fun getHttpStatus(): HttpStatus = httpStatus
-    override fun getMessage(): String = message
+    override fun getHttpStatus(): HttpStatus =
+        httpStatus
+    override fun getMessage(): String =
+        message
 
 }

@@ -22,15 +22,22 @@ object BatchJobParameters {
         } catch (e: JacksonException) {
             throw IllegalArgumentException("Job 파라미터가 올바른 JSON 이 아닙니다: $json", e)
         }
-        require(node is ObjectNode) { "Job 파라미터는 JSON 객체여야 합니다: $json" }
+        require(node is ObjectNode) {
+            "Job 파라미터는 JSON 객체여야 합니다: $json"
+        }
 
         return node.properties().associate { (name, value) ->
-            require(value.isString) { "Job 파라미터 값은 문자열이어야 합니다: $name" }
-            require(name !in RESERVED_NAMES) { "예약된 Job 파라미터 이름입니다: $name" }
+            require(value.isString) {
+                "Job 파라미터 값은 문자열이어야 합니다: $name"
+            }
+            require(name !in RESERVED_NAMES) {
+                "예약된 Job 파라미터 이름입니다: $name"
+            }
             name to value.stringValue()
         }
     }
 
-    fun format(parameters: Map<String, String>): String = jsonMapper.writeValueAsString(parameters)
+    fun format(parameters: Map<String, String>): String =
+        jsonMapper.writeValueAsString(parameters)
 
 }

@@ -46,16 +46,19 @@ class ReadingRoomRemoteAdapter(
 
     private val log = LoggerFactory.getLogger(ReadingRoomRemoteAdapter::class.java)
 
-    private val restClient: RestClient = restClientBuilder.clone()
-        .requestFactory(
-            JdkClientHttpRequestFactory(
-                HttpClient.newBuilder()
-                    .cookieHandler(CookieManager())
-                    .connectTimeout(connectTimeout)
-                    .build()
-            ).apply { setReadTimeout(readTimeout) }
-        )
-        .build()
+    private val restClient: RestClient =
+        restClientBuilder.clone()
+            .requestFactory(
+                JdkClientHttpRequestFactory(
+                    HttpClient.newBuilder()
+                        .cookieHandler(CookieManager())
+                        .connectTimeout(connectTimeout)
+                        .build()
+                ).apply {
+                    setReadTimeout(readTimeout)
+                }
+            )
+            .build()
 
     override fun getCsrfToken(): String {
         val html = call {

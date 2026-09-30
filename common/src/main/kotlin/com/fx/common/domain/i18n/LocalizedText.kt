@@ -29,7 +29,9 @@ class LocalizedText(
         protected set
 
     init {
-        require(ko.isNotBlank()) { "한국어 문구는 비어 있을 수 없습니다." }
+        require(ko.isNotBlank()) {
+            "한국어 문구는 비어 있을 수 없습니다."
+        }
     }
 
     fun resolve(language: Language): String =
@@ -43,17 +45,24 @@ class LocalizedText(
     fun values(): Map<Language, String> =
         buildMap {
             put(Language.KO, ko)
-            en?.let { put(Language.EN, it) }
-            ja?.let { put(Language.JA, it) }
+            en?.let {
+                put(Language.EN, it)
+            }
+            ja?.let {
+                put(Language.JA, it)
+            }
         }
 
-    fun copy(): LocalizedText = LocalizedText(ko, en, ja)
+    fun copy(): LocalizedText =
+        LocalizedText(ko, en, ja)
 
     override fun equals(other: Any?): Boolean =
         this === other || (other is LocalizedText && ko == other.ko && en == other.en && ja == other.ja)
 
-    override fun hashCode(): Int = listOf(ko, en, ja).hashCode()
+    override fun hashCode(): Int =
+        listOf(ko, en, ja).hashCode()
 
-    override fun toString(): String = "LocalizedText(ko=$ko, en=$en, ja=$ja)"
+    override fun toString(): String =
+        "LocalizedText(ko=$ko, en=$en, ja=$ja)"
 
 }

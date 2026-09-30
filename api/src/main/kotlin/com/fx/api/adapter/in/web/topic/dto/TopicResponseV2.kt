@@ -11,7 +11,9 @@ data class TopicResponseV2(
     companion object {
 
         fun from(subscribedTopics: List<TopicView>, language: Language): TopicResponseV2 =
-            TopicResponseV2(TypeResponse.from(subscribedTopics.sortedBy { it.code }, language))
+            TopicResponseV2(TypeResponse.from(subscribedTopics.sortedBy {
+                it.code
+            }, language))
     }
 
 }

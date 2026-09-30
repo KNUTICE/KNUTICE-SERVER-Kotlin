@@ -33,12 +33,16 @@ class FcmTokenPersistenceAdapter(
     override fun create(fcmToken: FcmToken, topics: List<TopicView>): FcmToken {
         val saved = fcmTokenRepository.save(fcmToken)
         val fcmTokenId = requireNotNull(saved.id)
-        fcmTokenSubscriptionRepository.saveAll(topics.map { FcmTokenSubscription.of(fcmTokenId, it) })
+        fcmTokenSubscriptionRepository.saveAll(topics.map {
+            FcmTokenSubscription.of(fcmTokenId, it)
+        })
         return saved
     }
 
     override fun findSubscribedTopicCodes(fcmTokenId: Long): Set<Int> =
-        fcmTokenSubscriptionRepository.findAllByFcmTokenId(fcmTokenId).mapTo(mutableSetOf()) { it.topicCode }
+        fcmTokenSubscriptionRepository.findAllByFcmTokenId(fcmTokenId).mapTo(mutableSetOf()) {
+            it.topicCode
+        }
 
     override fun subscribe(fcmTokenId: Long, topic: TopicView) {
         fcmTokenSubscriptionRepository.insertIfAbsent(
@@ -58,7 +62,9 @@ class FcmTokenPersistenceAdapter(
         val source = fcmTokenSubscriptionRepository.findAllByFcmTokenId(fromFcmTokenId)
         fcmTokenSubscriptionRepository.deleteAllByFcmTokenId(toFcmTokenId)
         fcmTokenSubscriptionRepository.saveAll(
-            source.map { FcmTokenSubscription(toFcmTokenId, it.topicCode, it.topicName) }
+            source.map {
+                FcmTokenSubscription(toFcmTokenId, it.topicCode, it.topicName)
+            }
         )
     }
 

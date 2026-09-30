@@ -35,15 +35,27 @@ class CatalogPersistenceAdapterTest @Autowired constructor(
         val catalog = catalogPersistenceAdapter.loadTopicCatalog()
 
         assertThat(catalog.topics).hasSize(SEEDED_TOPICS)
-        assertThat(catalog.topicsOf(TopicType.NOTICE).map { it.code }).containsExactly(1, 2, 3, 4, 5)
-        assertThat(catalog.topicsOf(TopicType.MEAL).map { it.code }).containsExactly(900, 901)
+        assertThat(catalog.topicsOf(TopicType.NOTICE).map {
+            it.code
+        }).containsExactly(1, 2, 3, 4, 5)
+        assertThat(catalog.topicsOf(TopicType.MEAL).map {
+            it.code
+        }).containsExactly(900, 901)
         assertThat(catalog.topicsOf(TopicType.MAJOR)).hasSize(61)
             .allSatisfy {
-                assertThat(it.code).satisfiesAnyOf({ code -> assertThat(code).isBetween(10, 12) }, { code -> assertThat(code).isBetween(100, 805) })
+                assertThat(it.code).satisfiesAnyOf({ code ->
+                    assertThat(code).isBetween(10, 12)
+                }, { code ->
+                    assertThat(code).isBetween(100, 805)
+                })
                 assertThat(it.college).isNotNull()
             }
-        assertThat(catalog.topics).allMatch { it.crawlEnabled && it.visible }
-        assertThat(catalog.topicsOf(TopicType.NOTICE) + catalog.topicsOf(TopicType.MEAL)).allMatch { it.college == null }
+        assertThat(catalog.topics).allMatch {
+            it.crawlEnabled && it.visible
+        }
+        assertThat(catalog.topicsOf(TopicType.NOTICE) + catalog.topicsOf(TopicType.MEAL)).allMatch {
+            it.college == null
+        }
     }
 
     @Test
@@ -67,11 +79,15 @@ class CatalogPersistenceAdapterTest @Autowired constructor(
     fun `단과대는 표시 순서대로 시드된다`() {
         val catalog = catalogPersistenceAdapter.loadTopicCatalog()
 
-        assertThat(catalog.colleges.map { it.collegeKey }).containsExactly(
+        assertThat(catalog.colleges.map {
+            it.collegeKey
+        }).containsExactly(
             "DEPRECATED", "ENGINEERING", "TRANSPORTATION_ENGINEERING", "AI_CONVERGENCE", "HUMANITIES",
             "SOCIAL_SCIENCES", "HEALTH_AND_LIFE_SCIENCE", "RAILROAD_SCIENCES", "FUTURE_CONVERGENCE",
         )
-        assertThat(catalog.colleges.first { it.collegeKey == "ENGINEERING" }.displayName.resolve(Language.EN))
+        assertThat(catalog.colleges.first {
+            it.collegeKey == "ENGINEERING"
+        }.displayName.resolve(Language.EN))
             .isEqualTo("College of Engineering")
     }
 
@@ -89,7 +105,9 @@ class CatalogPersistenceAdapterTest @Autowired constructor(
 
     @Test
     fun `삭제된 토픽은 카탈로그에서 빠진다`() {
-        val topic = topicRepository.findAll().first { it.name == "GENERAL_NEWS" }
+        val topic = topicRepository.findAll().first {
+            it.name == "GENERAL_NEWS"
+        }
         topic.delete(LocalDateTime.now())
         entityManager.flush()
 
@@ -103,9 +121,13 @@ class CatalogPersistenceAdapterTest @Autowired constructor(
     fun `시드된 알림 문구는 키별 placeholder 규칙을 지킨다`() {
         val templates = notificationTemplateRepository.findAll()
 
-        assertThat(templates.map { it.templateKey }).containsExactlyInAnyOrderElementsOf(NotificationTemplateKey.entries)
+        assertThat(templates.map {
+            it.templateKey
+        }).containsExactlyInAnyOrderElementsOf(NotificationTemplateKey.entries)
         templates.forEach { template ->
-            assertThatCode { template.templateKey.validate(template.text) }.doesNotThrowAnyException()
+            assertThatCode {
+                template.templateKey.validate(template.text)
+            }.doesNotThrowAnyException()
         }
     }
 

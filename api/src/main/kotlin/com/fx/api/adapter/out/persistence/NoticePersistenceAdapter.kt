@@ -31,7 +31,9 @@ class NoticePersistenceAdapter(
     override fun create(notice: Notice, contentSummary: String?): Notice {
         val saved = noticeRepository.save(notice)
         noticeContentRepository.save(
-            NoticeContent(noticeId = requireNotNull(saved.id), content = null, contentSummary = contentSummary?.takeIf { it.isNotBlank() })
+            NoticeContent(noticeId = requireNotNull(saved.id), content = null, contentSummary = contentSummary?.takeIf {
+                it.isNotBlank()
+            })
         )
         return saved
     }

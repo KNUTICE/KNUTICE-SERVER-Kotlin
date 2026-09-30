@@ -12,36 +12,41 @@ class TopicTest {
         topicType: TopicType = TopicType.MAJOR,
         name: String = "COMPUTER_SOFTWARE",
         collegeId: Long? = 1L,
-    ) = Topic(
-        code = 300,
-        name = name,
-        topicType = topicType,
-        displayName = LocalizedText("컴퓨터소프트웨어학과"),
-        collegeId = collegeId,
-        rootDomain = "https://www.ut.ac.kr",
-        bbsPath = "/cop/bbs/BBSMSTR/selectBoardList.do",
-    )
+    ) =
+        Topic(
+            code = 300,
+            name = name,
+            topicType = topicType,
+            displayName = LocalizedText("컴퓨터소프트웨어학과"),
+            collegeId = collegeId,
+            rootDomain = "https://www.ut.ac.kr",
+            bbsPath = "/cop/bbs/BBSMSTR/selectBoardList.do",
+        )
 
     @Test
     fun `학과 토픽에는 단과대가 필요하다`() {
-        assertThatThrownBy { topic(topicType = TopicType.MAJOR, collegeId = null) }
-            .isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy {
+            topic(topicType = TopicType.MAJOR, collegeId = null)
+        }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
     @Test
     fun `공지 · 학식 토픽에는 단과대를 지정할 수 없다`() {
-        assertThatThrownBy { topic(topicType = TopicType.NOTICE, collegeId = 1L) }
-            .isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy {
+            topic(topicType = TopicType.NOTICE, collegeId = 1L)
+        }.isInstanceOf(IllegalArgumentException::class.java)
 
         val notice = topic(topicType = TopicType.NOTICE, collegeId = null)
-        assertThatThrownBy { notice.changeCollege(1L) }
-            .isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy {
+            notice.changeCollege(1L)
+        }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
     @Test
     fun `토픽 이름은 v1 식별자 형식이어야 한다`() {
-        assertThatThrownBy { topic(name = "computer-software") }
-            .isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy {
+            topic(name = "computer-software")
+        }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
     @Test

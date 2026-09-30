@@ -30,12 +30,18 @@ import java.util.concurrent.ConcurrentLinkedQueue
 @TestConfiguration(proxyBeanMethods = false)
 class FakeExternalAdapters {
 
-    @Bean @Primary fun fakePushPort() = FakePushPort()
-    @Bean @Primary fun fakeNoticeCrawlPort() = FakeNoticeCrawlPort()
-    @Bean @Primary fun fakeMealPort() = FakeMealPort()
-    @Bean @Primary fun fakeNoticeSummaryPort() = FakeNoticeSummaryPort()
-    @Bean @Primary fun fakeReadingRoomRemotePort() = FakeReadingRoomRemotePort()
-    @Bean @Primary fun fakeWebhookPort() = FakeWebhookPort()
+    @Bean @Primary fun fakePushPort() =
+        FakePushPort()
+    @Bean @Primary fun fakeNoticeCrawlPort() =
+        FakeNoticeCrawlPort()
+    @Bean @Primary fun fakeMealPort() =
+        FakeMealPort()
+    @Bean @Primary fun fakeNoticeSummaryPort() =
+        FakeNoticeSummaryPort()
+    @Bean @Primary fun fakeReadingRoomRemotePort() =
+        FakeReadingRoomRemotePort()
+    @Bean @Primary fun fakeWebhookPort() =
+        FakeWebhookPort()
 
 }
 
@@ -50,16 +56,25 @@ class FakePushPort : PushPort {
     val invalidTokens: MutableSet<String> = ConcurrentHashMap.newKeySet()
 
     override fun send(targets: List<PushTarget>, message: PushMessage): List<Long> {
-        sent += Sent(targets.map { it.token }, message)
+        sent += Sent(targets.map {
+            it.token
+        }, message)
         return invalidIds(targets)
     }
 
     override fun sendSilent(targets: List<PushTarget>): List<Long> {
-        sent += Sent(targets.map { it.token }, null)
+        sent += Sent(targets.map {
+            it.token
+        }, null)
         return invalidIds(targets)
     }
 
-    private fun invalidIds(targets: List<PushTarget>) = targets.filter { it.token in invalidTokens }.map { it.fcmTokenId }
+    private fun invalidIds(targets: List<PushTarget>) =
+        targets.filter {
+            it.token in invalidTokens
+        }.map {
+            it.fcmTokenId
+        }
 
     fun reset() {
         sent.clear()
@@ -78,7 +93,9 @@ class FakeNoticeCrawlPort : NoticeCrawlPort {
     data class Row(val nttId: Long, val title: String)
 
     override fun fetchNoticeList(topic: TopicView): List<CrawledNotice> {
-        check(topic.name !in failingTopics) { "${topic.name} 게시판 응답 없음" }
+        check(topic.name !in failingTopics) {
+            "${topic.name} 게시판 응답 없음"
+        }
         return lists[topic.name].orEmpty().map {
             CrawledNotice(
                 nttId = it.nttId,
@@ -102,7 +119,8 @@ class FakeNoticeCrawlPort : NoticeCrawlPort {
     }
 
     companion object {
-        fun contentUrl(nttId: Long) = "https://www.ut.ac.kr/notice?nttId=$nttId"
+        fun contentUrl(nttId: Long) =
+            "https://www.ut.ac.kr/notice?nttId=$nttId"
     }
 
 }
@@ -111,9 +129,11 @@ class FakeMealPort : MealPort {
 
     val meals = ConcurrentHashMap<Int, Meal>()
 
-    override fun fetchMeal(topic: TopicView, date: LocalDate): Meal? = meals[topic.code]?.copy(mealDate = date)
+    override fun fetchMeal(topic: TopicView, date: LocalDate): Meal? =
+        meals[topic.code]?.copy(mealDate = date)
 
-    fun reset() = meals.clear()
+    fun reset() =
+        meals.clear()
 
 }
 
@@ -122,11 +142,14 @@ class FakeNoticeSummaryPort : NoticeSummaryPort {
     val failingContents: MutableSet<String> = ConcurrentHashMap.newKeySet()
 
     override fun summarize(content: String): String {
-        check(content !in failingContents) { "AI 응답 없음" }
+        check(content !in failingContents) {
+            "AI 응답 없음"
+        }
         return "요약: $content"
     }
 
-    fun reset() = failingContents.clear()
+    fun reset() =
+        failingContents.clear()
 
 }
 
@@ -135,9 +158,11 @@ class FakeReadingRoomRemotePort : ReadingRoomRemotePort {
     /** 열람실별 빈 좌석 번호. 없는 열람실은 조회에 실패한다 */
     val availableSeats = ConcurrentHashMap<ReadingRoom, Set<Int>>()
 
-    override fun getCsrfToken(): String = "csrf"
+    override fun getCsrfToken(): String =
+        "csrf"
 
-    override fun getReadingRoomStatus(): List<ReadingRoomStatus> = emptyList()
+    override fun getReadingRoomStatus(): List<ReadingRoomStatus> =
+        emptyList()
 
     override fun getReadingRoomSeats(readingRoom: ReadingRoom, csrfToken: String): List<ReadingRoomSeat> {
         val available = availableSeats[readingRoom] ?: error("$readingRoom 조회 실패")
@@ -153,7 +178,8 @@ class FakeReadingRoomRemotePort : ReadingRoomRemotePort {
         }
     }
 
-    fun reset() = availableSeats.clear()
+    fun reset() =
+        availableSeats.clear()
 
 }
 
@@ -165,6 +191,7 @@ class FakeWebhookPort : WebhookPort {
         messages += slackMessage
     }
 
-    fun reset() = messages.clear()
+    fun reset() =
+        messages.clear()
 
 }

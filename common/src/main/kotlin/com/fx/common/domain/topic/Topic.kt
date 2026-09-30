@@ -103,8 +103,12 @@ class Topic(
         protected set
 
     init {
-        require(code > 0) { "토픽 코드는 양수여야 합니다." }
-        require(TOPIC_NAME_PATTERN.matches(name)) { "토픽 이름은 대문자 · 숫자 · 밑줄로만 쓸 수 있습니다: $name" }
+        require(code > 0) {
+            "토픽 코드는 양수여야 합니다."
+        }
+        require(TOPIC_NAME_PATTERN.matches(name)) {
+            "토픽 이름은 대문자 · 숫자 · 밑줄로만 쓸 수 있습니다: $name"
+        }
         requireCollegeRule(topicType, collegeId)
     }
 
@@ -112,7 +116,8 @@ class Topic(
         get() = deletedAt != null
 
     /** 크롤링할 게시판 목록 URL. */
-    fun noticeUrl(): String = rootDomain + bbsPath
+    fun noticeUrl(): String =
+        rootDomain + bbsPath
 
     fun changeDisplayName(displayName: LocalizedText) {
         this.displayName = displayName
@@ -142,9 +147,13 @@ class Topic(
 
     private fun requireCollegeRule(topicType: TopicType, collegeId: Long?) {
         if (topicType == TopicType.MAJOR) {
-            require(collegeId != null) { "학과 토픽에는 단과대가 필요합니다." }
+            require(collegeId != null) {
+                "학과 토픽에는 단과대가 필요합니다."
+            }
         } else {
-            require(collegeId == null) { "단과대는 학과 토픽에만 지정할 수 있습니다." }
+            require(collegeId == null) {
+                "단과대는 학과 토픽에만 지정할 수 있습니다."
+            }
         }
     }
 

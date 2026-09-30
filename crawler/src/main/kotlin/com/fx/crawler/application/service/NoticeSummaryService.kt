@@ -32,7 +32,9 @@ class NoticeSummaryService(
     private val log = LoggerFactory.getLogger(NoticeSummaryService::class.java)
 
     override fun findTargets(topicType: TopicType, afterNoticeId: Long?, size: Int): List<SummaryTarget> {
-        val topicCodes = catalogQueryUseCase.getTopicCatalog().topicsOf(topicType).map { it.code }
+        val topicCodes = catalogQueryUseCase.getTopicCatalog().topicsOf(topicType).map {
+            it.code
+        }
         if (topicCodes.isEmpty()) {
             return emptyList()
         }
@@ -40,7 +42,9 @@ class NoticeSummaryService(
     }
 
     override fun summarize(target: SummaryTarget): SummaryResult {
-        val content = target.content?.takeIf { it.isNotBlank() }
+        val content = target.content?.takeIf {
+            it.isNotBlank()
+        }
             ?: return SummaryResult.Skipped(target.noticeId)
 
         return try {
@@ -57,9 +61,15 @@ class NoticeSummaryService(
         if (results.isEmpty()) {
             return
         }
-        val noticeIds = results.map { it.noticeId }
-        val noticesById = noticePersistencePort.findAllByIds(noticeIds).associateBy { requireNotNull(it.id) }
-        val contentsByNoticeId = noticePersistencePort.findContents(noticeIds).associateBy { it.noticeId }
+        val noticeIds = results.map {
+            it.noticeId
+        }
+        val noticesById = noticePersistencePort.findAllByIds(noticeIds).associateBy {
+            requireNotNull(it.id)
+        }
+        val contentsByNoticeId = noticePersistencePort.findContents(noticeIds).associateBy {
+            it.noticeId
+        }
 
         val givenUp = results.mapNotNull { result ->
             val notice = noticesById[result.noticeId] ?: return@mapNotNull null
@@ -71,11 +81,15 @@ class NoticeSummaryService(
                 is SummaryResult.Skipped -> notice.skipSummary()
                 is SummaryResult.Failed -> notice.failSummary(properties.summary.maxAttempts)
             }
-            notice.takeIf { result is SummaryResult.Failed && it.summaryStatus == SummaryStatus.FAILED }
+            notice.takeIf {
+                result is SummaryResult.Failed && it.summaryStatus == SummaryStatus.FAILED
+            }
         }
 
         if (givenUp.isNotEmpty()) {
-            val content = givenUp.joinToString("\n") { "[nttId : ${it.nttId}] [topic : ${it.topicName}] [title : ${it.title}]" }
+            val content = givenUp.joinToString("\n") {
+                "[nttId : ${it.nttId}] [topic : ${it.topicName}] [title : ${it.title}]"
+            }
             webhookPort.notifySlack(SlackMessage.create(content, SlackType.AI_ERROR))
         }
     }

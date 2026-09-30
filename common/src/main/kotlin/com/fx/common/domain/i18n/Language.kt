@@ -25,10 +25,13 @@ enum class Language(val code: String) {
                 ?.substringBefore('-')
                 ?.substringBefore('_')
                 ?.lowercase(Locale.ROOT)
-            return entries.firstOrNull { it.code == languageCode } ?: DEFAULT
+            return entries.firstOrNull {
+                it.code == languageCode
+            } ?: DEFAULT
         }
 
-        fun from(locale: Locale?): Language = from(locale?.language)
+        fun from(locale: Locale?): Language =
+            from(locale?.language)
 
     }
 

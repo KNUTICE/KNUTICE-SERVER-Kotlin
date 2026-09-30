@@ -40,15 +40,23 @@ class NoticePersistenceAdapter(
                     title = it.title.take(NOTICE_TITLE_MAX_LENGTH),
                     department = it.department.take(NOTICE_DEPARTMENT_MAX_LENGTH),
                     contentUrl = it.contentUrl,
-                    contentImageUrl = it.contentImageUrl?.takeIf { url -> url.length <= NOTICE_URL_MAX_LENGTH },
+                    contentImageUrl = it.contentImageUrl?.takeIf { url ->
+                        url.length <= NOTICE_URL_MAX_LENGTH
+                    },
                     registrationDate = it.registrationDate,
                     isAttachment = it.isAttachment,
                 )
             }
         )
-        val contentsByNttId = notices.associate { it.nttId to it.content?.takeIf { content -> content.isNotBlank() } }
+        val contentsByNttId = notices.associate {
+            it.nttId to it.content?.takeIf { content ->
+                content.isNotBlank()
+            }
+        }
         noticeContentRepository.saveAll(
-            saved.map { NoticeContent(requireNotNull(it.id), content = contentsByNttId[it.nttId], contentSummary = null) }
+            saved.map {
+                NoticeContent(requireNotNull(it.id), content = contentsByNttId[it.nttId], contentSummary = null)
+            }
         )
     }
 

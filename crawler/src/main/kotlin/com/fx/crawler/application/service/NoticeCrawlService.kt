@@ -34,38 +34,61 @@ class NoticeCrawlService(
     private val log = LoggerFactory.getLogger(NoticeCrawlService::class.java)
 
     override fun crawlAndSave(topicType: TopicType): Int {
-        val topics = catalogQueryUseCase.getTopicCatalog().topicsOf(topicType).filter { it.crawlEnabled }
+        val topics = catalogQueryUseCase.getTopicCatalog().topicsOf(topicType).filter {
+            it.crawlEnabled
+        }
         if (topics.isEmpty()) {
             return 0
         }
 
         val listResults = schoolSiteExecutor.invokeAll(
-            topics.map { topic -> { noticeCrawlPort.fetchNoticeList(topic) } },
+            topics.map { topic ->
+                {
+                    noticeCrawlPort.fetchNoticeList(topic)
+                }
+            },
             properties.crawl.timeout,
         )
         val failures = topics.zip(listResults).mapNotNull { (topic, result) ->
-            result.exceptionOrNull()?.let { "${topic.name} : ${it.message}" }
+            result.exceptionOrNull()?.let {
+                "${topic.name} : ${it.message}"
+            }
         }
         if (failures.isNotEmpty()) {
             log.error("게시판 크롤링 실패 {}건 : {}", failures.size, failures)
             webhookPort.notifySlack(SlackMessage.create(failures.joinToString("\n"), SlackType.CRAWL_ERROR))
         }
 
-        val crawled = listResults.flatMap { it.getOrDefault(emptyList()) }
-            .distinctBy { it.nttId }
-            .filter { isStorable(it) }
+        val crawled = listResults
+            .flatMap {
+                it.getOrDefault(emptyList())
+            }
+            .distinctBy {
+                it.nttId
+            }
+            .filter {
+                isStorable(it)
+            }
         if (crawled.isEmpty()) {
             return 0
         }
 
-        val existingNttIds = noticePersistencePort.findExistingNttIds(crawled.map { it.nttId })
-        val newNotices = crawled.filterNot { it.nttId in existingNttIds }
+        val existingNttIds = noticePersistencePort.findExistingNttIds(crawled.map {
+            it.nttId
+        })
+        val newNotices = crawled.filterNot {
+            it.nttId in existingNttIds
+        }
         if (newNotices.isEmpty()) {
             return 0
         }
 
         val detailResults = schoolSiteExecutor.invokeAll(
-            newNotices.map { notice -> { noticeCrawlPort.fetchNoticeDetail(notice.contentUrl) } },
+            newNotices.map { notice ->
+                {
+                    noticeCrawlPort.fetchNoticeDetail(notice.contentUrl)
+                }
+            },
             properties.crawl.timeout,
         )
         val detailedNotices = newNotices.zip(detailResults) { notice, result ->

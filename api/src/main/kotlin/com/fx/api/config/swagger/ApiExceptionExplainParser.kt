@@ -30,8 +30,12 @@ object ApiExceptionExplainParser {
         val responses: ApiResponses = operation.responses
 
         val holders = exceptions
-            .map { ExampleHolder.from(it) }
-            .groupBy { it.httpStatus }
+            .map {
+                ExampleHolder.from(it)
+            }
+            .groupBy {
+                it.httpStatus
+            }
 
         addExamplesToResponses(responses, holders)
     }
@@ -47,7 +51,9 @@ object ApiExceptionExplainParser {
             }
 
             val content = response.content
-                ?: Content().also { response.content = it }
+                ?: Content().also {
+                    response.content = it
+                }
 
             val mediaType = examples.first().mediaType
             val media = content.computeIfAbsent(mediaType) {

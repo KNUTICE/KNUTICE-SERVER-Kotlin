@@ -22,23 +22,46 @@ class FcmPushAdapterTest {
     private val adapter = FcmPushAdapter(firebaseMessaging, webhookPort, CrawlerProperties(push = CrawlerProperties.Push(maxAttempts = 2)))
     private val message = PushMessage("일반소식", "공지")
 
-    private fun targets(count: Int) = (1..count).map { PushTarget(it.toLong(), "token-$it", "ko") }
+    private fun targets(count: Int) =
+        (1..count).map {
+            PushTarget(it.toLong(), "token-$it", "ko")
+        }
 
-    private fun success(): SendResponse = mockk { every { isSuccessful } returns true }
+    private fun success(): SendResponse =
+        mockk {
+            every {
+                isSuccessful
+            } returns true
+        }
 
     private fun failure(code: MessagingErrorCode): SendResponse {
-        val exception = mockk<FirebaseMessagingException> { every { messagingErrorCode } returns code }
+        val exception = mockk<FirebaseMessagingException> {
+            every {
+                messagingErrorCode
+            } returns code
+        }
         return mockk {
-            every { isSuccessful } returns false
-            every { this@mockk.exception } returns exception
+            every {
+                isSuccessful
+            } returns false
+            every {
+                this@mockk.exception
+            } returns exception
         }
     }
 
-    private fun response(vararg results: SendResponse): BatchResponse = mockk { every { responses } returns results.toList() }
+    private fun response(vararg results: SendResponse): BatchResponse =
+        mockk {
+            every {
+                responses
+            } returns results.toList()
+        }
 
     @Test
     fun `등록이 풀린 토큰은 돌려주고 일시 오류 토큰만 다시 보낸다`() {
-        every { firebaseMessaging.sendEachForMulticast(any()) } returnsMany listOf(
+        every {
+            firebaseMessaging.sendEachForMulticast(any())
+        } returnsMany listOf(
             response(success(), failure(MessagingErrorCode.UNREGISTERED), failure(MessagingErrorCode.UNAVAILABLE)),
             response(success()),
         )
@@ -46,43 +69,64 @@ class FcmPushAdapterTest {
         val invalid = adapter.send(targets(3), message)
 
         assertThat(invalid).containsExactly(2L)
-        verify(exactly = 2) { firebaseMessaging.sendEachForMulticast(any()) }
-        verify(exactly = 0) { webhookPort.notifySlack(any()) }
+        verify(exactly = 2) {
+            firebaseMessaging.sendEachForMulticast(any())
+        }
+        verify(exactly = 0) {
+            webhookPort.notifySlack(any())
+        }
     }
 
     @Test
     fun `일시 오류가 한도까지 계속되면 Slack 으로 알리고 더 보내지 않는다`() {
-        every { firebaseMessaging.sendEachForMulticast(any()) } returns response(failure(MessagingErrorCode.INTERNAL))
+        every {
+            firebaseMessaging.sendEachForMulticast(any())
+        } returns response(failure(MessagingErrorCode.INTERNAL))
 
         val invalid = adapter.send(targets(1), message)
 
         assertThat(invalid).isEmpty()
-        verify(exactly = 2) { firebaseMessaging.sendEachForMulticast(any()) }
-        verify(exactly = 1) { webhookPort.notifySlack(any()) }
+        verify(exactly = 2) {
+            firebaseMessaging.sendEachForMulticast(any())
+        }
+        verify(exactly = 1) {
+            webhookPort.notifySlack(any())
+        }
     }
 
     @Test
     fun `전송 예외를 던지지 않고 Slack 으로 알린다`() {
-        every { firebaseMessaging.sendEachForMulticast(any()) } throws IllegalStateException("인증 실패")
+        every {
+            firebaseMessaging.sendEachForMulticast(any())
+        } throws IllegalStateException("인증 실패")
 
         val invalid = adapter.send(targets(2), message)
 
         assertThat(invalid).isEmpty()
-        verify(exactly = 1) { webhookPort.notifySlack(any()) }
+        verify(exactly = 1) {
+            webhookPort.notifySlack(any())
+        }
     }
 
     @Test
     fun `500개씩 나눠 보낸다`() {
-        every { firebaseMessaging.sendEachForMulticast(any()) } answers {
-            response(*Array(if (callCount() == 1) 500 else 1) { success() })
+        every {
+            firebaseMessaging.sendEachForMulticast(any())
+        } answers {
+            response(*Array(if (callCount() == 1) 500 else 1) {
+                success()
+            })
         }
 
         adapter.sendSilent(targets(501))
 
-        verify(exactly = 2) { firebaseMessaging.sendEachForMulticast(any()) }
+        verify(exactly = 2) {
+            firebaseMessaging.sendEachForMulticast(any())
+        }
     }
 
     private var calls = 0
-    private fun callCount(): Int = ++calls
+    private fun callCount(): Int =
+        ++calls
 
 }

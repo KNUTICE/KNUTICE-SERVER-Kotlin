@@ -41,8 +41,12 @@ class BatchTriggerService(
 
     override fun triggerDueSchedules() {
         val now = LocalDateTime.now(clock)
-        batchSchedulePersistencePort.findUninitialized().forEach { initialize(it, now) }
-        batchSchedulePersistencePort.findDue(now).forEach { fire(it, now) }
+        batchSchedulePersistencePort.findUninitialized().forEach {
+            initialize(it, now)
+        }
+        batchSchedulePersistencePort.findDue(now).forEach {
+            fire(it, now)
+        }
     }
 
     override fun processRunRequests() {

@@ -25,26 +25,38 @@ class SpringBatchJobAdapter(
     private val jobRepository: JobRepository,
 ) : JobLaunchPort {
 
-    private val jobsByName: Map<String, Job> = jobs.associateBy { it.name }
+    private val jobsByName: Map<String, Job> =
+        jobs.associateBy {
+            it.name
+        }
 
-    override fun exists(jobName: String): Boolean = jobName in jobsByName
+    override fun exists(jobName: String): Boolean =
+        jobName in jobsByName
 
     override fun isRunning(jobName: String, parameters: Map<String, String>): Boolean =
-        jobRepository.findRunningJobExecutions(jobName).any { businessParameters(it.jobParameters) == parameters }
+        jobRepository.findRunningJobExecutions(jobName).any {
+            businessParameters(it.jobParameters) == parameters
+        }
 
     override fun launch(request: JobLaunchRequest): Long {
-        val job = requireNotNull(jobsByName[request.jobName]) { "등록되지 않은 Job 입니다: ${request.jobName}" }
+        val job = requireNotNull(jobsByName[request.jobName]) {
+            "등록되지 않은 Job 입니다: ${request.jobName}"
+        }
         return jobOperator.start(job, toJobParameters(request)).id
     }
 
     override fun recoverInterrupted(): List<Long> =
         jobsByName.keys.flatMap { jobName ->
-            jobRepository.findRunningJobExecutions(jobName).map { jobOperator.recover(it).id }
+            jobRepository.findRunningJobExecutions(jobName).map {
+                jobOperator.recover(it).id
+            }
         }
 
     private fun toJobParameters(request: JobLaunchRequest): JobParameters {
         val builder = JobParametersBuilder()
-        request.parameters.forEach { (name, value) -> builder.addString(name, value) }
+        request.parameters.forEach { (name, value) ->
+            builder.addString(name, value)
+        }
 
         when (val trigger = request.trigger) {
             is JobTrigger.Scheduled -> builder
@@ -61,7 +73,11 @@ class SpringBatchJobAdapter(
 
     private fun businessParameters(jobParameters: JobParameters): Map<String, String> =
         jobParameters.parameters()
-            .filter { it.identifying() && it.name() !in BatchParameterKeys.TRIGGER_KEYS }
-            .associate { it.name() to it.value().toString() }
+            .filter {
+                it.identifying() && it.name() !in BatchParameterKeys.TRIGGER_KEYS
+            }
+            .associate {
+                it.name() to it.value().toString()
+            }
 
 }

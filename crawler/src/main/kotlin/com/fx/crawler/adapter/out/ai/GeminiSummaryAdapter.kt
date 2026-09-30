@@ -25,7 +25,9 @@ class GeminiSummaryAdapter(
         repeat(MAX_ATTEMPTS) { attempt ->
             try {
                 return chatClient.prompt(prompt).call().content()
-                    ?.takeIf { it.isNotBlank() }
+                    ?.takeIf {
+                        it.isNotBlank()
+                    }
                     ?: throw IllegalStateException("AI 가 빈 요약을 돌려줬습니다.")
             } catch (e: Exception) {
                 if (isQuotaExceeded(e) || attempt == MAX_ATTEMPTS - 1) {

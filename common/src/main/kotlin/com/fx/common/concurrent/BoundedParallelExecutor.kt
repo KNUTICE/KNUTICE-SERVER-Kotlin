@@ -22,7 +22,9 @@ class BoundedParallelExecutor(
     private val permits = Semaphore(maxConcurrency)
 
     init {
-        require(maxConcurrency > 0) { "동시 실행 수는 1 이상이어야 합니다." }
+        require(maxConcurrency > 0) {
+            "동시 실행 수는 1 이상이어야 합니다."
+        }
     }
 
     /**

@@ -22,15 +22,23 @@ object NoticeHtmlParser {
 
     /** @param today 게시일을 읽지 못한 글의 게시일 */
     fun parseList(document: Document, topic: TopicView, today: LocalDate): List<CrawledNotice> =
-        document.select("table.basic_table tbody tr").mapNotNull { row -> parseRow(row, topic, today) }
+        document.select("table.basic_table tbody tr").mapNotNull { row ->
+            parseRow(row, topic, today)
+        }
 
     fun parseDetail(document: Document): NoticeDetail {
         val content = document.select("div.bbs_detail_content")
-        val imageUrl = content.select("img").first()?.attr("src")?.takeIf { it.isNotBlank() }
+        val imageUrl = content.select("img").first()?.attr("src")?.takeIf {
+            it.isNotBlank()
+        }
         return NoticeDetail(
-            content = content.text().trim().takeIf { it.isNotEmpty() },
+            content = content.text().trim().takeIf {
+                it.isNotEmpty()
+            },
             // http 이미지는 알림에 표시되지 않는다
-            contentImageUrl = imageUrl?.let { if (it.startsWith("http://")) "https://" + it.removePrefix("http://") else it },
+            contentImageUrl = imageUrl?.let {
+                if (it.startsWith("http://")) "https://" + it.removePrefix("http://") else it
+            },
         )
     }
 
@@ -74,7 +82,9 @@ object NoticeHtmlParser {
 
     private fun parseDate(text: String?): LocalDate? =
         try {
-            text?.let { LocalDate.parse(it, DATE_FORMAT) }
+            text?.let {
+                LocalDate.parse(it, DATE_FORMAT)
+            }
         } catch (e: DateTimeParseException) {
             null
         }

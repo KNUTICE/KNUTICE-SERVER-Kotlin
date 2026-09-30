@@ -79,7 +79,10 @@ class BatchTriggerIntegrationTest : CrawlerIntegrationTest() {
         assertThat(rejected.rejectReason).contains("unknownJob")
     }
 
-    private fun schedule() = batchScheduleRepository.findAll().single { it.scheduleKey == "silent-push" }
+    private fun schedule() =
+        batchScheduleRepository.findAll().single {
+            it.scheduleKey == "silent-push"
+        }
 
     private fun silentPushExecutionCount(): Int =
         jdbcTemplate.queryForObject(

@@ -36,7 +36,9 @@ data class ReadingRoomStatusResponse(
             )
 
         fun from(readingRoomStatus: List<ReadingRoomStatus>): List<ReadingRoomStatusResponse> =
-            readingRoomStatus.map { this.from(it) }
+            readingRoomStatus.map {
+                this.from(it)
+            }
 
     }
 }

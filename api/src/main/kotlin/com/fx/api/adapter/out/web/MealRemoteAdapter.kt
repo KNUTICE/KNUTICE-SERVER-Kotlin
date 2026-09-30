@@ -40,7 +40,9 @@ class MealRemoteAdapter(
     }
 
     private fun toMeal(dto: MealResponseDto): Meal? {
-        val date = runCatching { dto.mealDate?.let(LocalDate::parse) }.getOrNull() ?: return null
+        val date = runCatching {
+            dto.mealDate?.let(LocalDate::parse)
+        }.getOrNull() ?: return null
         val koreaMenus = parseMenu(dto.koreaFood)
         val topMenus = parseMenu(dto.topFood)
         if (koreaMenus.isEmpty() && topMenus.isEmpty()) {
@@ -51,12 +53,18 @@ class MealRemoteAdapter(
 
     /** 줄바꿈으로 구분된 메뉴 문자열을 목록으로 바꾸고 HTML 엔티티(`&lt;` 등)를 푼다. */
     private fun parseMenu(rawContent: String?): List<String> {
-        val content = rawContent?.takeUnless { it.isBlank() || it.equals("null", ignoreCase = true) }
+        val content = rawContent?.takeUnless {
+            it.isBlank() || it.equals("null", ignoreCase = true)
+        }
             ?: return emptyList()
 
         return content.split("\r\n")
-            .map { StringEscapeUtils.unescapeHtml4(it).trim() }
-            .filter { it.isNotBlank() }
+            .map {
+                StringEscapeUtils.unescapeHtml4(it).trim()
+            }
+            .filter {
+                it.isNotBlank()
+            }
     }
 
     private data class MealResponseDto(

@@ -29,10 +29,16 @@ class BatchSchedulePoller(
 
     @Scheduled(fixedDelayString = "60s", initialDelayString = "10s")
     fun poll() {
-        runCatching { batchTriggerUseCase.triggerDueSchedules() }
-            .onFailure { log.error("스케줄 실행 중 오류", it) }
-        runCatching { batchTriggerUseCase.processRunRequests() }
-            .onFailure { log.error("수동 실행 요청 처리 중 오류", it) }
+        runCatching {
+            batchTriggerUseCase.triggerDueSchedules()
+        }.onFailure {
+            log.error("스케줄 실행 중 오류", it)
+        }
+        runCatching {
+            batchTriggerUseCase.processRunRequests()
+        }.onFailure {
+            log.error("수동 실행 요청 처리 중 오류", it)
+        }
     }
 
 }

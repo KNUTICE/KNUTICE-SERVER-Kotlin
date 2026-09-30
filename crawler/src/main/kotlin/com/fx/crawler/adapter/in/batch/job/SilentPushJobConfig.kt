@@ -42,7 +42,9 @@ class SilentPushJobConfig(
             .chunk<PushTarget, PushTarget>(properties.push.chunkSize)
             .transactionManager(transactionManager)
             .reader(silentPushReader)
-            .writer(ItemWriter { chunk -> pushSendUseCase.sendSilent(chunk.items) })
+            .writer(ItemWriter { chunk ->
+                pushSendUseCase.sendSilent(chunk.items)
+            })
             .build()
 
     @Bean

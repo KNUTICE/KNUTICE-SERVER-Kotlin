@@ -12,7 +12,9 @@ enum class FcmTokenErrorCode(
     TOKEN_INVALID(HttpStatus.BAD_REQUEST, "Fcm token 형식이 올바르지 않습니다.")
     ;
 
-    override fun getHttpStatus(): HttpStatus = httpStatus
-    override fun getMessage(): String = message
+    override fun getHttpStatus(): HttpStatus =
+        httpStatus
+    override fun getMessage(): String =
+        message
 
 }

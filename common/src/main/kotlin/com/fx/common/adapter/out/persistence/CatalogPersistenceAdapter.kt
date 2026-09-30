@@ -32,7 +32,9 @@ class CatalogPersistenceAdapter(
                 displayOrder = it.displayOrder,
             )
         }
-        val collegesById = colleges.associateBy { it.id }
+        val collegesById = colleges.associateBy {
+            it.id
+        }
 
         val topics = topicRepository.findAllByDeletedAtIsNull().map {
             TopicView(
@@ -55,7 +57,9 @@ class CatalogPersistenceAdapter(
     @Transactional(readOnly = true)
     override fun loadNotificationTemplateCatalog(): NotificationTemplateCatalog =
         NotificationTemplateCatalog(
-            notificationTemplateRepository.findAll().associate { it.templateKey to it.text.copy() }
+            notificationTemplateRepository.findAll().associate {
+                it.templateKey to it.text.copy()
+            }
         )
 
 }

@@ -46,23 +46,34 @@ class MigrationReport {
     val excluded: MutableMap<String, Long> = linkedMapOf()
 
     val successful: Boolean
-        get() = collections.all { it.consistent } && tableChecks.all { it.matched }
+        get() = collections.all {
+            it.consistent
+        } && tableChecks.all {
+            it.matched
+        }
 
-    fun format(): String = buildString {
-        appendLine("==================== MongoDB → MySQL 이관 결과 ====================")
-        collections.forEach { result ->
-            appendLine("[${result.name}] 원본 ${result.source} = 이관 ${result.migrated} + 건너뜀 ${result.skipped.values.sum()}" +
-                    if (result.consistent) "" else "  ← 건수 불일치")
-            result.skipped.forEach { (reason, count) -> appendLine("    건너뜀 · $reason : $count") }
-            result.notes.forEach { (note, count) -> appendLine("    고침 · $note : $count") }
+    fun format(): String =
+        buildString {
+            appendLine("==================== MongoDB → MySQL 이관 결과 ====================")
+            collections.forEach { result ->
+                appendLine("[${result.name}] 원본 ${result.source} = 이관 ${result.migrated} + 건너뜀 ${result.skipped.values.sum()}" +
+                        if (result.consistent) "" else "  ← 건수 불일치")
+                result.skipped.forEach { (reason, count) ->
+                    appendLine("    건너뜀 · $reason : $count")
+                }
+                result.notes.forEach { (note, count) ->
+                    appendLine("    고침 · $note : $count")
+                }
+            }
+            appendLine("---- 테이블 건수 ----")
+            tableChecks.forEach {
+                appendLine("${it.table} : 기대 ${it.expected} / 실제 ${it.actual}" + if (it.matched) "" else "  ← 불일치")
+            }
+            appendLine("---- 이관하지 않은 컬렉션 ----")
+            excluded.forEach { (name, count) ->
+                appendLine("$name : $count")
+            }
+            append(if (successful) "결과 : 성공" else "결과 : 실패 (위 불일치 확인)")
         }
-        appendLine("---- 테이블 건수 ----")
-        tableChecks.forEach {
-            appendLine("${it.table} : 기대 ${it.expected} / 실제 ${it.actual}" + if (it.matched) "" else "  ← 불일치")
-        }
-        appendLine("---- 이관하지 않은 컬렉션 ----")
-        excluded.forEach { (name, count) -> appendLine("$name : $count") }
-        append(if (successful) "결과 : 성공" else "결과 : 실패 (위 불일치 확인)")
-    }
 
 }

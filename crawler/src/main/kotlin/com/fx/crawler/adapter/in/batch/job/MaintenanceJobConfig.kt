@@ -47,7 +47,9 @@ class MaintenanceJobConfig(
         @Value("#{jobParameters['retentionDays']}") retentionDays: String?,
         batchMaintenanceUseCase: BatchMaintenanceUseCase,
     ): Tasklet {
-        val days = requireNotNull(retentionDays?.toIntOrNull()) { "retentionDays 파라미터(보존 일수)가 필요합니다: $retentionDays" }
+        val days = requireNotNull(retentionDays?.toIntOrNull()) {
+            "retentionDays 파라미터(보존 일수)가 필요합니다: $retentionDays"
+        }
         var executionsDone = false
 
         return Tasklet { contribution, _ ->

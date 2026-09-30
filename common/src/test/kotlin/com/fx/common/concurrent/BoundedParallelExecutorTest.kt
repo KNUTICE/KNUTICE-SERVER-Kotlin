@@ -14,11 +14,19 @@ class BoundedParallelExecutorTest {
         val executor = BoundedParallelExecutor(maxConcurrency = 4)
 
         val results = executor.invokeAll(
-            listOf({ "a" }, { error("실패") }, { "c" }),
+            listOf({
+                "a"
+            }, {
+                error("실패")
+            }, {
+                "c"
+            }),
             Duration.ofSeconds(5),
         )
 
-        assertThat(results.map { it.getOrNull() }).containsExactly("a", null, "c")
+        assertThat(results.map {
+            it.getOrNull()
+        }).containsExactly("a", null, "c")
         assertThat(results[1].exceptionOrNull()).isInstanceOf(IllegalStateException::class.java).hasMessage("실패")
     }
 
@@ -40,7 +48,9 @@ class BoundedParallelExecutorTest {
             Duration.ofSeconds(10),
         )
 
-        assertThat(results).allMatch { it.isSuccess }
+        assertThat(results).allMatch {
+            it.isSuccess
+        }
         assertThat(maxRunning.get()).isEqualTo(3)
     }
 
@@ -49,7 +59,9 @@ class BoundedParallelExecutorTest {
         val executor = BoundedParallelExecutor(maxConcurrency = 2)
 
         val results = executor.invokeAll(
-            listOf({ "빠름" }, { Thread.sleep(5_000); "느림" }),
+            listOf({
+                "빠름"
+            }, { Thread.sleep(5_000); "느림" }),
             Duration.ofMillis(300),
         )
 
@@ -59,7 +71,9 @@ class BoundedParallelExecutorTest {
 
     @Test
     fun `동시 실행 수는 1 이상이어야 한다`() {
-        assertThatThrownBy { BoundedParallelExecutor(0) }.isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy {
+            BoundedParallelExecutor(0)
+        }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
 }

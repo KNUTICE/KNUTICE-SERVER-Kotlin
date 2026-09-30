@@ -16,7 +16,9 @@ class TopicQueryService(
 ) : TopicQueryUseCase {
 
     override fun getTopics(type: TopicType): List<TopicView> =
-        catalogQueryUseCase.getTopicCatalog().topicsOf(type).filter { it.visible }
+        catalogQueryUseCase.getTopicCatalog().topicsOf(type).filter {
+            it.visible
+        }
 
     override fun getTopic(topicName: String?, topicId: Int?): TopicView =
         topicResolver.byNameOrCode(topicName, topicId)

@@ -90,7 +90,9 @@ class NoticeCrawlJobConfig(
         noticePushUseCase: NoticePushUseCase,
         jsonMapper: JsonMapper,
     ): Partitioner =
-        TopicPushPartitioner(jsonMapper) { noticePushUseCase.preparePushPlans(TopicType.valueOf(topicType)) }
+        TopicPushPartitioner(jsonMapper) {
+            noticePushUseCase.preparePushPlans(TopicType.valueOf(topicType))
+        }
 
     /** 요약 호출이 도는 동안 DB 커넥션을 잡지 않도록 트랜잭션 없이 읽고, 결과 반영만 트랜잭션으로 묶는다. */
     @Bean
@@ -102,8 +104,12 @@ class NoticeCrawlJobConfig(
             .chunk<SummaryTarget, SummaryResult>(properties.summary.chunkSize)
             .transactionManager(StepTransactions.NONE)
             .reader(noticeSummaryReader)
-            .processor(ItemProcessor { target -> noticeSummaryUseCase.summarize(target) })
-            .writer(ItemWriter { chunk -> noticeSummaryUseCase.applyResults(chunk.items) })
+            .processor(ItemProcessor { target ->
+                noticeSummaryUseCase.summarize(target)
+            })
+            .writer(ItemWriter { chunk ->
+                noticeSummaryUseCase.applyResults(chunk.items)
+            })
             .build()
 
     @Bean

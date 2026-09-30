@@ -21,7 +21,9 @@ class NoticeSummaryQueryRepository(
             .where(
                 notice.summaryStatus.eq(SummaryStatus.PENDING),
                 notice.topicCode.`in`(topicCodes),
-                afterNoticeId?.let { notice.id.gt(it) },
+                afterNoticeId?.let {
+                    notice.id.gt(it)
+                },
             )
             .orderBy(notice.id.asc())
             .limit(size.toLong())

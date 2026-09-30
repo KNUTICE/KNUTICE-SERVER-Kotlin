@@ -54,7 +54,9 @@ class College(
         protected set
 
     init {
-        require(collegeKey.isNotBlank()) { "단과대 키는 비어 있을 수 없습니다." }
+        require(collegeKey.isNotBlank()) {
+            "단과대 키는 비어 있을 수 없습니다."
+        }
     }
 
     val isDeleted: Boolean

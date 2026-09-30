@@ -26,21 +26,24 @@ class BatchCronTest {
 
     @Test
     fun `초 필드가 0 이 아니면 거절한다`() {
-        assertThatThrownBy { BatchCron.parse("*/30 * * * * *") }
-            .isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy {
+            BatchCron.parse("*/30 * * * * *")
+        }.isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("초 필드")
     }
 
     @Test
     fun `6개 필드가 아니면 거절한다`() {
-        assertThatThrownBy { BatchCron.parse("0 * * * *") }
-            .isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy {
+            BatchCron.parse("0 * * * *")
+        }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
     @Test
     fun `형식이 잘못되면 거절한다`() {
-        assertThatThrownBy { BatchCron.parse("0 61 * * * *") }
-            .isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy {
+            BatchCron.parse("0 61 * * * *")
+        }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
 }

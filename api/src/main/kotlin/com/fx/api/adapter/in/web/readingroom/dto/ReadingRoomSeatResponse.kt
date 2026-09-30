@@ -37,7 +37,9 @@ data class ReadingRoomSeatResponse(
             )
 
         fun from(readingRoomSeats: List<ReadingRoomSeat>): List<ReadingRoomSeatResponse> =
-            readingRoomSeats.map { this.from(it) }
+            readingRoomSeats.map {
+                this.from(it)
+            }
 
     }
 }

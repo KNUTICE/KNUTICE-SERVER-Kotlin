@@ -25,7 +25,9 @@ data class MealResponse(
             )
 
         fun from(meals: List<Meal>): List<MealResponse> =
-            meals.map { this.from(it) }
+            meals.map {
+                this.from(it)
+            }
     }
 
 }

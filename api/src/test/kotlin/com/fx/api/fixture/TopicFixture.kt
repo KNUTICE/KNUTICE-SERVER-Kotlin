@@ -37,17 +37,18 @@ object TopicFixture {
         displayName: LocalizedText,
         college: CollegeView? = null,
         visible: Boolean = true,
-    ) = TopicView(
-        id = id,
-        code = code,
-        name = name,
-        topicType = type,
-        displayName = displayName,
-        college = college,
-        rootDomain = "https://www.ut.ac.kr",
-        bbsPath = "/cop/bbs/$name/selectBoardList.do",
-        crawlEnabled = true,
-        visible = visible,
-    )
+    ) =
+        TopicView(
+            id = id,
+            code = code,
+            name = name,
+            topicType = type,
+            displayName = displayName,
+            college = college,
+            rootDomain = "https://www.ut.ac.kr",
+            bbsPath = "/cop/bbs/$name/selectBoardList.do",
+            crawlEnabled = true,
+            visible = visible,
+        )
 
 }

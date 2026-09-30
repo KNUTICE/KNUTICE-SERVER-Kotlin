@@ -38,10 +38,15 @@ class SeatAlertCheckJobTest : CrawlerIntegrationTest() {
         assertThat(execution.status).isEqualTo(BatchStatus.COMPLETED)
         val sent = pushPort.sent.single()
         assertThat(sent.tokens).containsExactly("token-ko")
-        assertThat(sent.message!!.title).isEqualTo("빈자리 알림")
-        assertThat(sent.message!!.body).isEqualTo("제1집중 학습 ZONE 10번 좌석이 비었습니다!")
-        assertThat(seatAlertRepository.findAll().map { it.id }).containsExactlyInAnyOrder(occupied.id, roomFailed.id)
-        assertThat(listOf(expired.id, available.id)).noneMatch { seatAlertRepository.existsById(requireNotNull(it)) }
+        val message = requireNotNull(sent.message)
+        assertThat(message.title).isEqualTo("빈자리 알림")
+        assertThat(message.body).isEqualTo("제1집중 학습 ZONE 10번 좌석이 비었습니다!")
+        assertThat(seatAlertRepository.findAll().map {
+            it.id
+        }).containsExactlyInAnyOrder(occupied.id, roomFailed.id)
+        assertThat(listOf(expired.id, available.id)).noneMatch {
+            seatAlertRepository.existsById(requireNotNull(it))
+        }
     }
 
     @Test

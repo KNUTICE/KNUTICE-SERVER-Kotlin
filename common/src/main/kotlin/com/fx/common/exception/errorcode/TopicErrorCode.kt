@@ -11,7 +11,9 @@ enum class TopicErrorCode(
     TOPIC_NOT_FOUND(HttpStatus.NOT_FOUND, "유효하지 않은 구독입니다.")
     ;
 
-    override fun getHttpStatus(): HttpStatus = httpStatus
-    override fun getMessage(): String = message
+    override fun getHttpStatus(): HttpStatus =
+        httpStatus
+    override fun getMessage(): String =
+        message
 
 }

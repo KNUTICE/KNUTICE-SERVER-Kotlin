@@ -28,10 +28,16 @@ class MealNotifyService(
 
     override fun fetchTodayMeals(): List<Meal> {
         val today = LocalDate.now(clock)
-        val topics = catalogQueryUseCase.getTopicCatalog().topicsOf(TopicType.MEAL).filter { it.crawlEnabled }
+        val topics = catalogQueryUseCase.getTopicCatalog().topicsOf(TopicType.MEAL).filter {
+            it.crawlEnabled
+        }
 
         val results = schoolSiteExecutor.invokeAll(
-            topics.map { topic -> { mealPort.fetchMeal(topic, today) } },
+            topics.map { topic ->
+                {
+                    mealPort.fetchMeal(topic, today)
+                }
+            },
             properties.crawl.timeout,
         )
         return topics.zip(results).mapNotNull { (topic, result) ->

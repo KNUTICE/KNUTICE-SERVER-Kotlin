@@ -33,9 +33,13 @@ class BatchScheduleRepositoryTest @Autowired constructor(
 
     @Test
     fun `레거시 cron 이 스케줄로 시드된다`() {
-        val schedules = batchScheduleRepository.findAll().associateBy { it.scheduleKey }
+        val schedules = batchScheduleRepository.findAll().associateBy {
+            it.scheduleKey
+        }
 
-        assertThat(schedules.mapValues { (_, it) -> it.jobName to it.cron }).containsExactlyInAnyOrderEntriesOf(
+        assertThat(schedules.mapValues { (_, it) ->
+            it.jobName to it.cron
+        }).containsExactlyInAnyOrderEntriesOf(
             mapOf(
                 "notice-crawl-notice" to (BatchJobNames.NOTICE_CRAWL to "0 0/15 * * * *"),
                 "notice-crawl-major" to (BatchJobNames.NOTICE_CRAWL to "0 10 16 * * *"),
@@ -46,11 +50,17 @@ class BatchScheduleRepositoryTest @Autowired constructor(
             )
         )
         schedules.values.forEach { schedule ->
-            assertThatCode { BatchCron.parse(schedule.cron) }.doesNotThrowAnyException()
-            assertThatCode { BatchJobParameters.parse(schedule.jobParameters) }.doesNotThrowAnyException()
+            assertThatCode {
+                BatchCron.parse(schedule.cron)
+            }.doesNotThrowAnyException()
+            assertThatCode {
+                BatchJobParameters.parse(schedule.jobParameters)
+            }.doesNotThrowAnyException()
             assertThat(schedule.nextFireAt).isNull()
         }
-        assertThat(schedules.values).allMatch { it.enabled }
+        assertThat(schedules.values).allMatch {
+            it.enabled
+        }
         assertThat(BatchJobParameters.parse(schedules.getValue("batch-maintenance").jobParameters))
             .isEqualTo(mapOf("retentionDays" to "7"))
     }
@@ -66,12 +76,16 @@ class BatchScheduleRepositoryTest @Autowired constructor(
 
     @Test
     fun `발화는 읽은 발화 시각이 그대로일 때 한 번만 선점된다`() {
-        val schedule = batchScheduleRepository.findAll().first { it.scheduleKey == "notice-crawl-notice" }
+        val schedule = batchScheduleRepository.findAll().first {
+            it.scheduleKey == "notice-crawl-notice"
+        }
         val id = requireNotNull(schedule.id)
         val previous = LocalDateTime.of(2026, 9, 30, 10, 0)
         batchScheduleRepository.initializeNextFireAt(id, previous, now)
 
-        assertThat(batchScheduleRepository.findAllByEnabledTrueAndNextFireAtLessThanEqualOrderByNextFireAtAsc(now).map { it.id })
+        assertThat(batchScheduleRepository.findAllByEnabledTrueAndNextFireAtLessThanEqualOrderByNextFireAtAsc(now).map {
+            it.id
+        })
             .contains(id)
         assertThat(batchScheduleRepository.claim(id, previous, now.plusMinutes(8), now)).isEqualTo(1)
         assertThat(batchScheduleRepository.claim(id, previous, now.plusMinutes(8), now)).isEqualTo(0)
@@ -89,7 +103,9 @@ class BatchScheduleRepositoryTest @Autowired constructor(
         val launchedId = requireNotNull(launched.id)
         val rejectedId = requireNotNull(rejected.id)
 
-        assertThat(batchRunRequestRepository.findAllByStatusOrderByIdAsc(BatchRunRequestStatus.REQUESTED, Limit.of(10)).map { it.id })
+        assertThat(batchRunRequestRepository.findAllByStatusOrderByIdAsc(BatchRunRequestStatus.REQUESTED, Limit.of(10)).map {
+            it.id
+        })
             .containsExactly(launchedId, rejectedId)
         assertThat(batchRunRequestRepository.claim(launchedId, now)).isEqualTo(1)
         assertThat(batchRunRequestRepository.claim(launchedId, now)).isEqualTo(0)

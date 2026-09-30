@@ -11,14 +11,19 @@ class ImagePersistenceAdapter(
     private val imageRepository: ImageRepository,
 ) : ImagePersistencePort {
 
-    override fun save(image: Image): Image = imageRepository.save(image)
+    override fun save(image: Image): Image =
+        imageRepository.save(image)
 
-    override fun findLatestByType(type: ImageType): Image? = imageRepository.findFirstByTypeOrderByIdDesc(type)
+    override fun findLatestByType(type: ImageType): Image? =
+        imageRepository.findFirstByTypeOrderByIdDesc(type)
 
-    override fun findAllByType(type: ImageType): List<Image> = imageRepository.findAllByTypeOrderByIdAsc(type)
+    override fun findAllByType(type: ImageType): List<Image> =
+        imageRepository.findAllByTypeOrderByIdAsc(type)
 
-    override fun findById(imageId: Long): Image? = imageRepository.findById(imageId).orElse(null)
+    override fun findById(imageId: Long): Image? =
+        imageRepository.findById(imageId).orElse(null)
 
-    override fun delete(image: Image) = imageRepository.delete(image)
+    override fun delete(image: Image) =
+        imageRepository.delete(image)
 
 }

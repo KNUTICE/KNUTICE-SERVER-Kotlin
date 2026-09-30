@@ -13,7 +13,9 @@ import io.mockk.mockk
 class TopicResolverTest : BehaviorSpec({
 
     val catalogQueryUseCase = mockk<CatalogQueryUseCase>()
-    every { catalogQueryUseCase.getTopicCatalog() } returns TopicFixture.CATALOG
+    every {
+        catalogQueryUseCase.getTopicCatalog()
+    } returns TopicFixture.CATALOG
     val topicResolver = TopicResolver(catalogQueryUseCase)
 
     Given("토픽 이름으로 찾기") {
@@ -26,13 +28,17 @@ class TopicResolverTest : BehaviorSpec({
 
         When("존재하지 않는 이름이면") {
             Then("TopicException 이 발생한다") {
-                shouldThrow<TopicException> { topicResolver.byName("NOT_EXIST_TOPIC") }
+                shouldThrow<TopicException> {
+                    topicResolver.byName("NOT_EXIST_TOPIC")
+                }
             }
         }
 
         When("기대한 유형이 아니면") {
             Then("TopicException 이 발생한다") {
-                shouldThrow<TopicException> { topicResolver.byName("GENERAL_NEWS", TopicType.MEAL) }
+                shouldThrow<TopicException> {
+                    topicResolver.byName("GENERAL_NEWS", TopicType.MEAL)
+                }
             }
         }
     }
@@ -46,7 +52,9 @@ class TopicResolverTest : BehaviorSpec({
 
         When("존재하지 않는 코드면") {
             Then("TopicException 이 발생한다") {
-                shouldThrow<TopicException> { topicResolver.byCode(9999) }
+                shouldThrow<TopicException> {
+                    topicResolver.byCode(9999)
+                }
             }
         }
     }

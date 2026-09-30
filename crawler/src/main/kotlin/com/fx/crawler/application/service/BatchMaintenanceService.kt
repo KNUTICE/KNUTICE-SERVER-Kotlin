@@ -16,7 +16,9 @@ class BatchMaintenanceService(
 
     @Transactional
     override fun deleteExpiredExecutions(retentionDays: Int, limit: Int): Int {
-        require(retentionDays >= 1) { "보존 기간은 1일 이상이어야 합니다: $retentionDays" }
+        require(retentionDays >= 1) {
+            "보존 기간은 1일 이상이어야 합니다: $retentionDays"
+        }
         val cutoff = LocalDateTime.now(clock).minusDays(retentionDays.toLong())
         return batchMetadataPort.deleteJobExecutionsEndedBefore(cutoff, limit)
     }

@@ -35,7 +35,9 @@ data class NoticeResponseV2(
             )
 
         fun from(notices: List<Notice>): List<NoticeResponseV2> =
-            notices.map { this.from(it) }
+            notices.map {
+                this.from(it)
+            }
     }
 
 }

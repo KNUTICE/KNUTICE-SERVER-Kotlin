@@ -36,35 +36,53 @@ class MigrationService(
 
     private val log = LoggerFactory.getLogger(MigrationService::class.java)
     private val transaction = TransactionTemplate(transactionManager)
-    private val newId: () -> Long = { TSID.fast().toLong() }
+    private val newId: () -> Long = {
+        TSID.fast().toLong()
+    }
 
     fun migrate(): MigrationReport {
         val nonEmptyTables = targetWriter.nonEmptyTables()
-        check(nonEmptyTables.isEmpty()) { "이관 대상 테이블에 이미 데이터가 있습니다: $nonEmptyTables. 빈 DB 에서 실행하세요." }
+        check(nonEmptyTables.isEmpty()) {
+            "이관 대상 테이블에 이미 데이터가 있습니다: $nonEmptyTables. 빈 DB 에서 실행하세요."
+        }
         val topics = targetWriter.loadTopics()
-        check(topics.isNotEmpty()) { "topic 시드가 없습니다. Flyway 마이그레이션을 확인하세요." }
+        check(topics.isNotEmpty()) {
+            "topic 시드가 없습니다. Flyway 마이그레이션을 확인하세요."
+        }
 
         val mapper = LegacyMapper(topics, LocalDateTime.now(properties.legacyZone), newId)
         val report = MigrationReport()
 
-        val notices = migrate(report, LegacyCollections.NOTICE, mapper::notice) { targetWriter.insertNotices(it) }
+        val notices = migrate(report, LegacyCollections.NOTICE, mapper::notice) {
+            targetWriter.insertNotices(it)
+        }
 
         var subscriptions = 0L
         val tokens = migrate(report, LegacyCollections.FCM_TOKEN, mapper::fcmToken) { rows ->
             targetWriter.insertFcmTokens(rows)
-            subscriptions += rows.sumOf { it.subscriptions.size }
+            subscriptions += rows.sumOf {
+                it.subscriptions.size
+            }
         }
 
-        val users = migrate(report, LegacyCollections.USER, mapper::user, rejectDuplicateUser()) { targetWriter.insertUsers(it) }
-        val tips = migrate(report, LegacyCollections.TIP, mapper::tip) { targetWriter.insertTips(it) }
-        val images = migrate(report, LegacyCollections.IMAGE, mapper::image) { targetWriter.insertImages(it) }
+        val users = migrate(report, LegacyCollections.USER, mapper::user, rejectDuplicateUser()) {
+            targetWriter.insertUsers(it)
+        }
+        val tips = migrate(report, LegacyCollections.TIP, mapper::tip) {
+            targetWriter.insertTips(it)
+        }
+        val images = migrate(report, LegacyCollections.IMAGE, mapper::image) {
+            targetWriter.insertImages(it)
+        }
 
         var inactiveTokens = 0L
         val reports = migrate(report, LegacyCollections.REPORT, mapper::report) { rows ->
             inactiveTokens += insertReports(rows, report.collections.last())
         }
 
-        LegacyCollections.EXCLUDED.forEach { report.excluded[it] = legacyMongoReader.count(it) }
+        LegacyCollections.EXCLUDED.forEach {
+            report.excluded[it] = legacyMongoReader.count(it)
+        }
         report.tableChecks += listOf(
             check("notice", notices.migrated),
             check("notice_content", notices.migrated),
@@ -87,19 +105,27 @@ class MigrationService(
         report: MigrationReport,
         collection: String,
         map: (LegacyDocument) -> Mapped<T>,
-        reject: (T) -> String? = { null },
+        reject: (T) -> String? = {
+            null
+        },
         write: (List<T>) -> Unit,
     ): CollectionResult {
-        val result = CollectionResult(collection, legacyMongoReader.count(collection)).also { report.collections += it }
+        val result = CollectionResult(collection, legacyMongoReader.count(collection)).also {
+            report.collections += it
+        }
 
         legacyMongoReader.forEachChunk(collection) { documents ->
             val rows = documents.mapNotNull { document ->
                 when (val mapped = map(document)) {
-                    is Mapped.Skipped -> null.also { result.skip(mapped.reason) }
+                    is Mapped.Skipped -> null.also {
+                        result.skip(mapped.reason)
+                    }
                     is Mapped.Row -> {
                         val rejected = reject(mapped.row)
                         if (rejected != null) {
-                            null.also { result.skip(rejected) }
+                            null.also {
+                                result.skip(rejected)
+                            }
                         } else {
                             mapped.notes.forEach(result::note)
                             mapped.row
@@ -107,7 +133,9 @@ class MigrationService(
                     }
                 }
             }
-            transaction.executeWithoutResult { write(rows) }
+            transaction.executeWithoutResult {
+                write(rows)
+            }
             result.migrated(rows.size)
             log.info("{} : {} / {}", collection, result.migrated + result.skipped.values.sum(), result.source)
         }
@@ -134,11 +162,24 @@ class MigrationService(
 
     /** 토큰이 남아 있지 않은 문의는 문의를 잃지 않도록 그 토큰을 비활성 상태로 만들어 연결한다. 만든 토큰 수를 돌려준다. */
     private fun insertReports(rows: List<ReportRow>, result: CollectionResult): Int {
-        val tokenIds = targetWriter.findTokenIds(rows.map { it.token }.toSet()).toMutableMap()
-        val missingTokens = rows.filter { it.token !in tokenIds }
-            .onEach { result.note("토큰이 없어 비활성 토큰을 만들어 연결") }
-            .groupBy { it.token }
-            .mapValues { (_, reports) -> reports.minOf { it.createdAt } }
+        val tokenIds = targetWriter.findTokenIds(rows.map {
+            it.token
+        }.toSet()).toMutableMap()
+        val missingTokens = rows
+            .filter {
+                it.token !in tokenIds
+            }
+            .onEach {
+                result.note("토큰이 없어 비활성 토큰을 만들어 연결")
+            }
+            .groupBy {
+                it.token
+            }
+            .mapValues { (_, reports) ->
+                reports.minOf {
+                    it.createdAt
+                }
+            }
 
         tokenIds += targetWriter.insertInactiveTokens(missingTokens, newId)
         targetWriter.insertReports(rows, tokenIds)

@@ -23,8 +23,12 @@ class FcmTokenQueryService(
         // 삭제된 토픽의 구독은 카탈로그에 없으므로 빠진다
         return subscribedCodes
             .mapNotNull(catalog::findByCode)
-            .filter { it.topicType == type }
-            .sortedBy { it.code }
+            .filter {
+                it.topicType == type
+            }
+            .sortedBy {
+                it.code
+            }
     }
 
 }

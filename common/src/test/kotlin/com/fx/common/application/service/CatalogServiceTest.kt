@@ -14,16 +14,25 @@ import java.time.ZoneOffset
 class CatalogServiceTest {
 
     private class MutableClock(var now: Instant) : Clock() {
-        override fun getZone(): ZoneId = ZoneOffset.UTC
-        override fun withZone(zone: ZoneId?): Clock = this
-        override fun instant(): Instant = now
+        override fun getZone(): ZoneId =
+            ZoneOffset.UTC
+        override fun withZone(zone: ZoneId?): Clock =
+            this
+        override fun instant(): Instant =
+            now
     }
 
     private class CountingPort : CatalogPersistencePort {
         var topicLoads = 0
         var templateLoads = 0
-        override fun loadTopicCatalog(): TopicCatalog = TopicCatalog(emptyList(), emptyList()).also { topicLoads++ }
-        override fun loadNotificationTemplateCatalog(): NotificationTemplateCatalog = NotificationTemplateCatalog(emptyMap()).also { templateLoads++ }
+        override fun loadTopicCatalog(): TopicCatalog =
+            TopicCatalog(emptyList(), emptyList()).also {
+                topicLoads++
+            }
+        override fun loadNotificationTemplateCatalog(): NotificationTemplateCatalog =
+            NotificationTemplateCatalog(emptyMap()).also {
+                templateLoads++
+            }
     }
 
     private val clock = MutableClock(Instant.parse("2026-09-29T00:00:00Z"))

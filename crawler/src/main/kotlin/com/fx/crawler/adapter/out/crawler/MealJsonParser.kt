@@ -16,7 +16,9 @@ class MealJsonParser(
     /** [date] 의 식단. 없거나 한식 · 일품 메뉴가 모두 비어 있으면 null. */
     fun parse(json: String, topicCode: Int, date: LocalDate): Meal? {
         val meal = jsonMapper.readValue<List<MealResponse>>(json)
-            .firstOrNull { it.mealDate == date.toString() }
+            .firstOrNull {
+                it.mealDate == date.toString()
+            }
             ?: return null
 
         val koreaMenus = parseMenu(meal.koreaFood)
@@ -28,12 +30,18 @@ class MealJsonParser(
     }
 
     private fun parseMenu(rawContent: String?): List<String> {
-        val content = rawContent?.takeUnless { it.isBlank() || it.equals("null", ignoreCase = true) }
+        val content = rawContent?.takeUnless {
+            it.isBlank() || it.equals("null", ignoreCase = true)
+        }
             ?: return emptyList()
 
         return content.split("\r\n")
-            .map { StringEscapeUtils.unescapeHtml4(it).trim() }
-            .filter { it.isNotBlank() }
+            .map {
+                StringEscapeUtils.unescapeHtml4(it).trim()
+            }
+            .filter {
+                it.isNotBlank()
+            }
     }
 
     private data class MealResponse(

@@ -46,19 +46,27 @@ class NoticePersistenceAdapterTest @Autowired constructor(
     @Test
     fun `공지가 없으면 예외가 발생한다`() {
         assertThat(noticePersistenceAdapter.existsByNttId(100)).isFalse()
-        assertThatThrownBy { noticePersistenceAdapter.getNotice(100) }.isInstanceOf(NoticeException::class.java)
+        assertThatThrownBy {
+            noticePersistenceAdapter.getNotice(100)
+        }.isInstanceOf(NoticeException::class.java)
     }
 
     @Test
     fun `목록은 nttId 내림차순으로 커서 이전의 공지를 size 개 읽는다`() {
-        (1L..5L).forEach { noticePersistenceAdapter.create(crawledNotice(it), null) }
+        (1L..5L).forEach {
+            noticePersistenceAdapter.create(crawledNotice(it), null)
+        }
         flushAndClear()
 
         val firstPage = noticePersistenceAdapter.findNotices(NoticeQuery(size = 2))
         val nextPage = noticePersistenceAdapter.findNotices(NoticeQuery(nttId = firstPage.last().nttId, size = 2))
 
-        assertThat(firstPage.map { it.nttId }).containsExactly(5L, 4L)
-        assertThat(nextPage.map { it.nttId }).containsExactly(3L, 2L)
+        assertThat(firstPage.map {
+            it.nttId
+        }).containsExactly(5L, 4L)
+        assertThat(nextPage.map {
+            it.nttId
+        }).containsExactly(3L, 2L)
     }
 
     @Test
@@ -68,12 +76,18 @@ class NoticePersistenceAdapterTest @Autowired constructor(
         noticePersistenceAdapter.create(crawledNotice(3, title = "scholarship 선발", topic = TopicFixture.COMPUTER_SOFTWARE), null)
         flushAndClear()
 
-        assertThat(noticePersistenceAdapter.findNotices(NoticeQuery(topicCode = 1, size = 10)).map { it.nttId })
+        assertThat(noticePersistenceAdapter.findNotices(NoticeQuery(topicCode = 1, size = 10)).map {
+            it.nttId
+        })
             .containsExactly(2L, 1L)
         // 대소문자를 구분하지 않는다 (utf8mb4_0900_ai_ci)
-        assertThat(noticePersistenceAdapter.findNotices(NoticeQuery(keyword = "SCHOLARSHIP", size = 10)).map { it.nttId })
+        assertThat(noticePersistenceAdapter.findNotices(NoticeQuery(keyword = "SCHOLARSHIP", size = 10)).map {
+            it.nttId
+        })
             .containsExactly(3L, 1L)
-        assertThat(noticePersistenceAdapter.findNotices(NoticeQuery(topicCode = 300, keyword = "선발", size = 10)).map { it.nttId })
+        assertThat(noticePersistenceAdapter.findNotices(NoticeQuery(topicCode = 300, keyword = "선발", size = 10)).map {
+            it.nttId
+        })
             .containsExactly(3L)
     }
 

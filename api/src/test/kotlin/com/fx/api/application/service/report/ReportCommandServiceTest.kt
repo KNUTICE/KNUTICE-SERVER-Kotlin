@@ -33,26 +33,44 @@ class ReportCommandServiceTest : BehaviorSpec({
 
         When("토큰이 존재하면") {
             clearMocks(reportPersistencePort, fcmTokenPersistencePort, webhookPort)
-            every { fcmTokenPersistencePort.getByToken("fcmToken") } returns FcmToken("fcmToken", DeviceType.iOS).withId(1L)
+            every {
+                fcmTokenPersistencePort.getByToken("fcmToken")
+            } returns FcmToken("fcmToken", DeviceType.iOS).withId(1L)
             val saved = slot<Report>()
-            every { reportPersistencePort.save(capture(saved)) } answers { saved.captured }
+            every {
+                reportPersistencePort.save(capture(saved))
+            } answers {
+                saved.captured
+            }
 
             Then("토큰 ID 로 저장하고 Slack 으로 알린다") {
                 reportCommandService.saveReport(command) shouldBe true
                 saved.captured.fcmTokenId shouldBe 1L
                 saved.captured.content shouldBe command.content
-                verify(exactly = 1) { webhookPort.notifySlack(match { it.type == SlackType.REPORT }) }
+                verify(exactly = 1) {
+                    webhookPort.notifySlack(match {
+                        it.type == SlackType.REPORT
+                    })
+                }
             }
         }
 
         When("토큰이 존재하지 않으면") {
             clearMocks(reportPersistencePort, fcmTokenPersistencePort, webhookPort)
-            every { fcmTokenPersistencePort.getByToken("fcmToken") } throws FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+            every {
+                fcmTokenPersistencePort.getByToken("fcmToken")
+            } throws FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
 
             Then("FcmTokenException 이 발생하고 저장 · 알림을 하지 않는다") {
-                shouldThrow<FcmTokenException> { reportCommandService.saveReport(command) }
-                verify(exactly = 0) { reportPersistencePort.save(any()) }
-                verify(exactly = 0) { webhookPort.notifySlack(any()) }
+                shouldThrow<FcmTokenException> {
+                    reportCommandService.saveReport(command)
+                }
+                verify(exactly = 0) {
+                    reportPersistencePort.save(any())
+                }
+                verify(exactly = 0) {
+                    webhookPort.notifySlack(any())
+                }
             }
         }
     }

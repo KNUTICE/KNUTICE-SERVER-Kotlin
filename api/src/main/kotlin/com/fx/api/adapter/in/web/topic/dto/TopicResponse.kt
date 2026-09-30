@@ -10,7 +10,9 @@ data class TopicResponse(
     companion object {
 
         fun from(subscribedTopics: List<TopicView>): TopicResponse =
-            TopicResponse(subscribedTopics.mapTo(linkedSetOf()) { it.name })
+            TopicResponse(subscribedTopics.mapTo(linkedSetOf()) {
+                it.name
+            })
     }
 
 }

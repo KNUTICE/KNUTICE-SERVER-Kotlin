@@ -15,9 +15,12 @@ class BatchCron private constructor(
 
     /** [after] 이후 첫 발화 시각. */
     fun next(after: LocalDateTime): LocalDateTime =
-        checkNotNull(cronExpression.next(after)) { "다음 실행 시각이 없는 cron 입니다: $expression" }
+        checkNotNull(cronExpression.next(after)) {
+            "다음 실행 시각이 없는 cron 입니다: $expression"
+        }
 
-    override fun toString(): String = expression
+    override fun toString(): String =
+        expression
 
     companion object {
 
@@ -25,8 +28,12 @@ class BatchCron private constructor(
         fun parse(expression: String): BatchCron {
             val trimmed = expression.trim()
             val fields = trimmed.split(Regex("\\s+"))
-            require(fields.size == 6) { "cron 은 초 분 시 일 월 요일 6개 필드여야 합니다: $expression" }
-            require(fields[0] == "0") { "폴러가 1분마다 확인하므로 초 필드는 0 이어야 합니다: $expression" }
+            require(fields.size == 6) {
+                "cron 은 초 분 시 일 월 요일 6개 필드여야 합니다: $expression"
+            }
+            require(fields[0] == "0") {
+                "폴러가 1분마다 확인하므로 초 필드는 0 이어야 합니다: $expression"
+            }
             return BatchCron(trimmed, CronExpression.parse(trimmed))
         }
 

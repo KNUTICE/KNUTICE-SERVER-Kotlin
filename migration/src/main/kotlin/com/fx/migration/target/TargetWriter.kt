@@ -20,10 +20,14 @@ class TargetWriter(
 
     /** 이미 행이 있는 이관 대상 테이블. 이관은 빈 테이블에만 한다. */
     fun nonEmptyTables(): List<String> =
-        TARGET_TABLES.filter { count(it) > 0 }
+        TARGET_TABLES.filter {
+            count(it) > 0
+        }
 
     fun count(table: String): Long {
-        require(table in TARGET_TABLES) { "이관 대상 테이블이 아닙니다: $table" }
+        require(table in TARGET_TABLES) {
+            "이관 대상 테이블이 아닙니다: $table"
+        }
         return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM $table", emptyMap<String, Any>(), Long::class.java) ?: 0
     }
 
@@ -31,7 +35,9 @@ class TargetWriter(
     fun loadTopics(): Map<String, TopicRef> =
         jdbcTemplate.query("SELECT code, name FROM topic", emptyMap<String, Any>()) { rs, _ ->
             TopicRef(rs.getInt("code"), rs.getString("name"))
-        }.associateBy { it.name }
+        }.associateBy {
+            it.name
+        }
 
     fun insertNotices(rows: List<NoticeRow>) {
         batch(
@@ -111,7 +117,9 @@ class TargetWriter(
         return jdbcTemplate.query(
             "SELECT id, token FROM fcm_token WHERE token IN (:tokens)",
             mapOf("tokens" to tokens),
-        ) { rs, _ -> rs.getString("token") to rs.getLong("id") }.toMap()
+        ) { rs, _ ->
+            rs.getString("token") to rs.getLong("id")
+        }.toMap()
     }
 
     fun insertUsers(rows: List<UserRow>) {
@@ -185,7 +193,9 @@ class TargetWriter(
             FcmTokenRow(newId(), token, DeviceType.UNKNOWN, isActive = false, createdAt = createdAt, updatedAt = createdAt, subscriptions = emptyList())
         }
         insertFcmTokens(rows)
-        return rows.associate { it.token to it.id }
+        return rows.associate {
+            it.token to it.id
+        }
     }
 
     private fun params(id: Long, createdAt: LocalDateTime, updatedAt: LocalDateTime): MapSqlParameterSource =

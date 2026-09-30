@@ -32,7 +32,9 @@ data class NoticeResponse(
             )
 
         fun from(notices: List<Notice>): List<NoticeResponse> =
-            notices.map { this.from(it) }
+            notices.map {
+                this.from(it)
+            }
     }
 
 }

@@ -17,12 +17,16 @@ object NoticePushComposer {
 
     /** @param notices 같은 토픽의 공지. 앞의 공지가 묶음 알림의 대표가 된다. */
     fun compose(topic: TopicView, notices: List<Notice>, templates: NotificationTemplateCatalog): LocalizedPushMessages {
-        require(notices.isNotEmpty()) { "알림을 만들 공지가 없습니다." }
+        require(notices.isNotEmpty()) {
+            "알림을 만들 공지가 없습니다."
+        }
 
         return LocalizedPushMessages.compose { language ->
             val title = topic.displayName.resolve(language)
             if (notices.size < GROUPING_THRESHOLD) {
-                notices.map { message(title, it.title, it) }
+                notices.map {
+                    message(title, it.title, it)
+                }
             } else {
                 val first = notices.first()
                 val body = templates.render(

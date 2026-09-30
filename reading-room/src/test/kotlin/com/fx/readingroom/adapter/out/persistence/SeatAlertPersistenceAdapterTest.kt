@@ -36,7 +36,8 @@ class SeatAlertPersistenceAdapterTest @Autowired constructor(
     @TestConfiguration(proxyBeanMethods = false)
     class FixedClockConfig {
         @Bean
-        fun clock(): Clock = Clock.fixed(Instant.parse("2026-09-30T01:00:00Z"), ZoneId.of("Asia/Seoul"))
+        fun clock(): Clock =
+            Clock.fixed(Instant.parse("2026-09-30T01:00:00Z"), ZoneId.of("Asia/Seoul"))
     }
 
     private val now = LocalDateTime.of(2026, 9, 30, 10, 0)
@@ -51,15 +52,18 @@ class SeatAlertPersistenceAdapterTest @Autowired constructor(
 
         val active = seatAlertPersistenceAdapter.findActiveByFcmTokenId(TOKEN_ID, now)
 
-        assertThat(active.map { it.id }).containsExactly(newer.id, older.id)
+        assertThat(active.map {
+            it.id
+        }).containsExactly(newer.id, older.id)
     }
 
     @Test
     fun `같은 좌석에 활성 알림이 있으면 중복 예외가 발생한다`() {
         seatAlertPersistenceAdapter.create(SeatAlert.create(TOKEN_ID, ReadingRoom.ROOM1, 1, now))
 
-        assertThatThrownBy { seatAlertPersistenceAdapter.create(SeatAlert.create(TOKEN_ID, ReadingRoom.ROOM1, 1, now)) }
-            .isInstanceOf(DuplicateSeatAlertException::class.java)
+        assertThatThrownBy {
+            seatAlertPersistenceAdapter.create(SeatAlert.create(TOKEN_ID, ReadingRoom.ROOM1, 1, now))
+        }.isInstanceOf(DuplicateSeatAlertException::class.java)
     }
 
     @Test
@@ -69,7 +73,9 @@ class SeatAlertPersistenceAdapterTest @Autowired constructor(
         val created = seatAlertPersistenceAdapter.create(SeatAlert.create(TOKEN_ID, ReadingRoom.ROOM1, 1, now))
         flushAndClear()
 
-        assertThat(seatAlertRepository.findAll().map { it.id }).containsExactly(created.id)
+        assertThat(seatAlertRepository.findAll().map {
+            it.id
+        }).containsExactly(created.id)
     }
 
     @Test

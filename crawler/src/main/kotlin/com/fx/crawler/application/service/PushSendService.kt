@@ -19,7 +19,9 @@ class PushSendService(
 
     override fun send(targets: List<PushTarget>, messages: LocalizedPushMessages): PushSendResult {
         val invalidTokenIds = mutableSetOf<Long>()
-        targets.groupBy { it.resolveLanguage() }.forEach { (language, sameLanguageTargets) ->
+        targets.groupBy {
+            it.resolveLanguage()
+        }.forEach { (language, sameLanguageTargets) ->
             messages.of(language).forEach { message ->
                 invalidTokenIds += pushPort.send(sameLanguageTargets, message)
             }

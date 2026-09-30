@@ -12,6 +12,7 @@ data class SeatAlertTarget(
     val seatNumber: Int,
 ) {
 
-    fun resolveLanguage(): Language = Language.from(language)
+    fun resolveLanguage(): Language =
+        Language.from(language)
 
 }

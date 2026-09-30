@@ -45,7 +45,9 @@ class FcmTokenPersistenceAdapterTest @Autowired constructor(
     @Test
     fun `없는 토큰을 조회하면 예외가 발생한다`() {
         assertThat(fcmTokenPersistenceAdapter.findByToken("unknown")).isNull()
-        assertThatThrownBy { fcmTokenPersistenceAdapter.getByToken("unknown") }.isInstanceOf(FcmTokenException::class.java)
+        assertThatThrownBy {
+            fcmTokenPersistenceAdapter.getByToken("unknown")
+        }.isInstanceOf(FcmTokenException::class.java)
     }
 
     @Test

@@ -72,7 +72,9 @@ class MealNotifyJobConfig(
         jsonMapper: JsonMapper,
     ): Partitioner =
         TopicPushPartitioner(jsonMapper) {
-            val meals = mealsJson?.let { jsonMapper.readValue<List<Meal>>(it) }.orEmpty()
+            val meals = mealsJson?.let {
+                jsonMapper.readValue<List<Meal>>(it)
+            }.orEmpty()
             mealNotifyUseCase.preparePushPlans(meals)
         }
 

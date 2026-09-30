@@ -5,7 +5,7 @@ webhook:
 logging:
   level:
     org:
-      springframework.web: DEBUG
+      springframework.web: {LOG_LEVEL:DEBUG}
 
 management:
   endpoints:

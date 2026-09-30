@@ -28,51 +28,68 @@ class NoticeCommandServiceTest : BehaviorSpec({
 
     val noticePersistencePort = mockk<NoticePersistencePort>(relaxed = true)
     val catalogQueryUseCase = mockk<CatalogQueryUseCase>()
-    every { catalogQueryUseCase.getTopicCatalog() } returns TopicFixture.CATALOG
+    every {
+        catalogQueryUseCase.getTopicCatalog()
+    } returns TopicFixture.CATALOG
     val noticeCommandService = NoticeCommandService(noticePersistencePort, TopicResolver(catalogQueryUseCase))
 
-    fun command(summary: String?, topicName: String = "GENERAL_NEWS", topicType: TopicType = TopicType.NOTICE) = NoticeCommand(
-        nttId = 1L,
-        title = "관리자 공지",
-        contentUrl = "https://www.ut.ac.kr/notice/1",
-        contentSummary = summary,
-        department = "학사팀",
-        registrationDate = LocalDate.of(2026, 9, 30),
-        isAttachment = false,
-        topicName = topicName,
-        topicType = topicType,
-    )
+    fun command(summary: String?, topicName: String = "GENERAL_NEWS", topicType: TopicType = TopicType.NOTICE) =
+        NoticeCommand(
+            nttId = 1L,
+            title = "관리자 공지",
+            contentUrl = "https://www.ut.ac.kr/notice/1",
+            contentSummary = summary,
+            department = "학사팀",
+            registrationDate = LocalDate.of(2026, 9, 30),
+            isAttachment = false,
+            topicName = topicName,
+            topicType = topicType,
+        )
 
     Given("관리자 공지 등록") {
 
         When("요약과 함께 등록하면") {
             clearMocks(noticePersistencePort)
-            every { noticePersistencePort.existsByNttId(1L) } returns false
+            every {
+                noticePersistencePort.existsByNttId(1L)
+            } returns false
             val saved = slot<Notice>()
-            every { noticePersistencePort.create(capture(saved), any()) } answers { saved.captured }
+            every {
+                noticePersistencePort.create(capture(saved), any())
+            } answers {
+                saved.captured
+            }
 
             Then("알림은 보내지 않고 요약은 있는 상태로 저장한다") {
                 noticeCommandService.saveNotice(command(summary = "요약")) shouldBe true
                 saved.captured.notificationStatus shouldBe NotificationStatus.SKIPPED
                 saved.captured.summaryStatus shouldBe SummaryStatus.COMPLETED
                 saved.captured.topicCode shouldBe 1
-                verify(exactly = 1) { noticePersistencePort.create(any(), "요약") }
+                verify(exactly = 1) {
+                    noticePersistencePort.create(any(), "요약")
+                }
             }
         }
 
         When("이미 있는 nttId 면") {
             clearMocks(noticePersistencePort)
-            every { noticePersistencePort.existsByNttId(1L) } returns true
+            every {
+                noticePersistencePort.existsByNttId(1L)
+            } returns true
 
             Then("ALREADY_EXISTS 예외가 발생한다") {
-                val exception = shouldThrow<NoticeException> { noticeCommandService.saveNotice(command(summary = null)) }
+                val exception = shouldThrow<NoticeException> {
+                    noticeCommandService.saveNotice(command(summary = null))
+                }
                 exception.baseErrorCode shouldBe NoticeErrorCode.ALREADY_EXISTS
             }
         }
 
         When("토픽이 요청한 유형에 속하지 않으면") {
             clearMocks(noticePersistencePort)
-            every { noticePersistencePort.existsByNttId(1L) } returns false
+            every {
+                noticePersistencePort.existsByNttId(1L)
+            } returns false
 
             Then("TopicException 이 발생한다") {
                 shouldThrow<TopicException> {
@@ -92,8 +109,12 @@ class NoticeCommandServiceTest : BehaviorSpec({
                 registrationDate = LocalDate.of(2026, 9, 1), isAttachment = false, hasSummary = true,
             ).withId(10L)
             val content = NoticeContent(10L, content = "본문", contentSummary = "요약")
-            every { noticePersistencePort.getNotice(1L) } returns notice
-            every { noticePersistencePort.findNoticeContent(10L) } returns content
+            every {
+                noticePersistencePort.getNotice(1L)
+            } returns notice
+            every {
+                noticePersistencePort.findNoticeContent(10L)
+            } returns content
 
             Then("필드를 바꾸고 요약 상태를 SKIPPED 로 바꾼다. 본문은 그대로 둔다") {
                 noticeCommandService.updateNotice(command(summary = null, topicName = "SCHOLARSHIP_NEWS")) shouldBe true

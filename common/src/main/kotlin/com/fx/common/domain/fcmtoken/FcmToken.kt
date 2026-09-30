@@ -53,7 +53,9 @@ class FcmToken(
         protected set
 
     init {
-        require(token.isNotBlank()) { "FCM 토큰은 비어 있을 수 없습니다." }
+        require(token.isNotBlank()) {
+            "FCM 토큰은 비어 있을 수 없습니다."
+        }
     }
 
     fun activate() {
@@ -66,11 +68,14 @@ class FcmToken(
 
     /** 앱이 새 토큰을 받았을 때. 같은 행을 유지해 구독과 연결된 데이터가 그대로 남는다. */
     fun changeToken(newToken: String) {
-        require(newToken.isNotBlank()) { "FCM 토큰은 비어 있을 수 없습니다." }
+        require(newToken.isNotBlank()) {
+            "FCM 토큰은 비어 있을 수 없습니다."
+        }
         token = newToken
         isActive = true
     }
 
-    fun resolveLanguage(): Language = Language.from(language)
+    fun resolveLanguage(): Language =
+        Language.from(language)
 
 }

@@ -24,19 +24,25 @@ class NoticePushService(
      * 삭제된 토픽의 공지는 표시명이 없으므로 보내지 않는다.
      */
     override fun preparePushPlans(topicType: TopicType): List<TopicPushPlan> {
-        val topicsByCode = catalogQueryUseCase.getTopicCatalog().topicsOf(topicType).associateBy { it.code }
+        val topicsByCode = catalogQueryUseCase.getTopicCatalog().topicsOf(topicType).associateBy {
+            it.code
+        }
         if (topicsByCode.isEmpty()) {
             return emptyList()
         }
         val templates = catalogQueryUseCase.getNotificationTemplateCatalog()
 
         return noticePersistencePort.findPendingNotification(topicsByCode.keys)
-            .groupBy { it.topicCode }
+            .groupBy {
+                it.topicCode
+            }
             .map { (topicCode, notices) ->
                 TopicPushPlan(
                     topicCode = topicCode,
                     messages = NoticePushComposer.compose(topicsByCode.getValue(topicCode), notices, templates),
-                    noticeIds = notices.map { requireNotNull(it.id) },
+                    noticeIds = notices.map {
+                        requireNotNull(it.id)
+                    },
                 )
             }
     }

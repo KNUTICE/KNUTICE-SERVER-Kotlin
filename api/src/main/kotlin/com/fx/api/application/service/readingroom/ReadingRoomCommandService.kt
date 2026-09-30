@@ -34,7 +34,9 @@ class ReadingRoomCommandService(
         val seat = readingRoomRemotePort.getReadingRoomSeats(
             seatAlertCommand.readingRoom,
             readingRoomRemotePort.getCsrfToken(),
-        ).find { it.seatNumber == seatAlertCommand.seatNumber }
+        ).find {
+            it.seatNumber == seatAlertCommand.seatNumber
+        }
             ?: throw ReadingRoomException(ReadingRoomErrorCode.SEAT_NOT_FOUND)
 
         // 이미 비어 있는 좌석에는 알림을 걸지 않는다
@@ -47,7 +49,9 @@ class ReadingRoomCommandService(
         if (activeAlerts.size >= SeatAlert.MAX_ACTIVE_PER_TOKEN) {
             throw ReadingRoomException(ReadingRoomErrorCode.MAX_SEAT_ALERT_LIMIT_EXCEEDED)
         }
-        if (activeAlerts.any { it.isSameSeat(seatAlertCommand.readingRoom, seatAlertCommand.seatNumber) }) {
+        if (activeAlerts.any {
+            it.isSameSeat(seatAlertCommand.readingRoom, seatAlertCommand.seatNumber)
+        }) {
             throw ReadingRoomException(ReadingRoomErrorCode.SEAT_ALERT_ALREADY_EXISTS)
         }
 

@@ -13,7 +13,9 @@ enum class JwtErrorCode(
     TOKEN_EXCEPTION(HttpStatus.UNAUTHORIZED, "알 수 없는 토큰 에러입니다.")
     ;
 
-    override fun getHttpStatus(): HttpStatus = httpStatus
-    override fun getMessage(): String = message
+    override fun getHttpStatus(): HttpStatus =
+        httpStatus
+    override fun getMessage(): String =
+        message
 
 }

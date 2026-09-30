@@ -18,7 +18,9 @@ class TopicResolver(
 
     fun byName(topicName: String, expectedType: TopicType? = null): TopicView {
         val topic = catalogQueryUseCase.getTopicCatalog().findByName(topicName)
-        return topic?.takeIf { expectedType == null || it.topicType == expectedType }
+        return topic?.takeIf {
+            expectedType == null || it.topicType == expectedType
+        }
             ?: throw TopicException(TopicErrorCode.TOPIC_NOT_FOUND)
     }
 

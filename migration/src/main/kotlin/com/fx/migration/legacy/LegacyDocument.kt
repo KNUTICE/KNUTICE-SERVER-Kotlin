@@ -21,25 +21,36 @@ class LegacyDocument(
     val id: Any?
         get() = document["_id"]
 
-    fun string(key: String): String? = document[key]?.toString()
+    fun string(key: String): String? =
+        document[key]?.toString()
 
-    fun long(key: String): Long? = (document[key] as? Number)?.toLong()
+    fun long(key: String): Long? =
+        (document[key] as? Number)?.toLong()
 
     /** 여러 이름 중 먼저 있는 값. Kotlin `isXxx` 프로퍼티는 저장 이름이 버전마다 다를 수 있어 둘 다 확인한다. */
-    fun boolean(vararg keys: String): Boolean? = keys.firstNotNullOfOrNull { document[it] as? Boolean }
+    fun boolean(vararg keys: String): Boolean? =
+        keys.firstNotNullOfOrNull {
+            document[it] as? Boolean
+        }
 
     fun dateTime(key: String): LocalDateTime? =
-        (document[key] as? Date)?.let { LocalDateTime.ofInstant(it.toInstant(), zone) }
+        (document[key] as? Date)?.let {
+            LocalDateTime.ofInstant(it.toInstant(), zone)
+        }
 
     fun date(key: String): LocalDate? =
         when (val value = document[key]) {
             is Date -> LocalDateTime.ofInstant(value.toInstant(), zone).toLocalDate()
-            is String -> runCatching { LocalDate.parse(value) }.getOrNull()
+            is String -> runCatching {
+                LocalDate.parse(value)
+            }.getOrNull()
             else -> null
         }
 
     /** 문자열 배열 (enum 이름 집합 등). 없으면 빈 목록. */
     fun strings(key: String): List<String> =
-        (document[key] as? Collection<*>).orEmpty().mapNotNull { it?.toString() }
+        (document[key] as? Collection<*>).orEmpty().mapNotNull {
+            it?.toString()
+        }
 
 }

@@ -34,7 +34,9 @@ data class SeatAlertResponse(
             )
 
         fun from(seatAlerts: List<SeatAlert>): List<SeatAlertResponse> =
-            seatAlerts.map { from(it) }
+            seatAlerts.map {
+                from(it)
+            }
     }
 
 }

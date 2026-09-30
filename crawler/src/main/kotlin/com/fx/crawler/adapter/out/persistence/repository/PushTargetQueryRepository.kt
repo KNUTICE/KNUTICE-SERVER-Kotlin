@@ -22,27 +22,35 @@ class PushTargetQueryRepository(
             .join(fcmToken).on(fcmToken.id.eq(fcmTokenSubscription.fcmTokenId))
             .where(
                 fcmTokenSubscription.topicCode.eq(topicCode),
-                afterFcmTokenId?.let { fcmTokenSubscription.fcmTokenId.gt(it) },
+                afterFcmTokenId?.let {
+                    fcmTokenSubscription.fcmTokenId.gt(it)
+                },
                 fcmToken.isActive.isTrue,
             )
             .orderBy(fcmTokenSubscription.fcmTokenId.asc())
             .limit(size.toLong())
             .fetch()
-            .map { it.toPushTarget(it.get(fcmTokenSubscription.fcmTokenId)) }
+            .map {
+                it.toPushTarget(it.get(fcmTokenSubscription.fcmTokenId))
+            }
 
     fun findActiveIosTargets(afterFcmTokenId: Long?, size: Int): List<PushTarget> =
         queryFactory
             .select(fcmToken.id, fcmToken.token, fcmToken.language)
             .from(fcmToken)
             .where(
-                afterFcmTokenId?.let { fcmToken.id.gt(it) },
+                afterFcmTokenId?.let {
+                    fcmToken.id.gt(it)
+                },
                 fcmToken.isActive.isTrue,
                 fcmToken.deviceType.eq(DeviceType.iOS),
             )
             .orderBy(fcmToken.id.asc())
             .limit(size.toLong())
             .fetch()
-            .map { it.toPushTarget(it.get(fcmToken.id)) }
+            .map {
+                it.toPushTarget(it.get(fcmToken.id))
+            }
 
     private fun Tuple.toPushTarget(fcmTokenId: Long?): PushTarget =
         PushTarget(

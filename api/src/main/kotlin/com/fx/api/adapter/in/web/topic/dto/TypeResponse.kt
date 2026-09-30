@@ -25,7 +25,9 @@ data class TypeResponse(
             )
 
         fun from(topics: List<TopicView>, language: Language): List<TypeResponse> =
-            topics.map { from(it, language) }
+            topics.map {
+                from(it, language)
+            }
     }
 
 }

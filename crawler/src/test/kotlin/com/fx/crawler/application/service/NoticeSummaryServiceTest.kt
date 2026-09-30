@@ -29,17 +29,22 @@ class NoticeSummaryServiceTest {
         CrawlerProperties(summary = CrawlerProperties.Summary(maxAttempts = 2)),
     )
 
-    private fun target(content: String?) = SummaryTarget(noticeId = 10, nttId = 1, topicCode = 1, title = "공지", content = content)
+    private fun target(content: String?) =
+        SummaryTarget(noticeId = 10, nttId = 1, topicCode = 1, title = "공지", content = content)
 
     @Test
     fun `본문이 없으면 요약하지 않는다`() {
         assertThat(service.summarize(target(" "))).isEqualTo(SummaryResult.Skipped(10))
-        verify(exactly = 0) { noticeSummaryPort.summarize(any()) }
+        verify(exactly = 0) {
+            noticeSummaryPort.summarize(any())
+        }
     }
 
     @Test
     fun `요약 실패는 예외 대신 결과로 돌려준다`() {
-        every { noticeSummaryPort.summarize("본문") } throws IllegalStateException("429 quota")
+        every {
+            noticeSummaryPort.summarize("본문")
+        } throws IllegalStateException("429 quota")
 
         assertThat(service.summarize(target("본문"))).isEqualTo(SummaryResult.Failed(10, "429 quota"))
     }
@@ -50,8 +55,12 @@ class NoticeSummaryServiceTest {
         val skipped = CrawlerFixture.notice(2)
         val failed = CrawlerFixture.notice(3)
         val content = NoticeContent(10, content = "본문", contentSummary = null)
-        every { noticePersistencePort.findAllByIds(any()) } returns listOf(completed, skipped, failed)
-        every { noticePersistencePort.findContents(any()) } returns listOf(content)
+        every {
+            noticePersistencePort.findAllByIds(any())
+        } returns listOf(completed, skipped, failed)
+        every {
+            noticePersistencePort.findContents(any())
+        } returns listOf(content)
 
         service.applyResults(
             listOf(SummaryResult.Completed(10, "요약"), SummaryResult.Skipped(20), SummaryResult.Failed(30, "오류"))
@@ -63,19 +72,31 @@ class NoticeSummaryServiceTest {
         // 한도(2회) 전이므로 다음 실행에서 다시 시도한다
         assertThat(failed.summaryStatus).isEqualTo(SummaryStatus.PENDING)
         assertThat(failed.summaryAttemptCount).isEqualTo(1)
-        verify(exactly = 0) { webhookPort.notifySlack(any()) }
+        verify(exactly = 0) {
+            webhookPort.notifySlack(any())
+        }
     }
 
     @Test
     fun `시도 한도에 닿으면 FAILED 로 두고 Slack 으로 알린다`() {
-        val failed = CrawlerFixture.notice(3).apply { failSummary(maxAttempts = 2) }
-        every { noticePersistencePort.findAllByIds(any()) } returns listOf(failed)
-        every { noticePersistencePort.findContents(any()) } returns emptyList()
+        val failed = CrawlerFixture.notice(3).apply {
+            failSummary(maxAttempts = 2)
+        }
+        every {
+            noticePersistencePort.findAllByIds(any())
+        } returns listOf(failed)
+        every {
+            noticePersistencePort.findContents(any())
+        } returns emptyList()
 
         service.applyResults(listOf(SummaryResult.Failed(30, "오류")))
 
         assertThat(failed.summaryStatus).isEqualTo(SummaryStatus.FAILED)
-        verify(exactly = 1) { webhookPort.notifySlack(match { it.content.contains("[nttId : 3]") }) }
+        verify(exactly = 1) {
+            webhookPort.notifySlack(match {
+                it.content.contains("[nttId : 3]")
+            })
+        }
     }
 
 }

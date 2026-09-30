@@ -26,25 +26,30 @@ class NoticeQueryServiceTest : BehaviorSpec({
 
     val noticePersistencePort = mockk<NoticePersistencePort>()
     val catalogQueryUseCase = mockk<CatalogQueryUseCase>()
-    every { catalogQueryUseCase.getTopicCatalog() } returns TopicFixture.CATALOG
+    every {
+        catalogQueryUseCase.getTopicCatalog()
+    } returns TopicFixture.CATALOG
     val noticeQueryService = NoticeQueryService(noticePersistencePort, TopicResolver(catalogQueryUseCase))
 
-    fun notice(nttId: Long) = Notice.crawled(
-        nttId = nttId,
-        topic = TopicFixture.GENERAL_NEWS,
-        title = "공지 $nttId",
-        department = "학사팀",
-        contentUrl = "https://www.ut.ac.kr/notice/$nttId",
-        contentImageUrl = null,
-        registrationDate = LocalDate.of(2026, 9, 30),
-        isAttachment = false,
-    ).withId(nttId * 10)
+    fun notice(nttId: Long) =
+        Notice.crawled(
+            nttId = nttId,
+            topic = TopicFixture.GENERAL_NEWS,
+            title = "공지 $nttId",
+            department = "학사팀",
+            contentUrl = "https://www.ut.ac.kr/notice/$nttId",
+            contentImageUrl = null,
+            registrationDate = LocalDate.of(2026, 9, 30),
+            isAttachment = false,
+        ).withId(nttId * 10)
 
     Given("공지 목록 조회") {
 
         When("v2 토픽 코드로 조회하면") {
             clearMocks(noticePersistencePort)
-            every { noticePersistencePort.findNotices(any()) } returns listOf(notice(2), notice(1))
+            every {
+                noticePersistencePort.findNotices(any())
+            } returns listOf(notice(2), notice(1))
 
             Then("토픽 코드 · 커서 · 크기로 조회한다") {
                 noticeQueryService.getNotices(NoticeSearchCommand(nttId = 100, topicId = 1, keyword = " ", size = 20)) shouldHaveSize 2
@@ -56,7 +61,9 @@ class NoticeQueryServiceTest : BehaviorSpec({
 
         When("v1 토픽 이름으로 조회하면") {
             clearMocks(noticePersistencePort)
-            every { noticePersistencePort.findNotices(any()) } returns listOf(notice(1))
+            every {
+                noticePersistencePort.findNotices(any())
+            } returns listOf(notice(1))
 
             Then("이름을 토픽 코드로 바꿔 조회한다") {
                 noticeQueryService.getNotices(NoticeSearchCommand(topicName = "COMPUTER_SOFTWARE", keyword = "장학", size = 10))
@@ -68,17 +75,23 @@ class NoticeQueryServiceTest : BehaviorSpec({
 
         When("조회 결과가 비어 있으면") {
             clearMocks(noticePersistencePort)
-            every { noticePersistencePort.findNotices(any()) } returns emptyList()
+            every {
+                noticePersistencePort.findNotices(any())
+            } returns emptyList()
 
             Then("NOTICE_NOT_FOUND 예외가 발생한다") {
-                val exception = shouldThrow<NoticeException> { noticeQueryService.getNotices(NoticeSearchCommand(size = 20)) }
+                val exception = shouldThrow<NoticeException> {
+                    noticeQueryService.getNotices(NoticeSearchCommand(size = 20))
+                }
                 exception.baseErrorCode shouldBe NoticeErrorCode.NOTICE_NOT_FOUND
             }
         }
 
         When("존재하지 않는 토픽으로 조회하면") {
             Then("TopicException 이 발생한다") {
-                shouldThrow<TopicException> { noticeQueryService.getNotices(NoticeSearchCommand(topicName = "UNKNOWN", size = 20)) }
+                shouldThrow<TopicException> {
+                    noticeQueryService.getNotices(NoticeSearchCommand(topicName = "UNKNOWN", size = 20))
+                }
             }
         }
     }
@@ -88,8 +101,12 @@ class NoticeQueryServiceTest : BehaviorSpec({
 
         When("요약이 있으면") {
             clearMocks(noticePersistencePort)
-            every { noticePersistencePort.getNotice(7) } returns target
-            every { noticePersistencePort.findNoticeContent(70) } returns NoticeContent(70, content = "본문", contentSummary = "요약")
+            every {
+                noticePersistencePort.getNotice(7)
+            } returns target
+            every {
+                noticePersistencePort.findNoticeContent(70)
+            } returns NoticeContent(70, content = "본문", contentSummary = "요약")
 
             Then("요약을 반환한다") {
                 noticeQueryService.getNoticeSummary(7) shouldBe "요약"
@@ -98,11 +115,17 @@ class NoticeQueryServiceTest : BehaviorSpec({
 
         When("요약이 없으면") {
             clearMocks(noticePersistencePort)
-            every { noticePersistencePort.getNotice(7) } returns target
-            every { noticePersistencePort.findNoticeContent(70) } returns NoticeContent(70, content = "본문", contentSummary = null)
+            every {
+                noticePersistencePort.getNotice(7)
+            } returns target
+            every {
+                noticePersistencePort.findNoticeContent(70)
+            } returns NoticeContent(70, content = "본문", contentSummary = null)
 
             Then("SUMMARY_CONTENT_NOT_FOUND 예외가 발생한다") {
-                val exception = shouldThrow<NoticeException> { noticeQueryService.getNoticeSummary(7) }
+                val exception = shouldThrow<NoticeException> {
+                    noticeQueryService.getNoticeSummary(7)
+                }
                 exception.baseErrorCode shouldBe NoticeErrorCode.SUMMARY_CONTENT_NOT_FOUND
             }
         }

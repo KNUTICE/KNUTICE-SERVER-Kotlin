@@ -37,7 +37,9 @@ class SeatAlertCheckService(
 
     override fun checkAndNotify(): Int {
         val alertsByRoom = seatAlertPersistencePort.findActiveTargets(LocalDateTime.now(clock))
-            .groupBy { it.readingRoom }
+            .groupBy {
+                it.readingRoom
+            }
         if (alertsByRoom.isEmpty()) {
             return 0
         }
@@ -45,7 +47,11 @@ class SeatAlertCheckService(
         val csrfToken = readingRoomRemotePort.getCsrfToken()
         val rooms = alertsByRoom.keys.toList()
         val seatResults = readingRoomSiteExecutor.invokeAll(
-            rooms.map { room -> { readingRoomRemotePort.getReadingRoomSeats(room, csrfToken) } },
+            rooms.map { room ->
+                {
+                    readingRoomRemotePort.getReadingRoomSeats(room, csrfToken)
+                }
+            },
             properties.seatAlert.timeout,
         )
         val templates = catalogQueryUseCase.getNotificationTemplateCatalog()
@@ -56,10 +62,16 @@ class SeatAlertCheckService(
                 log.warn("열람실 좌석 조회 실패 - room: {}, {}", room, it.message)
                 return@forEach
             }
-            val availableSeats = seats.filter { it.isAvailable }.map { it.seatNumber }.toSet()
+            val availableSeats = seats.filter {
+                it.isAvailable
+            }.map {
+                it.seatNumber
+            }.toSet()
 
             alertsByRoom.getValue(room)
-                .filter { it.seatNumber in availableSeats }
+                .filter {
+                    it.seatNumber in availableSeats
+                }
                 .forEach { alert ->
                     pushSendUseCase.send(
                         listOf(PushTarget(alert.fcmTokenId, alert.token, alert.language)),

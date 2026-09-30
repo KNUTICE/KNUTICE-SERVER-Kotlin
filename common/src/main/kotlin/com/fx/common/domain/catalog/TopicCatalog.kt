@@ -26,7 +26,8 @@ data class TopicView(
 ) {
 
     /** 크롤링할 게시판 목록 URL. */
-    fun noticeUrl(): String = rootDomain + bbsPath
+    fun noticeUrl(): String =
+        rootDomain + bbsPath
 
 }
 
@@ -42,18 +43,35 @@ class TopicCatalog(
 ) {
 
     /** code 오름차순. 레거시 enum 선언 순서와 같다. */
-    val topics: List<TopicView> = topics.sortedBy { it.code }
+    val topics: List<TopicView> =
+        topics.sortedBy {
+            it.code
+        }
 
     /** 표시 순서 오름차순. */
-    val colleges: List<CollegeView> = colleges.sortedBy { it.displayOrder }
+    val colleges: List<CollegeView> =
+        colleges.sortedBy {
+            it.displayOrder
+        }
 
-    private val topicsByCode: Map<Int, TopicView> = this.topics.associateBy { it.code }
-    private val topicsByName: Map<String, TopicView> = this.topics.associateBy { it.name }
+    private val topicsByCode: Map<Int, TopicView> =
+        this.topics.associateBy {
+            it.code
+        }
+    private val topicsByName: Map<String, TopicView> =
+        this.topics.associateBy {
+            it.name
+        }
 
-    fun findByCode(code: Int): TopicView? = topicsByCode[code]
+    fun findByCode(code: Int): TopicView? =
+        topicsByCode[code]
 
-    fun findByName(name: String): TopicView? = topicsByName[name]
+    fun findByName(name: String): TopicView? =
+        topicsByName[name]
 
-    fun topicsOf(topicType: TopicType): List<TopicView> = topics.filter { it.topicType == topicType }
+    fun topicsOf(topicType: TopicType): List<TopicView> =
+        topics.filter {
+            it.topicType == topicType
+        }
 
 }

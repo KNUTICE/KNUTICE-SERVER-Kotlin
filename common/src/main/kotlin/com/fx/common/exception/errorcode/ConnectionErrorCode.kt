@@ -11,7 +11,9 @@ enum class ConnectionErrorCode(
     REMOTE_SERVER_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "서비스에 연결할 수 없습니다.")
     ;
 
-    override fun getHttpStatus(): HttpStatus = httpStatus
-    override fun getMessage(): String = message
+    override fun getHttpStatus(): HttpStatus =
+        httpStatus
+    override fun getMessage(): String =
+        message
 
 }

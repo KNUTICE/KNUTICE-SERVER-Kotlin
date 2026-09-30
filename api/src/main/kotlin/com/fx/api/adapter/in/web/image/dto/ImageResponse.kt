@@ -20,7 +20,9 @@ data class ImageResponse(
             )
 
         fun from(images: List<Image>): List<ImageResponse> =
-            images.map { this.from(it) }
+            images.map {
+                this.from(it)
+            }
     }
 
 }

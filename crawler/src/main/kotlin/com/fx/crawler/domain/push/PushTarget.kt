@@ -9,6 +9,7 @@ data class PushTarget(
     val language: String,
 ) {
 
-    fun resolveLanguage(): Language = Language.from(language)
+    fun resolveLanguage(): Language =
+        Language.from(language)
 
 }

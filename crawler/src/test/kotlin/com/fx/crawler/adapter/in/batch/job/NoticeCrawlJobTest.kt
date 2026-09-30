@@ -73,15 +73,23 @@ class NoticeCrawlJobTest : CrawlerIntegrationTest() {
         assertThat(execution.status).isEqualTo(BatchStatus.COMPLETED)
 
         // 1. 크롤링 : 새 공지만 저장
-        val notices = noticeRepository.findAll().associateBy { it.nttId }
+        val notices = noticeRepository.findAll().associateBy {
+            it.nttId
+        }
         assertThat(notices.keys).containsExactlyInAnyOrder(99, 100, 101, 102, 200)
         assertThat(notices.getValue(101).contentImageUrl).isEqualTo("https://img/101.png")
         assertThat(contentOf(notices.getValue(102))).isNull()
-        assertThat(webhookPort.messages.filter { it.type == SlackType.CRAWL_ERROR }).singleElement()
-            .satisfies({ assertThat(it.content).contains("EVENT_NEWS") })
+        assertThat(webhookPort.messages.filter {
+            it.type == SlackType.CRAWL_ERROR
+        }).singleElement()
+            .satisfies({
+                assertThat(it.content).contains("EVENT_NEWS")
+            })
 
         // 2. 발송 : 일반소식은 남은 공지까지 3건이라 한 알림으로 묶는다. 비활성 토큰은 대상이 아니다
-        val sentByTokens = pushPort.sent.associate { it.tokens to requireNotNull(it.message) }
+        val sentByTokens = pushPort.sent.associate {
+            it.tokens to requireNotNull(it.message)
+        }
         assertThat(sentByTokens.keys).containsExactlyInAnyOrder(listOf("token-ko"), listOf("token-ja"), listOf("token-ko", "token-invalid"))
         assertThat(sentByTokens.getValue(listOf("token-ko"))).satisfies({
             assertThat(it.title).isEqualTo("일반소식")
@@ -99,9 +107,15 @@ class NoticeCrawlJobTest : CrawlerIntegrationTest() {
         assertThat(fcmTokenRepository.findByToken(ko.token)!!.isActive).isTrue()
         assertThat(ja.isActive).isTrue()
 
-        val sent = noticeRepository.findAll().associateBy { it.nttId }
-        assertThat(listOf(100L, 101L, 102L, 200L).map { sent.getValue(it).notificationStatus }).containsOnly(NotificationStatus.SENT)
-        assertThat(listOf(100L, 101L, 102L, 200L).map { sent.getValue(it).notifiedAt }).doesNotContainNull()
+        val sent = noticeRepository.findAll().associateBy {
+            it.nttId
+        }
+        assertThat(listOf(100L, 101L, 102L, 200L).map {
+            sent.getValue(it).notificationStatus
+        }).containsOnly(NotificationStatus.SENT)
+        assertThat(listOf(100L, 101L, 102L, 200L).map {
+            sent.getValue(it).notifiedAt
+        }).doesNotContainNull()
         // 이미 보낸 공지는 다시 표시하지 않는다
         assertThat(sent.getValue(99).notifiedAt).isEqualTo(LocalDate.of(2026, 9, 29).atStartOfDay())
 
@@ -158,10 +172,14 @@ class NoticeCrawlJobTest : CrawlerIntegrationTest() {
     }
 
     private fun contentOf(notice: Notice): NoticeContent? =
-        noticeContentRepository.findByNoticeId(requireNotNull(notice.id))?.takeIf { it.content != null || it.contentSummary != null }
+        noticeContentRepository.findByNoticeId(requireNotNull(notice.id))?.takeIf {
+            it.content != null || it.contentSummary != null
+        }
 
     private fun token(value: String, language: String, vararg topicCodes: Int, active: Boolean = true): FcmToken {
-        val token = fcmTokenRepository.save(FcmToken(value, DeviceType.iOS, language).apply { if (!active) deactivate() })
+        val token = fcmTokenRepository.save(FcmToken(value, DeviceType.iOS, language).apply {
+            if (!active) deactivate()
+        })
         topicCodes.forEach { code ->
             fcmTokenSubscriptionRepository.save(FcmTokenSubscription(requireNotNull(token.id), code, if (code == 1) "GENERAL_NEWS" else "SCHOLARSHIP_NEWS"))
         }

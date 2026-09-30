@@ -32,8 +32,9 @@ class MealNotifyJobTest : CrawlerIntegrationTest() {
         assertThat(execution.status).isEqualTo(BatchStatus.COMPLETED)
         val sent = pushPort.sent.single()
         assertThat(sent.tokens).containsExactly("student")
-        assertThat(sent.message!!.title).isEqualTo("학생식당")
-        assertThat(sent.message!!.body).isEqualTo("${LocalDate.now()} 학생식당 메뉴\n[한식]\n김치찌개\n\n[일품]\n돈까스")
+        val message = requireNotNull(sent.message)
+        assertThat(message.title).isEqualTo("학생식당")
+        assertThat(message.body).isEqualTo("${LocalDate.now()} 학생식당 메뉴\n[한식]\n김치찌개\n\n[일품]\n돈까스")
     }
 
     @Test

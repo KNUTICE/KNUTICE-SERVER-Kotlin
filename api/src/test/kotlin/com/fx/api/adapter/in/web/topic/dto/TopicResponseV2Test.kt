@@ -16,12 +16,18 @@ class TopicResponseV2Test : BehaviorSpec({
             )
 
             Then("topicId 오름차순의 토픽 객체 목록으로 반환한다") {
-                response.subscribedTopics.map { it.topicId } shouldContainExactly listOf(1, 300)
+                response.subscribedTopics.map {
+                    it.topicId
+                } shouldContainExactly listOf(1, 300)
             }
 
             Then("각 객체는 topic · topicId · name · college 를 채운다") {
-                response.subscribedTopics.first { it.topic == "GENERAL_NEWS" }.college shouldBe null
-                response.subscribedTopics.first { it.topic == "COMPUTER_SOFTWARE" }.college shouldBe "공과대학"
+                response.subscribedTopics.first {
+                    it.topic == "GENERAL_NEWS"
+                }.college shouldBe null
+                response.subscribedTopics.first {
+                    it.topic == "COMPUTER_SOFTWARE"
+                }.college shouldBe "공과대학"
             }
         }
 

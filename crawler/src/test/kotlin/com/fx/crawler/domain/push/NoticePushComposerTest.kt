@@ -63,8 +63,9 @@ class NoticePushComposerTest {
 
     @Test
     fun `공지가 없으면 만들 수 없다`() {
-        assertThatThrownBy { NoticePushComposer.compose(GENERAL_NEWS, emptyList(), TEMPLATES) }
-            .isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy {
+            NoticePushComposer.compose(GENERAL_NEWS, emptyList(), TEMPLATES)
+        }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
 }
