@@ -1,8 +1,8 @@
 package com.fx.api.application.service.readingroom
 
-import com.fx.api.application.port.`in`.dto.CreateSeatAlertCommand
 import com.fx.api.application.port.`in`.readingroom.ReadingRoomCommandUseCase
-import com.fx.api.application.port.out.FcmTokenPersistencePort
+import com.fx.api.application.port.`in`.readingroom.dto.CreateSeatAlertCommand
+import com.fx.api.application.port.out.fcmtoken.FcmTokenPersistencePort
 import com.fx.readingroom.application.port.out.ReadingRoomRemotePort
 import com.fx.readingroom.application.port.out.SeatAlertPersistencePort
 import com.fx.readingroom.domain.SeatAlert

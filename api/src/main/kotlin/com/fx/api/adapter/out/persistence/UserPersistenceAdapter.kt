@@ -1,7 +1,7 @@
 package com.fx.api.adapter.out.persistence
 
 import com.fx.api.adapter.out.persistence.repository.UserRepository
-import com.fx.api.application.port.out.UserPersistencePort
+import com.fx.api.application.port.out.user.UserPersistencePort
 import com.fx.api.domain.User
 import com.fx.common.annotation.PersistenceAdapter
 

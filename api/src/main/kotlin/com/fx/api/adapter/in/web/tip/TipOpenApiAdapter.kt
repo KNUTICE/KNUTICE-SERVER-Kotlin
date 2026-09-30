@@ -1,0 +1,26 @@
+package com.fx.api.adapter.`in`.web.tip
+
+import com.fx.api.adapter.`in`.web.tip.dto.TipResponse
+import com.fx.api.application.port.`in`.tip.TipQueryUseCase
+import com.fx.common.annotation.hexagonal.WebInputAdapter
+import com.fx.common.domain.DeviceType
+import io.github.seob7.Api
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+
+@WebInputAdapter
+@RequestMapping("/open-api/v1/tips")
+class TipOpenApiAdapter(
+    private val tipQueryUseCase: TipQueryUseCase
+) : TipOpenApiSwagger {
+    // TODO API 요청 수
+
+    @GetMapping
+    override fun getTips(
+        @RequestParam(defaultValue = "iOS") deviceType: DeviceType
+    ): ResponseEntity<Api<List<TipResponse>>> =
+        Api.OK(TipResponse.from(tipQueryUseCase.getTips(deviceType)))
+
+}

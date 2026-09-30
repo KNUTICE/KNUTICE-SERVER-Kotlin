@@ -1,7 +1,7 @@
 package com.fx.api.adapter.out.persistence
 
 import com.fx.api.adapter.out.persistence.repository.TipRepository
-import com.fx.api.application.port.out.TipPersistencePort
+import com.fx.api.application.port.out.tip.TipPersistencePort
 import com.fx.api.domain.Tip
 import com.fx.common.annotation.PersistenceAdapter
 import com.fx.common.domain.DeviceType

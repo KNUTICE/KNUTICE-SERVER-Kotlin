@@ -1,7 +1,7 @@
 package com.fx.api.adapter.out.persistence
 
 import com.fx.api.adapter.out.persistence.repository.NoticeQueryRepository
-import com.fx.api.application.port.out.NoticePersistencePort
+import com.fx.api.application.port.out.notice.NoticePersistencePort
 import com.fx.api.domain.NoticeQuery
 import com.fx.common.adapter.out.persistence.repository.NoticeContentRepository
 import com.fx.common.adapter.out.persistence.repository.NoticeRepository

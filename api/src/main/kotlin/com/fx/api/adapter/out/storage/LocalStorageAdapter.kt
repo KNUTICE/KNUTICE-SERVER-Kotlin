@@ -1,6 +1,6 @@
 package com.fx.api.adapter.out.storage
 
-import com.fx.api.application.port.out.ImageStoragePort
+import com.fx.api.application.port.out.image.ImageStoragePort
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile

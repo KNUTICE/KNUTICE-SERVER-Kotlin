@@ -1,7 +1,7 @@
 package com.fx.api.application.service.readingroom
 
 import com.fx.api.application.port.`in`.readingroom.ReadingRoomQueryUseCase
-import com.fx.api.application.port.out.FcmTokenPersistencePort
+import com.fx.api.application.port.out.fcmtoken.FcmTokenPersistencePort
 import com.fx.common.exception.FcmTokenException
 import com.fx.common.exception.errorcode.FcmTokenErrorCode
 import com.fx.readingroom.application.port.out.ReadingRoomRemotePort

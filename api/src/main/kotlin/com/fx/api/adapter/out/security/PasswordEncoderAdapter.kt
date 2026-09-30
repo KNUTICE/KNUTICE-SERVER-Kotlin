@@ -1,6 +1,6 @@
 package com.fx.api.adapter.out.security
 
-import com.fx.api.application.port.out.PasswordEncoderPort
+import com.fx.api.application.port.out.user.PasswordEncoderPort
 import com.fx.common.annotation.SecurityAdapter
 import org.springframework.security.crypto.password.PasswordEncoder
 

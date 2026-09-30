@@ -1,7 +1,7 @@
 package com.fx.api.adapter.out.web
 
 import com.fx.api.adapter.out.web.client.NotificationClient
-import com.fx.api.application.port.out.NotificationWebPort
+import com.fx.api.application.port.out.notification.NotificationWebPort
 import com.fx.common.annotation.hexagonal.WebOutputAdapter
 import com.fx.common.exception.NotificationException
 import com.fx.common.exception.errorcode.NotificationErrorCode

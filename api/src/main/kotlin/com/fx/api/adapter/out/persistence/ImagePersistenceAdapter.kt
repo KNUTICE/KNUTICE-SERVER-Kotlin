@@ -1,7 +1,7 @@
 package com.fx.api.adapter.out.persistence
 
 import com.fx.api.adapter.out.persistence.repository.ImageRepository
-import com.fx.api.application.port.out.ImagePersistencePort
+import com.fx.api.application.port.out.image.ImagePersistencePort
 import com.fx.api.domain.Image
 import com.fx.api.domain.ImageType
 import com.fx.common.annotation.PersistenceAdapter

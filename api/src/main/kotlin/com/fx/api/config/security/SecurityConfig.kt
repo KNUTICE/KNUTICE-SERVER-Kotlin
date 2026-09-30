@@ -1,6 +1,6 @@
 package com.fx.api.config.security
 
-import com.fx.api.application.port.out.JwtProviderPort
+import com.fx.api.application.port.out.user.JwtProviderPort
 import jakarta.servlet.DispatcherType
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

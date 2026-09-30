@@ -1,6 +1,6 @@
 package com.fx.api.config.security
 
-import com.fx.api.application.port.out.JwtProviderPort
+import com.fx.api.application.port.out.user.JwtProviderPort
 import com.fx.api.config.security.dto.AuthenticatedUser
 import com.fx.api.domain.AuthenticatedUserInfo
 import com.fx.common.annotation.SecurityAdapter

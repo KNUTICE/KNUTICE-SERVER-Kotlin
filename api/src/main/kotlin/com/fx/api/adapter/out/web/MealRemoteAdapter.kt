@@ -1,6 +1,6 @@
 package com.fx.api.adapter.out.web
 
-import com.fx.api.application.port.out.MealRemotePort
+import com.fx.api.application.port.out.meal.MealRemotePort
 import com.fx.api.domain.Meal
 import com.fx.common.annotation.hexagonal.WebOutputAdapter
 import com.fx.common.domain.catalog.TopicView

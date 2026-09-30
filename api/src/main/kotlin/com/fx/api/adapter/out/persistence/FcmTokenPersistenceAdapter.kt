@@ -1,6 +1,6 @@
 package com.fx.api.adapter.out.persistence
 
-import com.fx.api.application.port.out.FcmTokenPersistencePort
+import com.fx.api.application.port.out.fcmtoken.FcmTokenPersistencePort
 import com.fx.common.adapter.out.persistence.repository.FcmTokenRepository
 import com.fx.common.adapter.out.persistence.repository.FcmTokenSubscriptionRepository
 import com.fx.common.annotation.PersistenceAdapter
