@@ -2,11 +2,13 @@ package com.fx.crawler.application.service
 
 import com.fx.common.application.port.`in`.CatalogQueryUseCase
 import com.fx.common.application.port.out.WebhookPort
+import com.fx.common.domain.catalog.TopicCatalog
 import com.fx.common.domain.notice.NoticeContent
 import com.fx.common.domain.notice.SummaryStatus
 import com.fx.crawler.application.port.out.NoticePersistencePort
 import com.fx.crawler.application.port.out.NoticeSummaryPort
 import com.fx.crawler.config.CrawlerProperties
+import com.fx.crawler.domain.summary.SummaryRateLimitedException
 import com.fx.crawler.domain.summary.SummaryResult
 import com.fx.crawler.domain.summary.SummaryTarget
 import com.fx.crawler.fixture.CrawlerFixture
@@ -15,22 +17,48 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.Clock
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 class NoticeSummaryServiceTest {
 
+    private val now = LocalDateTime.of(2026, 10, 1, 12, 0)
+    private val catalogQueryUseCase = mockk<CatalogQueryUseCase>()
     private val noticePersistencePort = mockk<NoticePersistencePort>()
     private val noticeSummaryPort = mockk<NoticeSummaryPort>()
     private val webhookPort = mockk<WebhookPort>(relaxed = true)
     private val service = NoticeSummaryService(
-        mockk<CatalogQueryUseCase>(),
+        catalogQueryUseCase,
         noticePersistencePort,
         noticeSummaryPort,
         webhookPort,
-        CrawlerProperties(summary = CrawlerProperties.Summary(maxAttempts = 2)),
+        CrawlerProperties(summary = CrawlerProperties.Summary(maxAttempts = 2, retryInterval = Duration.ofMinutes(30))),
+        Clock.fixed(now.atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault()),
     )
 
     private fun target(content: String?) =
         SummaryTarget(noticeId = 10, nttId = 1, topicCode = 1, title = "공지", content = content)
+
+    @Test
+    fun `공지 · 학과 게시판의 대기 공지를 재시도 간격 기준으로 찾는다`() {
+        every {
+            catalogQueryUseCase.getTopicCatalog()
+        } returns TopicCatalog(
+            listOf(CrawlerFixture.GENERAL_NEWS, CrawlerFixture.COMPUTER_SOFTWARE, CrawlerFixture.STUDENT_CAFETERIA),
+            emptyList(),
+        )
+        every {
+            noticePersistencePort.findSummaryTargets(any(), any(), any(), any())
+        } returns emptyList()
+
+        service.findTargets(afterNoticeId = 5, size = 10)
+
+        verify {
+            noticePersistencePort.findSummaryTargets(listOf(1, 300), now.minusMinutes(30), 5, 10)
+        }
+    }
 
     @Test
     fun `본문이 없으면 요약하지 않는다`() {
@@ -47,6 +75,24 @@ class NoticeSummaryServiceTest {
         } throws IllegalStateException("429 quota")
 
         assertThat(service.summarize(target("본문"))).isEqualTo(SummaryResult.Failed(10, "429 quota"))
+    }
+
+    @Test
+    fun `호출 한도에 걸리면 실패 대신 미룬 결과를 돌려준다`() {
+        every {
+            noticeSummaryPort.summarize("본문")
+        } throws SummaryRateLimitedException("429")
+
+        assertThat(service.summarize(target("본문"))).isEqualTo(SummaryResult.Deferred(10))
+    }
+
+    @Test
+    fun `미룬 공지는 상태를 바꾸지 않는다`() {
+        service.applyResults(listOf(SummaryResult.Deferred(10)))
+
+        verify(exactly = 0) {
+            noticePersistencePort.findAllByIds(any())
+        }
     }
 
     @Test

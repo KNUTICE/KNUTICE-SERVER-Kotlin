@@ -32,7 +32,7 @@ class BatchScheduleRepositoryTest @Autowired constructor(
     private val now = LocalDateTime.of(2026, 9, 30, 10, 7)
 
     @Test
-    fun `레거시 cron 이 스케줄로 시드된다`() {
+    fun `레거시 cron 과 요약 스케줄이 시드된다`() {
         val schedules = batchScheduleRepository.findAll().associateBy {
             it.scheduleKey
         }
@@ -43,6 +43,7 @@ class BatchScheduleRepositoryTest @Autowired constructor(
             mapOf(
                 "notice-crawl-notice" to (BatchJobNames.NOTICE_CRAWL to "0 0/15 * * * *"),
                 "notice-crawl-major" to (BatchJobNames.NOTICE_CRAWL to "0 10 16 * * *"),
+                "notice-summary" to (BatchJobNames.NOTICE_SUMMARY to "0 */5 * * * *"),
                 "meal-notify" to (BatchJobNames.MEAL_NOTIFY to "0 10 10 * * MON-FRI"),
                 "silent-push" to (BatchJobNames.SILENT_PUSH to "0 0 0 1 * *"),
                 "seat-alert-check" to (BatchJobNames.SEAT_ALERT_CHECK to "0 * * * * *"),

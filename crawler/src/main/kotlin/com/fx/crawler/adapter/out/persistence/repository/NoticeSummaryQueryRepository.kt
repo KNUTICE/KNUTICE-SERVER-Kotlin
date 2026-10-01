@@ -6,14 +6,18 @@ import com.fx.common.domain.notice.SummaryStatus
 import com.fx.crawler.domain.summary.SummaryTarget
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 class NoticeSummaryQueryRepository(
     private val queryFactory: JPAQueryFactory,
 ) {
 
-    /** 요약 대기 공지와 본문. `idx_notice_summary_status` 로 대기 공지만 읽고 id keyset 으로 넘긴다. */
-    fun findSummaryTargets(topicCodes: Collection<Int>, afterNoticeId: Long?, size: Int): List<SummaryTarget> =
+    /**
+     * 요약 대기 공지와 본문. `idx_notice_summary_status` 로 대기 공지만 읽고 id keyset 으로 넘긴다.
+     * 요약에 실패하면 시도 횟수가 늘면서 `updated_at` 이 바뀌므로, 실패한 공지는 `updated_at` 을 마지막 시도 시각으로 본다.
+     */
+    fun findSummaryTargets(topicCodes: Collection<Int>, retryBefore: LocalDateTime, afterNoticeId: Long?, size: Int): List<SummaryTarget> =
         queryFactory
             .select(notice.id, notice.nttId, notice.topicCode, notice.title, noticeContent.content)
             .from(notice)
@@ -21,6 +25,7 @@ class NoticeSummaryQueryRepository(
             .where(
                 notice.summaryStatus.eq(SummaryStatus.PENDING),
                 notice.topicCode.`in`(topicCodes),
+                notice.summaryAttemptCount.eq(0).or(notice.updatedAt.lt(retryBefore)),
                 afterNoticeId?.let {
                     notice.id.gt(it)
                 },

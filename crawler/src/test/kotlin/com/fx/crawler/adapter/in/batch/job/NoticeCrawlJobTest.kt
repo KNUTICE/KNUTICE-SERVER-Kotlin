@@ -46,7 +46,7 @@ class NoticeCrawlJobTest : CrawlerIntegrationTest() {
     }
 
     @Test
-    fun `새 공지를 저장하고 토픽별로 언어에 맞춰 발송한 뒤 요약한다`() {
+    fun `새 공지를 저장하고 토픽별로 언어에 맞춰 발송한다`() {
         jdbcTemplate.update("UPDATE notification_template SET text_ja = '{title} ほか{count}件' WHERE template_key = 'NOTICE_BODY_MULTIPLE'")
         jdbcTemplate.update("UPDATE topic SET display_name_ja = '一般ニュース' WHERE code = 1")
 
@@ -60,7 +60,6 @@ class NoticeCrawlJobTest : CrawlerIntegrationTest() {
         noticeCrawlPort.details[FakeNoticeCrawlPort.contentUrl(101)] = NoticeDetail("본문 101", "https://img/101.png")
         noticeCrawlPort.details[FakeNoticeCrawlPort.contentUrl(200)] = NoticeDetail("본문 200", null)
         // 102 는 상세 페이지를 읽지 못한다
-        noticeSummaryPort.failingContents += "본문 200"
 
         val ko = token("token-ko", "ko", 1, 2)
         val ja = token("token-ja", "ja-JP", 1)
@@ -119,13 +118,10 @@ class NoticeCrawlJobTest : CrawlerIntegrationTest() {
         // 이미 보낸 공지는 다시 표시하지 않는다
         assertThat(sent.getValue(99).notifiedAt).isEqualTo(LocalDate.of(2026, 9, 29).atStartOfDay())
 
-        // 3. 요약 : 실패는 시도 횟수만 늘리고 다음 실행에서 다시 시도한다
-        assertThat(sent.getValue(100).summaryStatus).isEqualTo(SummaryStatus.COMPLETED)
-        assertThat(contentOf(sent.getValue(100))?.contentSummary).isEqualTo("요약: 본문 100")
-        assertThat(sent.getValue(101).summaryStatus).isEqualTo(SummaryStatus.COMPLETED)
-        assertThat(sent.getValue(102).summaryStatus).isEqualTo(SummaryStatus.SKIPPED)
-        assertThat(sent.getValue(200).summaryStatus).isEqualTo(SummaryStatus.PENDING)
-        assertThat(sent.getValue(200).summaryAttemptCount).isEqualTo(1)
+        // 요약은 요약 Job 이 하므로 대기로 남는다
+        assertThat(listOf(100L, 101L, 102L, 200L).map {
+            sent.getValue(it).summaryStatus
+        }).containsOnly(SummaryStatus.PENDING)
     }
 
     @Test

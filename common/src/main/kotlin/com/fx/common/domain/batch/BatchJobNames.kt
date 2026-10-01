@@ -4,6 +4,7 @@ package com.fx.common.domain.batch
 object BatchJobNames {
 
     const val NOTICE_CRAWL = "noticeCrawlJob"
+    const val NOTICE_SUMMARY = "noticeSummaryJob"
     const val MEAL_NOTIFY = "mealNotifyJob"
     const val SILENT_PUSH = "silentPushJob"
     const val SEAT_ALERT_CHECK = "seatAlertCheckJob"

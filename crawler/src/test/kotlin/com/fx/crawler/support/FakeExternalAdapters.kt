@@ -12,6 +12,7 @@ import com.fx.crawler.domain.crawl.NoticeDetail
 import com.fx.crawler.domain.meal.Meal
 import com.fx.crawler.domain.push.PushMessage
 import com.fx.crawler.domain.push.PushTarget
+import com.fx.crawler.domain.summary.SummaryRateLimitedException
 import com.fx.readingroom.application.port.out.ReadingRoomRemotePort
 import com.fx.readingroom.domain.ReadingRoom
 import com.fx.readingroom.domain.ReadingRoomSeat
@@ -141,15 +142,23 @@ class FakeNoticeSummaryPort : NoticeSummaryPort {
 
     val failingContents: MutableSet<String> = ConcurrentHashMap.newKeySet()
 
+    /** 켜면 모든 요청이 호출 한도에 걸린다 */
+    @Volatile var rateLimited = false
+
     override fun summarize(content: String): String {
+        if (rateLimited) {
+            throw SummaryRateLimitedException("429 RESOURCE_EXHAUSTED")
+        }
         check(content !in failingContents) {
             "AI 응답 없음"
         }
         return "요약: $content"
     }
 
-    fun reset() =
+    fun reset() {
         failingContents.clear()
+        rateLimited = false
+    }
 
 }
 

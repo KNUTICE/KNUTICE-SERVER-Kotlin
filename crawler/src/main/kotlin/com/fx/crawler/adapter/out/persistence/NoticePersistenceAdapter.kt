@@ -69,8 +69,8 @@ class NoticePersistenceAdapter(
         noticeRepository.markNotified(noticeIds, now)
 
     @Transactional(readOnly = true)
-    override fun findSummaryTargets(topicCodes: Collection<Int>, afterNoticeId: Long?, size: Int): List<SummaryTarget> =
-        noticeSummaryQueryRepository.findSummaryTargets(topicCodes, afterNoticeId, size)
+    override fun findSummaryTargets(topicCodes: Collection<Int>, retryBefore: LocalDateTime, afterNoticeId: Long?, size: Int): List<SummaryTarget> =
+        noticeSummaryQueryRepository.findSummaryTargets(topicCodes, retryBefore, afterNoticeId, size)
 
     @Transactional(readOnly = true)
     override fun findAllByIds(noticeIds: Collection<Long>): List<Notice> =

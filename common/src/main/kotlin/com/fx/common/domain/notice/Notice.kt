@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.Index
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
+import org.hibernate.annotations.DynamicUpdate
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -27,8 +28,11 @@ const val NOTICE_URL_MAX_LENGTH = 1000
  * - [nttId] 는 학교 게시판 게시글 번호이자 API 식별자 · 커서다. TSID `id` 는 외부에 내보내지 않는다.
  * - 토픽은 `topic_code` · `topic_name` 을 복제 저장해 JOIN 없이 v1 · v2 응답을 만든다.
  * - [notificationStatus] · [summaryStatus] 로 배치가 중단된 지점부터 이어서 처리한다.
+ * - 발송 Job 과 요약 Job 이 같은 공지의 다른 컬럼을 동시에 바꾸므로 바뀐 컬럼만 UPDATE 한다.
+ *   모든 컬럼을 쓰면 상대 Job 이 방금 바꾼 값(예: 발송 완료)을 읽어 둔 옛 값으로 되돌린다.
  */
 @Entity
+@DynamicUpdate
 @Table(
     name = "notice",
     uniqueConstraints = [

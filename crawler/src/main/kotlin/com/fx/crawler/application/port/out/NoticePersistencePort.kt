@@ -20,8 +20,11 @@ interface NoticePersistencePort {
 
     fun markNotified(noticeIds: Collection<Long>, now: LocalDateTime): Int
 
-    /** 요약 대기 중인 공지를 id 순으로 [afterNoticeId] 다음부터 [size] 개. */
-    fun findSummaryTargets(topicCodes: Collection<Int>, afterNoticeId: Long?, size: Int): List<SummaryTarget>
+    /**
+     * 요약 대기 중인 공지를 id 순으로 [afterNoticeId] 다음부터 [size] 개.
+     * 요약에 실패한 적이 있는 공지는 마지막 시도가 [retryBefore] 보다 전일 때만 포함한다.
+     */
+    fun findSummaryTargets(topicCodes: Collection<Int>, retryBefore: LocalDateTime, afterNoticeId: Long?, size: Int): List<SummaryTarget>
 
     fun findAllByIds(noticeIds: Collection<Long>): List<Notice>
 

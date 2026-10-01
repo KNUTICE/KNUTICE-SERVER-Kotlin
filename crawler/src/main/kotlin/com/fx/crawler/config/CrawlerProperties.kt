@@ -55,10 +55,16 @@ data class CrawlerProperties(
     /**
      * @property chunkSize 요약 chunk 크기
      * @property maxAttempts 공지 하나의 최대 요약 시도 횟수. 도달하면 FAILED 로 두고 더 시도하지 않는다
+     * @property retryInterval 요약에 실패한 공지를 다시 시도하기까지 기다리는 시간. AI 장애가 짧게 지나가는 동안 시도 횟수를 다 쓰지 않도록 한다
+     * @property requestInterval AI 요청 사이의 최소 간격 (재시도 포함). 분당 요청 한도를 넘지 않도록 둔다
+     * @property rateLimitCooldown 호출 한도 응답(429)을 받은 뒤 요청을 멈추는 시간
      */
     data class Summary(
         val chunkSize: Int = 5,
         val maxAttempts: Int = 3,
+        val retryInterval: Duration = Duration.ofMinutes(30),
+        val requestInterval: Duration = Duration.ofSeconds(5),
+        val rateLimitCooldown: Duration = Duration.ofMinutes(1),
     )
 
     /**

@@ -45,9 +45,10 @@ spring:
         # Spring AI 2.0 은 OpenAI 공식 Java SDK 기반이라 completions-path 설정이 없다.
         # SDK 가 base-url 뒤에 /chat/completions 를 붙인다 → .../v1beta/openai/chat/completions
         base-url: https://generativelanguage.googleapis.com/v1beta/openai
-        options:
-          model: gemini-2.5-flash-lite
-          temperature: 0
+        model: gemini-2.5-flash-lite
+        temperature: 0
+        # 재시도는 GeminiSummaryAdapter 가 요청 간격을 지키며 한다. SDK 재시도는 간격 없이 다시 보내므로 끈다
+        max-retries: 0
 
 firebase:
   secret:
@@ -72,6 +73,12 @@ crawler:
   summary:
     chunk-size: 5
     max-attempts: 3
+    # 실패한 공지는 30분 뒤에 다시 시도한다 (짧은 장애 동안 시도 횟수를 다 쓰지 않도록)
+    retry-interval: 30m
+    # Gemini 분당 요청 한도(프로젝트 단위, AI Studio 에서 확인)보다 느리게 보낸다. 5초 = 분당 12회
+    request-interval: 5s
+    # 429 를 받으면 1분 동안 요청하지 않고 남은 공지는 다음 실행으로 미룬다
+    rate-limit-cooldown: 1m
   seat-alert:
     max-concurrency: 4
     timeout: 30s
