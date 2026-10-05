@@ -45,13 +45,21 @@ class BatchMetadataPersistenceAdapter(
         return jdbcTemplate.update("DELETE FROM BATCH_JOB_EXECUTION WHERE JOB_EXECUTION_ID IN (:ids)", ids)
     }
 
+    /**
+     * 실행 기록이 남지 않은 JobInstance 를 지운다.
+     *
+     * Job 을 시작하면 JobInstance 와 JobExecution 이 따로 커밋되므로, 그 사이에는 방금 만든 JobInstance 도 실행 기록이 없다.
+     * 이를 지우면 이어지는 JobExecution INSERT 가 외래 키 오류로 실패하므로, 실행 기록이 남은 JobInstance 중
+     * 가장 오래된 것보다 앞선(id 가 작은) 것만 지운다. id 는 생성 순으로 커지므로 새로 만든 JobInstance 는 범위에 들지 않는다.
+     */
     override fun deleteOrphanJobInstances(limit: Int): Int =
         jdbcTemplate.update(
             """
             DELETE FROM BATCH_JOB_INSTANCE
-            WHERE NOT EXISTS (
-                SELECT 1 FROM BATCH_JOB_EXECUTION e WHERE e.JOB_INSTANCE_ID = BATCH_JOB_INSTANCE.JOB_INSTANCE_ID
-            )
+            WHERE JOB_INSTANCE_ID < (SELECT MIN(e.JOB_INSTANCE_ID) FROM BATCH_JOB_EXECUTION e)
+              AND NOT EXISTS (
+                  SELECT 1 FROM BATCH_JOB_EXECUTION e WHERE e.JOB_INSTANCE_ID = BATCH_JOB_INSTANCE.JOB_INSTANCE_ID
+              )
             LIMIT :limit
             """,
             mapOf("limit" to limit),
