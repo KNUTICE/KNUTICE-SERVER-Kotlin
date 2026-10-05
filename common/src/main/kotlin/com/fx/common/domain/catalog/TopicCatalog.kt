@@ -23,6 +23,7 @@ data class TopicView(
     val bbsPath: String,
     val crawlEnabled: Boolean,
     val visible: Boolean,
+    val summaryEnabled: Boolean = true,
 ) {
 
     /** 크롤링할 게시판 목록 URL. */

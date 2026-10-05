@@ -166,7 +166,10 @@ class Notice(
 
     companion object {
 
-        /** 크롤링으로 새로 들어온 공지. 알림 · 요약 모두 대기 상태로 시작한다. */
+        /**
+         * 크롤링으로 새로 들어온 공지. 알림은 대기 상태로 시작한다.
+         * 요약은 토픽의 요약이 켜져 있으면 대기, 꺼져 있으면 요약하지 않음으로 확정한다 (나중에 켜도 요약하지 않는다).
+         */
         fun crawled(
             nttId: Long,
             topic: TopicView,
@@ -180,7 +183,7 @@ class Notice(
             Notice(
                 nttId, topic, title, department, contentUrl, contentImageUrl, registrationDate, isAttachment,
                 notificationStatus = NotificationStatus.PENDING,
-                summaryStatus = SummaryStatus.PENDING,
+                summaryStatus = if (topic.summaryEnabled) SummaryStatus.PENDING else SummaryStatus.SKIPPED,
             )
 
         /** 관리자가 직접 등록한 공지. 알림을 보내지 않고, 요약은 입력이 있을 때만 있다. */

@@ -59,6 +59,7 @@ class Topic(
     bbsPath: String,
     crawlEnabled: Boolean = true,
     visible: Boolean = true,
+    summaryEnabled: Boolean = true,
 ) : BaseEntity() {
 
     @Column(name = "code", nullable = false, updatable = false, comment = "토픽 코드 (v2 topicId, 생성 후 변경 불가)")
@@ -96,6 +97,11 @@ class Topic(
 
     @Column(name = "visible", nullable = false, comment = "앱 노출 여부")
     var visible: Boolean = visible
+        protected set
+
+    /** 새로 크롤링한 공지를 AI 요약할지. 크롤링할 때만 보므로, 꺼 둔 동안 들어온 공지는 다시 켜도 요약하지 않는다. */
+    @Column(name = "summary_enabled", nullable = false, comment = "AI 요약 여부")
+    var summaryEnabled: Boolean = summaryEnabled
         protected set
 
     @Column(name = "deleted_at", nullable = true, comment = "삭제 시각")
@@ -139,6 +145,10 @@ class Topic(
 
     fun changeVisible(visible: Boolean) {
         this.visible = visible
+    }
+
+    fun changeSummaryEnabled(summaryEnabled: Boolean) {
+        this.summaryEnabled = summaryEnabled
     }
 
     fun delete(deletedAt: LocalDateTime) {

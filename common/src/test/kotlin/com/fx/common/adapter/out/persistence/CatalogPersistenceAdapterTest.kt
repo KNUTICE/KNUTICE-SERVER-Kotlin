@@ -122,6 +122,20 @@ class CatalogPersistenceAdapterTest @Autowired constructor(
     }
 
     @Test
+    fun `토픽별 요약 여부는 모두 켜진 채로 시드되고 바꾸면 카탈로그에 반영된다`() {
+        assertThat(catalogPersistenceAdapter.loadTopicCatalog().topics).allMatch {
+            it.summaryEnabled
+        }
+
+        topicRepository.findAll().first {
+            it.name == "GENERAL_NEWS"
+        }.changeSummaryEnabled(false)
+        entityManager.flush()
+
+        assertThat(requireNotNull(catalogPersistenceAdapter.loadTopicCatalog().findByName("GENERAL_NEWS")).summaryEnabled).isFalse()
+    }
+
+    @Test
     fun `삭제된 토픽은 카탈로그에서 빠진다`() {
         val topic = topicRepository.findAll().first {
             it.name == "GENERAL_NEWS"

@@ -48,6 +48,7 @@ class CatalogPersistenceAdapter(
                 bbsPath = it.bbsPath,
                 crawlEnabled = it.crawlEnabled,
                 visible = it.visible,
+                summaryEnabled = it.summaryEnabled,
             )
         }
 

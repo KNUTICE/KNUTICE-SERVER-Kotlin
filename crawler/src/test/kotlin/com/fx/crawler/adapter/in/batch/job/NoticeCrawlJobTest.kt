@@ -30,6 +30,7 @@ import java.time.LocalDate
 class NoticeCrawlJobTest : CrawlerIntegrationTest() {
 
     @Autowired @Qualifier("noticeCrawlJob") lateinit var noticeCrawlJob: Job
+    @Autowired @Qualifier("noticeSummaryJob") lateinit var noticeSummaryJob: Job
     @Autowired lateinit var noticeRepository: NoticeRepository
     @Autowired lateinit var noticeContentRepository: NoticeContentRepository
     @Autowired lateinit var fcmTokenRepository: FcmTokenRepository
@@ -112,6 +113,30 @@ class NoticeCrawlJobTest : CrawlerIntegrationTest() {
         assertThat(listOf(100L, 101L, 102L, 200L).map {
             sent.getValue(it).summaryStatus
         }).containsOnly(SummaryStatus.PENDING)
+    }
+
+    @Test
+    fun `요약을 끈 토픽의 새 공지는 요약하지 않음으로 저장하고 다시 켜도 요약하지 않는다`() {
+        noticeCrawlPort.lists["GENERAL_NEWS"] = listOf(Row(101, "공지 101"))
+        noticeCrawlPort.lists["SCHOLARSHIP_NEWS"] = listOf(Row(200, "장학 200"))
+        noticeCrawlPort.details[FakeNoticeCrawlPort.contentUrl(101)] = NoticeDetail("본문 101", null)
+        noticeCrawlPort.details[FakeNoticeCrawlPort.contentUrl(200)] = NoticeDetail("본문 200", null)
+
+        jdbcTemplate.update("UPDATE topic SET summary_enabled = FALSE WHERE code = 2")
+        try {
+            run(noticeCrawlJob, mapOf("topicType" to "NOTICE"))
+        } finally {
+            jdbcTemplate.update("UPDATE topic SET summary_enabled = TRUE WHERE code = 2")
+        }
+
+        assertThat(noticeRepository.findByNttId(101)!!.summaryStatus).isEqualTo(SummaryStatus.PENDING)
+        assertThat(noticeRepository.findByNttId(200)!!.summaryStatus).isEqualTo(SummaryStatus.SKIPPED)
+
+        // 요약을 다시 켠 뒤에도 꺼 둔 동안 들어온 공지는 요약하지 않는다
+        run(noticeSummaryJob)
+
+        assertThat(noticeRepository.findByNttId(101)!!.summaryStatus).isEqualTo(SummaryStatus.COMPLETED)
+        assertThat(noticeRepository.findByNttId(200)!!.summaryStatus).isEqualTo(SummaryStatus.SKIPPED)
     }
 
     @Test
