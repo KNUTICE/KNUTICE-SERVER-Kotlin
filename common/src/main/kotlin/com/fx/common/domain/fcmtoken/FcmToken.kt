@@ -75,6 +75,11 @@ class FcmToken(
         isActive = true
     }
 
+    /** 앱에서 알림 언어를 바꿨을 때. 지원 언어의 코드(`ko` · `en` · `ja`)로 저장한다. */
+    fun changeLanguage(language: Language) {
+        this.language = language.code
+    }
+
     fun resolveLanguage(): Language =
         Language.from(language)
 

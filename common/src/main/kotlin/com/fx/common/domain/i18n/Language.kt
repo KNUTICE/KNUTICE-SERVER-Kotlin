@@ -19,7 +19,14 @@ enum class Language(val code: String) {
 
         val DEFAULT: Language = KO
 
-        fun from(code: String?): Language {
+        fun from(code: String?): Language =
+            fromOrNull(code) ?: DEFAULT
+
+        /**
+         * [from] 과 같이 해석하되, 지원하지 않거나 알 수 없는 값이면 null 이다.
+         * 사용자가 고른 언어를 저장할 때처럼 한국어로 대체하면 안 되는 곳에서 쓴다.
+         */
+        fun fromOrNull(code: String?): Language? {
             val languageCode = code
                 ?.trim()
                 ?.substringBefore('-')
@@ -27,7 +34,7 @@ enum class Language(val code: String) {
                 ?.lowercase(Locale.ROOT)
             return entries.firstOrNull {
                 it.code == languageCode
-            } ?: DEFAULT
+            }
         }
 
         fun from(locale: Locale?): Language =

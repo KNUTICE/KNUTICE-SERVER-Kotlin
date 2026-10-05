@@ -6,12 +6,14 @@ import com.fx.common.application.port.`in`.CatalogQueryUseCase
 import com.fx.common.domain.DeviceType
 import com.fx.common.domain.TopicType
 import com.fx.common.domain.fcmtoken.FcmToken
+import com.fx.common.domain.i18n.Language
 import com.fx.common.exception.FcmTokenException
 import com.fx.common.exception.errorcode.FcmTokenErrorCode
 import com.fx.persistence.withId
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 
@@ -71,6 +73,40 @@ class FcmTokenQueryServiceTest : BehaviorSpec({
             Then("FcmTokenException 이 발생한다") {
                 shouldThrow<FcmTokenException> {
                     fcmTokenQueryService.getMyTopics("unknown", TopicType.NOTICE)
+                }
+            }
+        }
+    }
+
+    Given("알림 언어 조회") {
+        When("언어를 바꾼 적이 없는 토큰이면") {
+            every {
+                fcmTokenPersistencePort.getByToken("default-token")
+            } returns FcmToken("default-token", DeviceType.iOS)
+
+            Then("한국어를 반환한다") {
+                fcmTokenQueryService.getLanguage("default-token") shouldBe Language.KO
+            }
+        }
+
+        When("지역 코드가 붙은 언어가 저장돼 있으면") {
+            every {
+                fcmTokenPersistencePort.getByToken("ja-token")
+            } returns FcmToken("ja-token", DeviceType.AOS, "ja-JP")
+
+            Then("발송할 때와 같은 언어로 해석해 반환한다") {
+                fcmTokenQueryService.getLanguage("ja-token") shouldBe Language.JA
+            }
+        }
+
+        When("저장되지 않은 토큰이면") {
+            every {
+                fcmTokenPersistencePort.getByToken("unknown")
+            } throws FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+
+            Then("FcmTokenException 이 발생한다") {
+                shouldThrow<FcmTokenException> {
+                    fcmTokenQueryService.getLanguage("unknown")
                 }
             }
         }

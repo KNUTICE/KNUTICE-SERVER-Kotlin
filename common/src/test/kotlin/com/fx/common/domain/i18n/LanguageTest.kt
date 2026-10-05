@@ -23,6 +23,19 @@ class LanguageTest {
         assertThat(Language.from(code)).isEqualTo(Language.KO)
     }
 
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = ["zh", "fr-FR", "korean", "  ", "-"])
+    fun `엄격하게 해석하면 지원하지 않는 값은 null 이다`(code: String?) {
+        assertThat(Language.fromOrNull(code)).isNull()
+    }
+
+    @Test
+    fun `엄격하게 해석해도 대소문자와 지역 코드는 무시한다`() {
+        assertThat(Language.fromOrNull("ja_JP")).isEqualTo(Language.JA)
+        assertThat(Language.fromOrNull("EN")).isEqualTo(Language.EN)
+    }
+
     @Test
     fun `Locale 로도 해석한다`() {
         assertThat(Language.from(Locale.JAPAN)).isEqualTo(Language.JA)

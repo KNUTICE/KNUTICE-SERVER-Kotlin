@@ -5,6 +5,7 @@ import com.fx.api.application.port.out.fcmtoken.FcmTokenPersistencePort
 import com.fx.common.application.port.`in`.CatalogQueryUseCase
 import com.fx.common.domain.TopicType
 import com.fx.common.domain.catalog.TopicView
+import com.fx.common.domain.i18n.Language
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -30,5 +31,8 @@ class FcmTokenQueryService(
                 it.code
             }
     }
+
+    override fun getLanguage(fcmToken: String): Language =
+        fcmTokenPersistencePort.getByToken(fcmToken).resolveLanguage()
 
 }

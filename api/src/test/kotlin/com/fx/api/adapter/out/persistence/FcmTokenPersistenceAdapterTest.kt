@@ -6,6 +6,7 @@ import com.fx.common.config.clock.ClockConfig
 import com.fx.common.domain.DeviceType
 import com.fx.common.domain.catalog.TopicView
 import com.fx.common.domain.fcmtoken.FcmToken
+import com.fx.common.domain.i18n.Language
 import com.fx.common.exception.FcmTokenException
 import com.fx.persistence.MySqlContainerConfig
 import jakarta.persistence.EntityManager
@@ -58,6 +59,16 @@ class FcmTokenPersistenceAdapterTest @Autowired constructor(
         assertThat(lowerId).isNotEqualTo(upperId)
         assertThat(fcmTokenPersistenceAdapter.getByToken("token-abc").id).isEqualTo(lowerId)
         assertThat(fcmTokenPersistenceAdapter.getByToken("token-ABC").id).isEqualTo(upperId)
+    }
+
+    @Test
+    fun `알림 언어를 바꾸면 저장된다`() {
+        createToken("token-1")
+
+        fcmTokenPersistenceAdapter.getByToken("token-1").changeLanguage(Language.JA)
+        flushAndClear()
+
+        assertThat(fcmTokenPersistenceAdapter.getByToken("token-1").language).isEqualTo("ja")
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.fx.api.application.service.fcmtoken
 
+import com.fx.api.application.port.`in`.fcmtoken.dto.FcmTokenLanguageUpdateCommand
 import com.fx.api.application.port.`in`.fcmtoken.dto.FcmTokenSaveCommand
 import com.fx.api.application.port.`in`.fcmtoken.dto.FcmTokenUpdateCommand
 import com.fx.api.application.port.`in`.fcmtoken.dto.TopicUpdateCommand
@@ -10,6 +11,7 @@ import com.fx.common.application.port.`in`.CatalogQueryUseCase
 import com.fx.common.domain.DeviceType
 import com.fx.common.domain.TopicType
 import com.fx.common.domain.fcmtoken.FcmToken
+import com.fx.common.domain.i18n.Language
 import com.fx.common.exception.FcmTokenException
 import com.fx.common.exception.TopicException
 import com.fx.common.exception.errorcode.FcmTokenErrorCode
@@ -251,6 +253,35 @@ class FcmTokenCommandServiceTest : BehaviorSpec({
                     fcmTokenCommandService.updateTopic(
                         TopicUpdateCommand(fcmToken = token.token, topicType = TopicType.NOTICE, topicId = 9999, enabled = true)
                     )
+                }
+            }
+        }
+    }
+
+    Given("알림 언어 변경") {
+        When("저장된 토큰인 경우") {
+            clearMocks(fcmTokenPersistencePort)
+            val token = FcmToken("fcm-token", DeviceType.AOS).withId(1L)
+            every {
+                fcmTokenPersistencePort.getByToken(token.token)
+            } returns token
+
+            Then("토큰의 알림 언어를 바꾼다") {
+                fcmTokenCommandService.updateLanguage(FcmTokenLanguageUpdateCommand(token.token, Language.JA)) shouldBe true
+                token.language shouldBe "ja"
+                token.resolveLanguage() shouldBe Language.JA
+            }
+        }
+
+        When("저장되지 않은 토큰인 경우") {
+            clearMocks(fcmTokenPersistencePort)
+            every {
+                fcmTokenPersistencePort.getByToken("unknown")
+            } throws FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+
+            Then("FcmTokenException 이 발생한다") {
+                shouldThrow<FcmTokenException> {
+                    fcmTokenCommandService.updateLanguage(FcmTokenLanguageUpdateCommand("unknown", Language.EN))
                 }
             }
         }

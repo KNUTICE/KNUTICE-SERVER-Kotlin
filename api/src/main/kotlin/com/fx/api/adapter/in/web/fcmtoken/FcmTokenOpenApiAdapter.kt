@@ -1,13 +1,17 @@
 package com.fx.api.adapter.`in`.web.fcmtoken
 
+import com.fx.api.adapter.`in`.web.fcmtoken.dto.FcmTokenLanguageResponse
+import com.fx.api.adapter.`in`.web.fcmtoken.dto.FcmTokenLanguageUpdateRequest
 import com.fx.api.adapter.`in`.web.fcmtoken.dto.FcmTokenSaveRequest
 import com.fx.api.adapter.`in`.web.fcmtoken.dto.FcmTokenUpdateRequest
 import com.fx.api.application.port.`in`.fcmtoken.FcmTokenCommandUseCase
+import com.fx.api.application.port.`in`.fcmtoken.FcmTokenQueryUseCase
 import com.fx.common.annotation.hexagonal.WebInputAdapter
 import io.github.seob7.Api
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -17,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 @WebInputAdapter
 @RequestMapping("/open-api/v1/fcm-tokens")
 class FcmTokenOpenApiAdapter(
-    private val fcmTokenCommandUseCase: FcmTokenCommandUseCase
+    private val fcmTokenCommandUseCase: FcmTokenCommandUseCase,
+    private val fcmTokenQueryUseCase: FcmTokenQueryUseCase,
 ) : FcmTokenOpenApiSwagger {
 
     private val log = LoggerFactory.getLogger(FcmTokenOpenApiAdapter::class.java)
@@ -39,6 +44,21 @@ class FcmTokenOpenApiAdapter(
         fcmTokenCommandUseCase.updateFcmToken(tokenUpdateRequest.toCommand(fcmToken))
         log.info("FcmToken updated: old=${tokenUpdateRequest.oldFcmToken} -> new=$fcmToken")
         return Api.OK(true, "토큰이 업데이트되었습니다.")
+    }
+
+    @GetMapping("/language")
+    override fun getLanguage(
+        @RequestHeader fcmToken: String
+    ): ResponseEntity<Api<FcmTokenLanguageResponse>> =
+        Api.OK(FcmTokenLanguageResponse.from(fcmTokenQueryUseCase.getLanguage(fcmToken)), "알림 언어 조회 성공")
+
+    @PatchMapping("/language")
+    override fun updateLanguage(
+        @RequestHeader fcmToken: String,
+        @RequestBody @Valid languageUpdateRequest: FcmTokenLanguageUpdateRequest
+    ): ResponseEntity<Api<Boolean>> {
+        fcmTokenCommandUseCase.updateLanguage(languageUpdateRequest.toCommand(fcmToken))
+        return Api.OK(true, "알림 언어가 변경되었습니다.")
     }
 
 

@@ -1,6 +1,7 @@
 package com.fx.api.application.service.fcmtoken
 
 import com.fx.api.application.port.`in`.fcmtoken.FcmTokenCommandUseCase
+import com.fx.api.application.port.`in`.fcmtoken.dto.FcmTokenLanguageUpdateCommand
 import com.fx.api.application.port.`in`.fcmtoken.dto.FcmTokenSaveCommand
 import com.fx.api.application.port.`in`.fcmtoken.dto.FcmTokenUpdateCommand
 import com.fx.api.application.port.`in`.fcmtoken.dto.TopicUpdateCommand
@@ -84,6 +85,13 @@ class FcmTokenCommandService(
         } else {
             fcmTokenPersistencePort.unsubscribe(fcmTokenId, topic.code)
         }
+        return true
+    }
+
+    @Transactional
+    override fun updateLanguage(fcmTokenLanguageUpdateCommand: FcmTokenLanguageUpdateCommand): Boolean {
+        fcmTokenPersistencePort.getByToken(fcmTokenLanguageUpdateCommand.fcmToken)
+            .changeLanguage(fcmTokenLanguageUpdateCommand.language)
         return true
     }
 
