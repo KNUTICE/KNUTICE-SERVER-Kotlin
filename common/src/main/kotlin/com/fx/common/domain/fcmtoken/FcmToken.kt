@@ -35,7 +35,7 @@ class FcmToken(
     language: String = Language.DEFAULT.code,
 ) : BaseEntity() {
 
-    @Column(name = "token", nullable = false, length = FCM_TOKEN_MAX_LENGTH, comment = "FCM 등록 토큰")
+    @Column(name = "token", nullable = false, length = FCM_TOKEN_MAX_LENGTH, comment = "FCM 등록 토큰 (대소문자 구분)")
     var token: String = token
         protected set
 

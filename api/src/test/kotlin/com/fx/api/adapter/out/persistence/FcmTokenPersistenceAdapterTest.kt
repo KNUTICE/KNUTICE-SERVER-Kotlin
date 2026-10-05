@@ -51,6 +51,16 @@ class FcmTokenPersistenceAdapterTest @Autowired constructor(
     }
 
     @Test
+    fun `대소문자만 다른 토큰은 서로 다른 토큰이다`() {
+        val lowerId = createToken("token-abc")
+        val upperId = createToken("token-ABC")
+
+        assertThat(lowerId).isNotEqualTo(upperId)
+        assertThat(fcmTokenPersistenceAdapter.getByToken("token-abc").id).isEqualTo(lowerId)
+        assertThat(fcmTokenPersistenceAdapter.getByToken("token-ABC").id).isEqualTo(upperId)
+    }
+
+    @Test
     fun `같은 토픽을 두 번 구독해도 한 행만 남는다`() {
         val tokenId = createToken("token-1")
 
