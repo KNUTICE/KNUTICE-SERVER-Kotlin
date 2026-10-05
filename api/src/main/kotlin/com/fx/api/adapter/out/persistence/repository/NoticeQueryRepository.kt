@@ -1,62 +1,46 @@
 package com.fx.api.adapter.out.persistence.repository
 
 import com.fx.api.domain.NoticeQuery
-import com.fx.global.adapter.out.persistence.document.NoticeDocument
-import com.fx.global.adapter.out.persistence.document.QNoticeDocument
-import com.querydsl.core.types.Order
-import com.querydsl.core.types.OrderSpecifier
-import com.querydsl.core.types.Predicate
+import com.fx.common.domain.notice.Notice
+import com.fx.common.domain.notice.QNotice.Companion.notice
 import com.querydsl.core.types.dsl.BooleanExpression
-import com.querydsl.core.types.dsl.PathBuilder
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.data.domain.Sort
-import org.springframework.data.mongodb.core.MongoOperations
-import org.springframework.data.mongodb.repository.support.QuerydslRepositorySupport
+import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Repository
 
+/**
+ * 공지 목록 조회. `ntt_id` 를 커서로 쓰는 keyset 방식이며 정렬은 `ntt_id` 내림차순 하나만 쓴다.
+ * 토픽 필터가 있으면 `idx_notice_topic_code_ntt_id`, 없으면 `uk_notice_ntt_id` 를 탄다.
+ */
 @Repository
 class NoticeQueryRepository(
-    @Qualifier("mongoTemplate") operations: MongoOperations
-) : QuerydslRepositorySupport(operations) {
+    private val queryFactory: JPAQueryFactory,
+) {
 
-    val noticeDocument = QNoticeDocument.noticeDocument
-
-    /**
-     * Cursor 기반 조회
-     * nttId 기준 DESC 정렬
-     */
-    fun findByNotice(noticeQuery: NoticeQuery): List<NoticeDocument> =
-        from(noticeDocument)
+    fun findNotices(noticeQuery: NoticeQuery): List<Notice> =
+        queryFactory
+            .selectFrom(notice)
             .where(
-                eqNoticeType(noticeQuery),
-                containKeyword(noticeQuery.keyword),
-                ltNttId(noticeQuery.nttId)
+                topicCodeEq(noticeQuery.topicCode),
+                titleContains(noticeQuery.keyword),
+                nttIdLt(noticeQuery.nttId),
             )
-            .orderBy(*getOrderSpecifiers(noticeQuery.pageable.sort))
-            .limit(noticeQuery.pageable.pageSize.toLong())
+            .orderBy(notice.nttId.desc())
+            .limit(noticeQuery.size.toLong())
             .fetch()
 
-    private fun eqNoticeType(noticeQuery: NoticeQuery): BooleanExpression? =
-        noticeQuery.topic?.let { noticeDocument.topic.eq(it.topicName) }
+    private fun topicCodeEq(topicCode: Int?): BooleanExpression? =
+        topicCode?.let {
+            notice.topicCode.eq(it)
+        }
 
-    private fun containKeyword(keyword: String?): BooleanExpression? =
-        // keyword가 null이 아니고, 비어있지 않을 때
-        keyword?.takeIf { it.isNotBlank() }?.let { noticeDocument.title.contains(it) }
+    private fun titleContains(keyword: String?): BooleanExpression? =
+        keyword?.let {
+            notice.title.contains(it)
+        }
 
-    private fun ltNttId(nttId: Long?): Predicate? =
-        nttId?.let { noticeDocument.nttId.lt(it) }
-
-    private fun getOrderSpecifiers(sort: Sort): Array<OrderSpecifier<*>> =
-        sort.toList()
-            .map { order ->
-                val pathBuilder = PathBuilder(NoticeDocument::class.java, "noticeDocument")
-                val direction = if (order.isDescending) Order.DESC else Order.ASC
-
-                @Suppress("UNCHECKED_CAST")
-                OrderSpecifier(
-                    direction,
-                    pathBuilder.get(order.property) as com.querydsl.core.types.Expression<out Comparable<*>>
-                )
-            }.toTypedArray()
+    private fun nttIdLt(nttId: Long?): BooleanExpression? =
+        nttId?.let {
+            notice.nttId.lt(it)
+        }
 
 }

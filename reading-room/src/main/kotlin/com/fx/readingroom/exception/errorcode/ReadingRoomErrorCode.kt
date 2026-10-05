@@ -14,7 +14,9 @@ enum class ReadingRoomErrorCode(
     MAX_SEAT_ALERT_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "좌석 알림은 최대 5개까지 등록할 수 있습니다."),
     ;
 
-    override fun getHttpStatus(): HttpStatus = httpStatus
-    override fun getMessage(): String = message
+    override fun getHttpStatus(): HttpStatus =
+        httpStatus
+    override fun getMessage(): String =
+        message
 
 }

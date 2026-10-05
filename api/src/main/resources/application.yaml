@@ -1,0 +1,48 @@
+server:
+  port: ${API_PORT}
+
+spring:
+  config:
+    import:
+      - "classpath:common.yaml"        # common : Slack 웹훅, 로깅, Actuator
+      - "classpath:mysql.yaml"         # persistence-common : MySQL · JPA
+      - "classpath:reading-room.yaml"  # reading-room : 열람실 원격 API
+
+  application:
+    name: KNUTICE-API
+
+  # 요청 처리 · @Async · @Scheduled 를 가상 스레드에서 실행한다
+  threads:
+    virtual:
+      enabled: true
+
+  http:
+    # RestClient 기본 타임아웃 (학식 사이트 등)
+    clients:
+      connect-timeout: 5s
+      read-timeout: 10s
+    # HTTP Interface Client (OpenFeign 대체). timeout 은 기존 OpenFeign 기본값(10s / 60s) 유지
+    serviceclient:
+      crawler:
+        base-url: ${CRAWLER_SERVER_ADDRESS}
+        connect-timeout: 10s
+        read-timeout: 60s
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+  access-token:
+    plus-hour: ${JWT_ACCESS_PLUS_HOUR}
+  refresh-token:
+    plus-hour: ${JWT_REFRESH_PLUS_HOUR}
+
+file:
+  upload-dir: ${FILE_UPLOAD_DIR}
+  context-path: ${FILE_CONTEXT_PATH}
+
+url:
+  scheme: ${URL_SCHEME}
+  host: ${URL_HOST}
+  allowed-origins:
+    - http://localhost:5173
+    - ${URL_ORIGIN}

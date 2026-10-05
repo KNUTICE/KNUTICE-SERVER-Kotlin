@@ -11,8 +11,10 @@ services:
       - app-network
     environment:
       - API_PORT
-      - MONGO_URI
-      - MONGO_DATABASE
+      - MYSQL_URL
+      - MYSQL_DATABASE
+      - MYSQL_USERNAME
+      - MYSQL_PASSWORD
       - JWT_ACCESS_PLUS_HOUR
       - JWT_REFRESH_PLUS_HOUR
       - JWT_SECRET_KEY
@@ -26,6 +28,7 @@ services:
       - READING_ROOM_SEATS_ENDPOINT
       - READING_ROOM_STATUS_ENDPOINT
       - WEBHOOK_SLACK_URL
+      - LOG_LEVEL
       - LOG_PATH=/logs
       - TZ=Asia/Seoul
     volumes:
@@ -44,8 +47,10 @@ services:
       - app-network
     environment:
       - CRAWLER_PORT
-      - MONGO_URI
-      - MONGO_DATABASE
+      - MYSQL_URL
+      - MYSQL_DATABASE
+      - MYSQL_USERNAME
+      - MYSQL_PASSWORD
       - FIREBASE_KEY_PATH
       - WEBHOOK_SLACK_URL
       - GEMINI_API_KEY

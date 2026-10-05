@@ -1,0 +1,84 @@
+server:
+  port: ${CRAWLER_PORT}
+
+spring:
+  config:
+    import:
+      - "classpath:common.yaml"        # common : Slack 웹훅, 로깅, Actuator
+      - "classpath:mysql.yaml"         # persistence-common : MySQL · JPA
+      - "classpath:reading-room.yaml"  # reading-room : 열람실 원격 API
+
+  application:
+    name: KNUTICE-CRAWLER
+
+  # 요청 처리 · @Async · @Scheduled 를 가상 스레드에서 실행한다
+  threads:
+    virtual:
+      enabled: true
+
+  # 배치 실행기 빈이 있어도 @Async(Slack 웹훅)용 applicationTaskExecutor 를 만든다
+  task:
+    execution:
+      mode: force
+
+  # RestClient 기본 타임아웃 (학교 게시판 · 식단 사이트)
+  http:
+    clients:
+      connect-timeout: 5s
+      read-timeout: 10s
+
+  # api 와 같은 DB 를 쓰므로 스키마 마이그레이션(BATCH_* 포함)은 api 에서만 실행한다
+  flyway:
+    enabled: false
+
+  batch:
+    job:
+      # 기동할 때 Job 을 실행하지 않는다. Job 은 스케줄 폴러가 실행한다
+      enabled: false
+    jdbc:
+      initialize-schema: never
+
+  ai:
+    openai:
+      api-key: ${GEMINI_API_KEY}  # https://aistudio.google.com/apikey
+      chat:
+        # Spring AI 2.0 은 OpenAI 공식 Java SDK 기반이라 completions-path 설정이 없다.
+        # SDK 가 base-url 뒤에 /chat/completions 를 붙인다 → .../v1beta/openai/chat/completions
+        base-url: https://generativelanguage.googleapis.com/v1beta/openai
+        model: gemini-2.5-flash-lite
+        temperature: 0
+        # 재시도는 GeminiSummaryAdapter 가 요청 간격을 지키며 한다. SDK 재시도는 간격 없이 다시 보내므로 끈다
+        max-retries: 0
+
+firebase:
+  secret:
+    key:
+      path: ${FIREBASE_KEY_PATH}
+
+crawler:
+  poller:
+    enabled: true
+    request-batch-size: 20
+  launch:
+    async: true
+    max-concurrency: 10
+  push:
+    chunk-size: 500
+    # 발송 chunk 트랜잭션이 커넥션을 쥐고 있으므로 Hikari 풀(기본 10)보다 작게 둔다
+    partition-concurrency: 4
+    max-attempts: 3
+  crawl:
+    max-concurrency: 8
+    timeout: 3m
+  summary:
+    chunk-size: 5
+    max-attempts: 3
+    # 실패한 공지는 30분 뒤에 다시 시도한다 (짧은 장애 동안 시도 횟수를 다 쓰지 않도록)
+    retry-interval: 30m
+    # Gemini 분당 요청 한도(프로젝트 단위, AI Studio 에서 확인)보다 느리게 보낸다. 5초 = 분당 12회
+    request-interval: 5s
+    # 429 를 받으면 1분 동안 요청하지 않고 남은 공지는 다음 실행으로 미룬다
+    rate-limit-cooldown: 1m
+  seat-alert:
+    max-concurrency: 4
+    timeout: 30s

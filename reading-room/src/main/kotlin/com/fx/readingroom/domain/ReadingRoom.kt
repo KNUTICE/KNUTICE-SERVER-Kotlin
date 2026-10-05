@@ -8,7 +8,9 @@ enum class ReadingRoom(val roomId: Int, val roomName: String) {
 
     companion object {
         fun from(roomId: Int): ReadingRoom =
-            entries.find { it.roomId == roomId }
+            entries.find {
+                it.roomId == roomId
+            }
                 ?: throw IllegalArgumentException("Unknown roomId: $roomId")
     }
     

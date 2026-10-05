@@ -1,0 +1,17 @@
+webhook:
+  slack:
+    url: ${WEBHOOK_SLACK_URL}
+
+logging:
+  level:
+    org:
+      springframework.web: {LOG_LEVEL:DEBUG}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus, metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}

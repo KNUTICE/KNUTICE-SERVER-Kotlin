@@ -1,26 +1,25 @@
 package com.fx.api.adapter.out.persistence
 
-import com.fx.api.adapter.out.persistence.document.UserDocument
-import com.fx.api.adapter.out.persistence.repository.UserMongoRepository
-import com.fx.api.application.port.out.UserPersistencePort
+import com.fx.api.adapter.out.persistence.repository.UserRepository
+import com.fx.api.application.port.out.user.UserPersistencePort
 import com.fx.api.domain.User
-import com.fx.global.annotation.PersistenceAdapter
+import com.fx.common.annotation.PersistenceAdapter
 
 @PersistenceAdapter
 class UserPersistenceAdapter(
-    private val userMongoRepository: UserMongoRepository
+    private val userRepository: UserRepository,
 ) : UserPersistencePort {
 
     override fun save(user: User): User =
-        userMongoRepository.save(UserDocument.from(user)).toDomain()
+        userRepository.save(user)
 
     override fun existsByEmail(email: String): Boolean =
-        userMongoRepository.existsByEmail(email)
+        userRepository.existsByEmail(email)
 
     override fun existsByNickname(nickname: String): Boolean =
-        userMongoRepository.existsByNickname(nickname)
+        userRepository.existsByNickname(nickname)
 
     override fun findByEmail(email: String): User? =
-        userMongoRepository.findByEmail(email)?.toDomain()
+        userRepository.findByEmail(email)
 
 }
