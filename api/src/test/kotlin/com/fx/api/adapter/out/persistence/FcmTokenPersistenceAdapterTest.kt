@@ -19,7 +19,7 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.context.annotation.Import
 
 /** 실제 MySQL 에서 토큰 · 구독 저장을 검증한다. 스키마는 Flyway 로 만들고 엔티티 매핑과 맞는지 함께 검증한다. */
-@DataJpaTest(properties = ["DB_URL=unused", "DB_USERNAME=unused", "DB_PASSWORD=unused"])
+@DataJpaTest(properties = ["MYSQL_URL=unused", "MYSQL_DATABASE=unused", "MYSQL_USERNAME=unused", "MYSQL_PASSWORD=unused"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(MySqlContainerConfig::class, ClockConfig::class, FcmTokenPersistenceAdapter::class)
 class FcmTokenPersistenceAdapterTest @Autowired constructor(

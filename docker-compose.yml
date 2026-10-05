@@ -11,9 +11,10 @@ services:
       - app-network
     environment:
       - API_PORT
-      - DB_URL
-      - DB_USERNAME
-      - DB_PASSWORD
+      - MYSQL_URL
+      - MYSQL_DATABASE
+      - MYSQL_USERNAME
+      - MYSQL_PASSWORD
       - JWT_ACCESS_PLUS_HOUR
       - JWT_REFRESH_PLUS_HOUR
       - JWT_SECRET_KEY
@@ -45,9 +46,10 @@ services:
       - app-network
     environment:
       - CRAWLER_PORT
-      - DB_URL
-      - DB_USERNAME
-      - DB_PASSWORD
+      - MYSQL_URL
+      - MYSQL_DATABASE
+      - MYSQL_USERNAME
+      - MYSQL_PASSWORD
       - FIREBASE_KEY_PATH
       - WEBHOOK_SLACK_URL
       - GEMINI_API_KEY

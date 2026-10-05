@@ -1,8 +1,9 @@
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    # MYSQL_URL 은 데이터베이스 이름을 뺀 접속 주소다 (예: jdbc:mysql://localhost:3306)
+    url: ${MYSQL_URL}/${MYSQL_DATABASE}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
     hikari:
       data-source-properties:
         # 배치 INSERT 를 multi-row INSERT 한 문장으로 재작성한다

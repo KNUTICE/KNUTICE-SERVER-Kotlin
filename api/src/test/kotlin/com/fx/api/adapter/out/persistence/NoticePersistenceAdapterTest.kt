@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Import
 import java.time.LocalDate
 
 /** 실제 MySQL 에서 공지 저장 · keyset 목록 조회 · 삭제를 검증한다. */
-@DataJpaTest(properties = ["DB_URL=unused", "DB_USERNAME=unused", "DB_PASSWORD=unused"])
+@DataJpaTest(properties = ["MYSQL_URL=unused", "MYSQL_DATABASE=unused", "MYSQL_USERNAME=unused", "MYSQL_PASSWORD=unused"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(MySqlContainerConfig::class, QuerydslConfig::class, NoticeQueryRepository::class, NoticePersistenceAdapter::class)
 class NoticePersistenceAdapterTest @Autowired constructor(

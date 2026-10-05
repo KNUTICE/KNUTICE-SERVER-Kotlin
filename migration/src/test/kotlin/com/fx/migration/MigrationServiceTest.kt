@@ -28,9 +28,10 @@ import java.util.Date
         "migration.chunk-size=2",
         "MONGO_URI=mongodb://unused",
         "MONGO_DATABASE=knutice",
-        "DB_URL=unused",
-        "DB_USERNAME=unused",
-        "DB_PASSWORD=unused",
+        "MYSQL_URL=unused",
+        "MYSQL_DATABASE=unused",
+        "MYSQL_USERNAME=unused",
+        "MYSQL_PASSWORD=unused",
     ]
 )
 @Import(MySqlContainerConfig::class, MongoContainerConfig::class)
