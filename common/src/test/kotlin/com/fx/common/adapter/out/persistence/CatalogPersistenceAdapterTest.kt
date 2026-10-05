@@ -92,15 +92,33 @@ class CatalogPersistenceAdapterTest @Autowired constructor(
     }
 
     @Test
-    fun `학과 표시명은 언어별로 해석되고 번역이 없으면 한국어를 쓴다`() {
+    fun `표시명은 언어별로 해석되고 번역이 없으면 한국어를 쓴다`() {
         val catalog = catalogPersistenceAdapter.loadTopicCatalog()
 
         val translated = requireNotNull(catalog.findByName("MECHANICAL_ENGINEERING"))
         assertThat(translated.displayName.resolve(Language.EN)).isEqualTo("Mechanical Engineering")
+        assertThat(requireNotNull(catalog.findByName("GENERAL_NEWS")).displayName.resolve(Language.JA)).isEqualTo("お知らせ")
 
+        // 폐지 학과의 단과대는 레거시처럼 번역 없이 "DEPRECATED" 를 내보낸다
         val deprecated = requireNotNull(catalog.findByName("AI_ROBOTICS_ENGINEERING"))
-        assertThat(deprecated.displayName.resolve(Language.EN)).isEqualTo(deprecated.displayName.ko)
-        assertThat(deprecated.college?.displayName?.resolve(Language.KO)).isEqualTo("DEPRECATED")
+        assertThat(deprecated.college?.displayName?.resolve(Language.EN)).isEqualTo("DEPRECATED")
+    }
+
+    @Test
+    fun `모든 토픽과 알림 문구에 영어 · 일본어 번역이 있다`() {
+        val untranslatedTopics = catalogPersistenceAdapter.loadTopicCatalog().topics.filter {
+            it.displayName.en == null || it.displayName.ja == null
+        }
+        val untranslatedTemplates = notificationTemplateRepository.findAll().filter {
+            it.text.en == null || it.text.ja == null
+        }
+
+        assertThat(untranslatedTopics.map {
+            it.name
+        }).isEmpty()
+        assertThat(untranslatedTemplates.map {
+            it.templateKey
+        }).isEmpty()
     }
 
     @Test

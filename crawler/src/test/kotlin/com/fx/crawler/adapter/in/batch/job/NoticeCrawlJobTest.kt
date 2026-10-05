@@ -20,7 +20,6 @@ import com.fx.crawler.support.CrawlerIntegrationTest
 import com.fx.crawler.support.FakeNoticeCrawlPort
 import com.fx.crawler.support.FakeNoticeCrawlPort.Row
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.batch.core.BatchStatus
 import org.springframework.batch.core.job.Job
@@ -39,17 +38,8 @@ class NoticeCrawlJobTest : CrawlerIntegrationTest() {
     private val generalNews = topic(1, "GENERAL_NEWS")
     private val scholarshipNews = topic(2, "SCHOLARSHIP_NEWS")
 
-    @AfterEach
-    fun restoreTranslations() {
-        jdbcTemplate.update("UPDATE notification_template SET text_ja = NULL WHERE template_key = 'NOTICE_BODY_MULTIPLE'")
-        jdbcTemplate.update("UPDATE topic SET display_name_ja = NULL WHERE code = 1")
-    }
-
     @Test
     fun `새 공지를 저장하고 토픽별로 언어에 맞춰 발송한다`() {
-        jdbcTemplate.update("UPDATE notification_template SET text_ja = '{title} ほか{count}件' WHERE template_key = 'NOTICE_BODY_MULTIPLE'")
-        jdbcTemplate.update("UPDATE topic SET display_name_ja = '一般ニュース' WHERE code = 1")
-
         // 이전 실행이 발송 전에 멈춰 남은 공지와 이미 보낸 공지
         saveNotice(100, generalNews, NotificationStatus.PENDING, content = "본문 100")
         saveNotice(99, generalNews, NotificationStatus.SENT, content = null)
@@ -95,8 +85,8 @@ class NoticeCrawlJobTest : CrawlerIntegrationTest() {
             assertThat(it.body).isEqualTo("공지 102 외 2개의 소식이 있습니다.")
         })
         assertThat(sentByTokens.getValue(listOf("token-ja"))).satisfies({
-            assertThat(it.title).isEqualTo("一般ニュース")
-            assertThat(it.body).isEqualTo("공지 102 ほか2件")
+            assertThat(it.title).isEqualTo("お知らせ")
+            assertThat(it.body).isEqualTo("공지 102 ほか2件のお知らせがあります。")
         })
         assertThat(sentByTokens.getValue(listOf("token-ko", "token-invalid"))).satisfies({
             assertThat(it.title).isEqualTo("장학안내")
