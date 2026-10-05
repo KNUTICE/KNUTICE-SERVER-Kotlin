@@ -28,6 +28,7 @@ services:
       - READING_ROOM_SEATS_ENDPOINT
       - READING_ROOM_STATUS_ENDPOINT
       - WEBHOOK_SLACK_URL
+      - LOG_LEVEL
       - LOG_PATH=/logs
       - TZ=Asia/Seoul
     volumes:
