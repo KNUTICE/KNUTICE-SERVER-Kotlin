@@ -1,69 +1,56 @@
-extra["springCloudVersion"] = "2025.0.0"
+val commonApiVersion = rootProject.extra["commonApiVersion"] as String
+val querydslVersion = rootProject.extra["querydslVersion"] as String
+val springdocVersion = rootProject.extra["springdocVersion"] as String
+val commonsTextVersion = rootProject.extra["commonsTextVersion"] as String
+val jjwtVersion = rootProject.extra["jjwtVersion"] as String
+val kotestVersion = rootProject.extra["kotestVersion"] as String
+val mockkVersion = rootProject.extra["mockkVersion"] as String
 
 dependencies {
-    implementation(project(":global"))
+    implementation(project(":common"))
+    implementation(project(":persistence-common"))
     implementation(project(":reading-room"))
 
-    implementation("io.github.seob7:common-api:0.0.2")
+    implementation("io.github.seob7:common-api:$commonApiVersion")
 
-    // Ktor Client (논블로킹 HTTP)
-    implementation("io.ktor:ktor-client-cio:2.3.6")
+    // Web (Boot 4 : spring-boot-starter-web 은 deprecated)
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
 
-    // Ktor JSON Serialization
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.13")
-    implementation("io.ktor:ktor-serialization-jackson:2.3.13")
+    // RestClient + HTTP Interface (학식 사이트 · crawler 호출)
+    implementation("org.springframework.boot:spring-boot-starter-restclient")
 
-    // Mongo
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-
-    // OpenFeign
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-
-    // Web
-    implementation("org.springframework.boot:spring-boot-starter-web")
-
-    // Jsoup (Crawler)
-    implementation("org.jsoup:jsoup:1.21.2")
+    // Apache text (MealRemoteAdapter HTML unescape. 기존엔 다른 라이브러리의 전이 의존으로 들어오던 것을 명시)
+    implementation("org.apache.commons:commons-text:$commonsTextVersion")
 
     // Security
     implementation("org.springframework.boot:spring-boot-starter-security")
 
     // JWT
-    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
-    implementation("io.jsonwebtoken:jjwt-impl:0.12.6")
-    implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
-
-    // Coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
+    implementation("io.jsonwebtoken:jjwt-api:$jjwtVersion")
+    implementation("io.jsonwebtoken:jjwt-impl:$jjwtVersion")
+    implementation("io.jsonwebtoken:jjwt-jackson:$jjwtVersion")
 
     // Validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // Swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion")
 
     // Prometheus
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
 
-    // QueryDSL - 2026-04-25 : 7.1 로 변경
-    implementation("io.github.openfeign.querydsl:querydsl-mongodb:7.1") {
-        exclude(group = "org.mongodb", module = "mongo-java-driver")
-    }
-    ksp("io.github.openfeign.querydsl:querydsl-ksp-codegen:7.1")
-    implementation("com.mysema.commons:mysema-commons-lang:0.2.4")
+    // QueryDSL Q클래스 생성 (JPA · QueryDSL 라이브러리는 persistence-common)
+    ksp("io.github.openfeign.querydsl:querydsl-ksp-codegen:$querydslVersion")
 
     // Kotest
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.9.1")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:5.9.1")
-    testImplementation("io.mockk:mockk:1.14.5")
-}
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
 
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
+    // Test : 실제 MySQL(Testcontainers)로 JPA 슬라이스 테스트
+    testImplementation(testFixtures(project(":persistence-common")))
+    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 }
 
 kotlin {

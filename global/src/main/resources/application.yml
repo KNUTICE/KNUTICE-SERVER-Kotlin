@@ -1,3 +1,0 @@
-webhook:
-  slack:
-    url: ${WEBHOOK_SLACK_URL}

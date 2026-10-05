@@ -6,10 +6,11 @@ import com.fx.readingroom.domain.ReadingRoomStatus
 
 interface ReadingRoomRemotePort {
 
-    suspend fun getCsrfToken(): String
+    /** 열람실 사이트에 접속해 세션을 맺고 좌석 조회에 쓸 CSRF 토큰을 받는다. */
+    fun getCsrfToken(): String
 
-    suspend fun getReadingRoomStatus(): List<ReadingRoomStatus>
+    fun getReadingRoomStatus(): List<ReadingRoomStatus>
 
-    suspend fun getReadingRoomSeats(readingRoom: ReadingRoom, csrfToken: String): List<ReadingRoomSeat>
+    fun getReadingRoomSeats(readingRoom: ReadingRoom, csrfToken: String): List<ReadingRoomSeat>
 
 }

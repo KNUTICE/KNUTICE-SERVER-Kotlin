@@ -1,30 +1,29 @@
 package com.fx.api.adapter.out.persistence
 
-import com.fx.api.adapter.out.persistence.document.ImageDocument
-import com.fx.api.adapter.out.persistence.repository.ImageMongoRepository
-import com.fx.api.application.port.out.ImagePersistencePort
+import com.fx.api.adapter.out.persistence.repository.ImageRepository
+import com.fx.api.application.port.out.image.ImagePersistencePort
 import com.fx.api.domain.Image
 import com.fx.api.domain.ImageType
-import com.fx.global.annotation.PersistenceAdapter
+import com.fx.common.annotation.PersistenceAdapter
 
 @PersistenceAdapter
 class ImagePersistenceAdapter(
-    private val imageMongoRepository: ImageMongoRepository,
+    private val imageRepository: ImageRepository,
 ) : ImagePersistencePort {
 
     override fun save(image: Image): Image =
-        imageMongoRepository.save(ImageDocument.from(image)).toDomain()
+        imageRepository.save(image)
 
-    override fun findByType(type: ImageType): Image? =
-        imageMongoRepository.findByType(type)?.toDomain()
+    override fun findLatestByType(type: ImageType): Image? =
+        imageRepository.findFirstByTypeOrderByIdDesc(type)
 
     override fun findAllByType(type: ImageType): List<Image> =
-        imageMongoRepository.findAllByType(type).map { it.toDomain() }
+        imageRepository.findAllByTypeOrderByIdAsc(type)
 
-    override fun findById(imageId: String): Image? =
-        imageMongoRepository.findById(imageId).orElse(null)?.toDomain()
+    override fun findById(imageId: Long): Image? =
+        imageRepository.findById(imageId).orElse(null)
 
-    override fun delete(imageId: String) =
-        imageMongoRepository.deleteById(imageId)
+    override fun delete(image: Image) =
+        imageRepository.delete(image)
 
 }

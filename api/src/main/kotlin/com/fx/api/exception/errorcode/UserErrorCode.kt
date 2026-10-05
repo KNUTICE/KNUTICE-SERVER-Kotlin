@@ -15,7 +15,9 @@ enum class UserErrorCode(
     ROLE_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "권한 정보가 없습니다.")
     ;
 
-    override fun getHttpStatus(): HttpStatus = httpStatus
-    override fun getMessage(): String = message
+    override fun getHttpStatus(): HttpStatus =
+        httpStatus
+    override fun getMessage(): String =
+        message
 
 }

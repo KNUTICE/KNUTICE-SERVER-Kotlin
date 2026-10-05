@@ -1,0 +1,11 @@
+package com.fx.api.application.port.`in`.readingroom.dto
+
+import com.fx.readingroom.domain.ReadingRoom
+
+data class CreateSeatAlertCommand(
+
+    val fcmToken: String, // FCM 토큰
+    val readingRoom: ReadingRoom, // 열람실 이름
+    val seatNumber: Int, // 좌석 번호
+
+)

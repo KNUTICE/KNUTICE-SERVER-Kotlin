@@ -1,6 +1,6 @@
 package com.fx.api.config.security
 
-import com.fx.api.application.port.out.JwtProviderPort
+import com.fx.api.application.port.out.user.JwtProviderPort
 import jakarta.servlet.DispatcherType
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -18,8 +18,8 @@ import org.springframework.web.filter.CorsFilter
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtProviderPort: JwtProviderPort,
-    @Value("\${url.allowed-origins[0]}") private val allowedOrigin0: String,
-    @Value("\${url.allowed-origins[1]}") private val allowedOrigin1: String,
+    @param:Value("\${url.allowed-origins[0]}") private val allowedOrigin0: String,
+    @param:Value("\${url.allowed-origins[1]}") private val allowedOrigin1: String,
 ) {
 
     private val WHITE_LIST = arrayOf(
@@ -32,11 +32,19 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .csrf { it.disable() }
+            .csrf {
+                it.disable()
+            }
             .cors {  }
-            .formLogin { it.disable() }
-            .httpBasic { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .formLogin {
+                it.disable()
+            }
+            .httpBasic {
+                it.disable()
+            }
+            .sessionManagement {
+                it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            }
             .authorizeHttpRequests { auth ->
                 auth
                     .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()

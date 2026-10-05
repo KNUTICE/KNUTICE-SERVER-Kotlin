@@ -1,6 +1,6 @@
 package com.fx.api.adapter.out.storage
 
-import com.fx.api.application.port.out.ImageStoragePort
+import com.fx.api.application.port.out.image.ImageStoragePort
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
@@ -11,11 +11,11 @@ import java.nio.file.StandardCopyOption
 
 @Component
 class LocalStorageAdapter(
-    @Value("\${url.scheme}") private val scheme: String,
-    @Value("\${url.host}") private val host: String,
-    @Value("\${server.port}") private val port: String,
-    @Value("\${file.context-path}") private val contextPath: String,
-    @Value("\${file.upload-dir}") private val uploadDir: Path,
+    @param:Value("\${url.scheme}") private val scheme: String,
+    @param:Value("\${url.host}") private val host: String,
+    @param:Value("\${server.port}") private val port: String,
+    @param:Value("\${file.context-path}") private val contextPath: String,
+    @param:Value("\${file.upload-dir}") private val uploadDir: Path,
 ) : ImageStoragePort {
 
     override fun save(imageFile: MultipartFile, serverName: String): String {

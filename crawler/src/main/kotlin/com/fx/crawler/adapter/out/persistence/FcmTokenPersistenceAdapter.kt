@@ -1,35 +1,39 @@
 package com.fx.crawler.adapter.out.persistence
 
-import com.fx.global.adapter.out.persistence.document.FcmTokenDocument
-import com.fx.crawler.adapter.out.persistence.repository.FcmTokenQueryRepository
-import com.fx.crawler.appllication.port.out.FcmTokenPersistencePort
-import com.fx.global.domain.FcmToken
-import com.fx.crawler.domain.FcmTokenQuery
-import com.fx.global.adapter.out.persistence.repository.FcmTokenMongoRepository
-import com.fx.global.annotation.PersistenceAdapter
-import com.fx.global.domain.DeviceType
+import com.fx.common.adapter.out.persistence.repository.FcmTokenRepository
+import com.fx.common.annotation.PersistenceAdapter
+import com.fx.common.exception.FcmTokenException
+import com.fx.common.exception.errorcode.FcmTokenErrorCode
+import com.fx.crawler.adapter.out.persistence.repository.PushTargetQueryRepository
+import com.fx.crawler.application.port.out.FcmTokenPersistencePort
+import com.fx.crawler.domain.push.PushTarget
+import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @PersistenceAdapter
 class FcmTokenPersistenceAdapter(
-    private val fcmTokenMongoRepository: FcmTokenMongoRepository,
-    private val fcmTokenQueryRepository: FcmTokenQueryRepository
-): FcmTokenPersistencePort {
+    private val fcmTokenRepository: FcmTokenRepository,
+    private val pushTargetQueryRepository: PushTargetQueryRepository,
+) : FcmTokenPersistencePort {
 
-    override fun save(fcmToken: FcmToken) {
-        fcmTokenMongoRepository.save(FcmTokenDocument.from(fcmToken))
+    @Transactional(readOnly = true)
+    override fun findSubscribers(topicCode: Int, afterFcmTokenId: Long?, size: Int): List<PushTarget> =
+        pushTargetQueryRepository.findSubscribers(topicCode, afterFcmTokenId, size)
+
+    @Transactional(readOnly = true)
+    override fun findActiveIosTargets(afterFcmTokenId: Long?, size: Int): List<PushTarget> =
+        pushTargetQueryRepository.findActiveIosTargets(afterFcmTokenId, size)
+
+    /** 벌크 UPDATE 한 번으로 비활성화한다. 발송 중인 다른 chunk 가 읽은 토큰 상태를 덮어쓰지 않는다. */
+    @Transactional
+    override fun deactivateAll(fcmTokenIds: Collection<Long>, now: LocalDateTime): Int =
+        if (fcmTokenIds.isEmpty()) 0 else fcmTokenRepository.deactivateAll(fcmTokenIds, now)
+
+    @Transactional(readOnly = true)
+    override fun getTargetByToken(token: String): PushTarget {
+        val fcmToken = fcmTokenRepository.findByToken(token)
+            ?: throw FcmTokenException(FcmTokenErrorCode.TOKEN_NOT_FOUND)
+        return PushTarget(requireNotNull(fcmToken.id), fcmToken.token, fcmToken.language)
     }
-
-    override fun saveAll(fcmTokens: List<FcmToken>) {
-        fcmTokenMongoRepository.saveAll(FcmTokenDocument.from(fcmTokens))
-    }
-
-    override fun findByFcmToken(fcmToken: String): FcmToken?  =
-        fcmTokenMongoRepository.findById(fcmToken).orElse(null)?.toDomain()
-
-    override fun findByCreatedAtAndIsActive(fcmTokenQuery: FcmTokenQuery): List<FcmToken> =
-        fcmTokenQueryRepository.findByCreatedAtAndIsActive(fcmTokenQuery).map { it.toDomain() };
-
-    override fun countByIsActiveAndDeviceType(isActive: Boolean, deviceType: DeviceType): Long =
-        fcmTokenMongoRepository.countByIsActiveAndDeviceType(isActive, deviceType)
 
 }

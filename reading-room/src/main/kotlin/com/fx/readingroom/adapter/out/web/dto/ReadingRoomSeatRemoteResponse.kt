@@ -1,20 +1,22 @@
 package com.fx.readingroom.adapter.out.web.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class ReadingRoomSeatRemoteResponse(
-    val result: SeatData
+    @param:JsonProperty("result") val result: SeatData,
 )
 
 data class SeatData(
-    val CODE: String,
-    val items: List<SeatItem> = emptyList()
+    @param:JsonProperty("CODE") val code: String,
+    @param:JsonProperty("items") val items: List<SeatItem> = emptyList(),
 )
 
 data class SeatItem(
-    val room_no: Int,
-    val number: Int,
-    val x_pos: Int,
-    val y_pos: Int,
-    val use_type: Int,
-    val seat_return: Long, // epoch milliseconds
-    val user_name: String? // use_type = 1 인 경우에만 존재함
+    @param:JsonProperty("room_no") val roomNo: Int,
+    @param:JsonProperty("number") val number: Int,
+    @param:JsonProperty("x_pos") val xPos: Int,
+    @param:JsonProperty("y_pos") val yPos: Int,
+    @param:JsonProperty("use_type") val useType: Int,
+    @param:JsonProperty("seat_return") val seatReturn: Long, // epoch milliseconds
+    @param:JsonProperty("user_name") val userName: String?, // use_type = 1 인 경우에만 존재함
 )

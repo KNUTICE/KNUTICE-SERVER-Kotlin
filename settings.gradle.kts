@@ -1,6 +1,7 @@
 rootProject.name = "knutice"
 
 include("crawler")
-include("global")
+include("common")
+include("persistence-common")
 include("api")
 include("reading-room")

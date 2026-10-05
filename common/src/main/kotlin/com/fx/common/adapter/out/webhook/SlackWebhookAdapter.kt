@@ -1,0 +1,36 @@
+package com.fx.common.adapter.out.webhook
+
+import com.fx.common.application.port.out.WebhookPort
+import com.fx.common.domain.SlackMessage
+import com.slack.api.Slack
+import com.slack.api.webhook.Payload
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.scheduling.annotation.Async
+import org.springframework.stereotype.Component
+import java.io.IOException
+
+@Component
+class SlackWebhookAdapter(
+    private val slackClient: Slack = Slack.getInstance(),
+    @param:Value("\${webhook.slack.url}") private val slackWebhookUrl: String
+) : WebhookPort {
+
+    /** 결과를 기다리지 않는다. `@EnableAsync` 가 켜진 애플리케이션에서는 별도 (가상) 스레드에서 보낸다. */
+    @Async
+    override fun notifySlack(slackMessage: SlackMessage) {
+        try {
+            val message = "*_${slackMessage.type.title}_* :rotating_light:  \n" +
+                    slackMessage.content
+
+            val payload = Payload.builder()
+                .text(message)
+                .build()
+            slackClient.send(slackWebhookUrl, payload)
+
+            Thread.sleep(10000)
+        } catch (e: IOException) {
+            throw RuntimeException("슬랙 에러 발생 : {}", e)
+        }
+    }
+
+}

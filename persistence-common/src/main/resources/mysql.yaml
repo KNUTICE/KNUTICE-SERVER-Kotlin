@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    # MYSQL_URL 은 데이터베이스 이름을 뺀 접속 주소다 (예: jdbc:mysql://localhost:3306)
+    url: ${MYSQL_URL}/${MYSQL_DATABASE}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    hikari:
+      data-source-properties:
+        # 배치 INSERT 를 multi-row INSERT 한 문장으로 재작성한다
+        rewriteBatchedStatements: true
+
+  jpa:
+    # 지연 로딩은 트랜잭션(서비스) 안에서만 한다
+    open-in-view: false
+    hibernate:
+      # 스키마는 Flyway(db/migration)가 관리한다
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+        order_inserts: true
+        order_updates: true
