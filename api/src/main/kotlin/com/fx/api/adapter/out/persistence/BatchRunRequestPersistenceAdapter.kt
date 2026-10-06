@@ -6,6 +6,8 @@ import com.fx.common.adapter.out.persistence.repository.BatchRunRequestRepositor
 import com.fx.common.annotation.PersistenceAdapter
 import com.fx.common.domain.batch.BatchRunRequest
 import com.fx.common.domain.batch.BatchRunRequestStatus
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 @PersistenceAdapter
 class BatchRunRequestPersistenceAdapter(
@@ -19,7 +21,7 @@ class BatchRunRequestPersistenceAdapter(
     override fun findRequested(jobName: String): List<BatchRunRequest> =
         batchRunRequestRepository.findAllByStatusAndJobName(BatchRunRequestStatus.REQUESTED, jobName)
 
-    override fun findRequests(status: BatchRunRequestStatus?, cursor: Long?, limit: Int): List<BatchRunRequest> =
-        batchRunRequestQueryRepository.findRequests(status, cursor, limit)
+    override fun findRequests(status: BatchRunRequestStatus?, pageable: Pageable): Page<BatchRunRequest> =
+        batchRunRequestQueryRepository.findRequests(status, pageable)
 
 }

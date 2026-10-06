@@ -6,6 +6,7 @@ import com.fx.common.adapter.out.persistence.repository.BatchRunRequestRepositor
 import com.fx.common.domain.batch.BatchRunRequest
 import com.fx.common.domain.batch.BatchRunRequestStatus
 import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.request.PagingRequest
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -49,20 +50,24 @@ class BatchRunRequestPersistenceAdapterTest @Autowired constructor(
     }
 
     @Test
-    fun `최신순으로 조회하고 커서보다 오래된 요청부터 이어서 읽는다`() {
-        val first = batchRunRequestPersistenceAdapter.findRequests(status = null, cursor = null, limit = 3)
-        assertThat(idsOf(first)).containsExactly(ids[3], ids[2], ids[1])
+    fun `최신순으로 페이지 단위 조회한다`() {
+        val first = batchRunRequestPersistenceAdapter.findRequests(status = null, PagingRequest(page = 1, size = 3).toPageable())
+        assertThat(idsOf(first.content)).containsExactly(ids[3], ids[2], ids[1])
+        assertThat(first.totalElements).isEqualTo(4)
+        assertThat(first.hasNext()).isTrue()
 
-        val next = batchRunRequestPersistenceAdapter.findRequests(status = null, cursor = ids[1], limit = 3)
-        assertThat(idsOf(next)).containsExactly(ids[0])
+        val second = batchRunRequestPersistenceAdapter.findRequests(status = null, PagingRequest(page = 2, size = 3).toPageable())
+        assertThat(idsOf(second.content)).containsExactly(ids[0])
+        assertThat(second.hasNext()).isFalse()
     }
 
     @Test
     fun `상태로 거를 수 있다`() {
-        val requested = batchRunRequestPersistenceAdapter.findRequests(BatchRunRequestStatus.REQUESTED, cursor = null, limit = 10)
-        assertThat(idsOf(requested)).containsExactly(ids[2], ids[0])
+        val requested = batchRunRequestPersistenceAdapter.findRequests(BatchRunRequestStatus.REQUESTED, PagingRequest().toPageable())
+        assertThat(idsOf(requested.content)).containsExactly(ids[2], ids[0])
+        assertThat(requested.totalElements).isEqualTo(2)
 
-        val rejected = batchRunRequestPersistenceAdapter.findRequests(BatchRunRequestStatus.REJECTED, cursor = null, limit = 10).single()
+        val rejected = batchRunRequestPersistenceAdapter.findRequests(BatchRunRequestStatus.REJECTED, PagingRequest().toPageable()).content.single()
         assertThat(rejected.rejectReason).isEqualTo("같은 작업이 이미 실행 중입니다.")
         assertThat(rejected.createdAt).isNotNull()
     }

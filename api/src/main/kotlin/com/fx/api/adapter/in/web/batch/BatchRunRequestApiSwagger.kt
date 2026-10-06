@@ -1,20 +1,22 @@
 package com.fx.api.adapter.`in`.web.batch
 
 import com.fx.api.adapter.`in`.web.batch.dto.BatchRunRequestCreateRequest
-import com.fx.api.adapter.`in`.web.batch.dto.BatchRunRequestPageResponse
 import com.fx.api.adapter.`in`.web.batch.dto.BatchRunRequestResponse
-import com.fx.api.adapter.`in`.web.batch.dto.BatchRunRequestSearchParam
 import com.fx.api.config.security.dto.AuthenticatedUser
 import com.fx.api.exception.errorcode.BatchErrorCode
 import com.fx.common.annotation.ApiExceptionExplanation
 import com.fx.common.annotation.ApiResponseExplanations
+import com.fx.common.domain.batch.BatchRunRequestStatus
+import com.fx.persistence.request.PagingRequest
+import com.fx.persistence.response.PageResponse
 import io.github.seob7.Api
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 
 @Tag(name = "배치 수동 실행 API - ADMIN")
 interface BatchRunRequestApiSwagger {
@@ -49,8 +51,11 @@ interface BatchRunRequestApiSwagger {
         @RequestBody request: BatchRunRequestCreateRequest
     ): ResponseEntity<Api<BatchRunRequestResponse>>
 
-    @Operation(summary = "수동 실행 요청 목록", description = "최신순으로 조회합니다. 다음 페이지는 응답의 nextCursor 를 cursor 로 보냅니다 (마지막 페이지면 null).<br>" +
-            "size 는 1~100, 기본 20 입니다.")
-    fun getRunRequests(@ModelAttribute param: BatchRunRequestSearchParam): ResponseEntity<Api<BatchRunRequestPageResponse>>
+    @Operation(summary = "수동 실행 요청 목록", description = "최신순으로 페이지 단위 조회합니다. page 는 1부터, size 는 1~100(기본 20)입니다.<br>" +
+            "status(REQUESTED · LAUNCHED · REJECTED)로 거를 수 있습니다.")
+    fun getRunRequests(
+        @Parameter(description = "요청 상태. 없으면 모든 상태") @RequestParam(required = false) status: BatchRunRequestStatus?,
+        @ParameterObject pagingRequest: PagingRequest,
+    ): ResponseEntity<Api<PageResponse<BatchRunRequestResponse>>>
 
 }

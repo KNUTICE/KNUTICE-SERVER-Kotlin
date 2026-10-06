@@ -1,7 +1,6 @@
 package com.fx.api.application.service.batch
 
 import com.fx.api.application.port.`in`.batch.dto.BatchRunRequestCommand
-import com.fx.api.application.port.`in`.batch.dto.BatchRunRequestSearchCommand
 import com.fx.api.application.port.out.batch.BatchRunRequestPersistencePort
 import com.fx.api.application.port.out.user.UserPersistencePort
 import com.fx.api.domain.User
@@ -101,39 +100,6 @@ class BatchRunRequestCommandQueryServiceTest : BehaviorSpec({
                 verify(exactly = 0) {
                     requestPort.save(any())
                 }
-            }
-        }
-    }
-
-    Given("수동 실행 요청 목록") {
-
-        When("한 페이지보다 많이 남아 있으면") {
-            resetMocks()
-            every {
-                requestPort.findRequests(null, null, 3)
-            } returns listOf(request(30L), request(20L), request(10L))
-
-            Then("요청한 크기만 돌려주고 마지막 요청 id 를 다음 커서로 준다") {
-                val page = service.getRunRequests(BatchRunRequestSearchCommand(status = null, cursor = null, size = 2))
-
-                page.items.map {
-                    it.id
-                } shouldBe listOf(30L, 20L)
-                page.nextCursor shouldBe 20L
-            }
-        }
-
-        When("마지막 페이지면") {
-            resetMocks()
-            every {
-                requestPort.findRequests(BatchRunRequestStatus.REJECTED, 20L, 3)
-            } returns listOf(request(10L))
-
-            Then("다음 커서가 없다") {
-                val page = service.getRunRequests(BatchRunRequestSearchCommand(BatchRunRequestStatus.REJECTED, cursor = 20L, size = 2))
-
-                page.items.size shouldBe 1
-                page.nextCursor shouldBe null
             }
         }
     }

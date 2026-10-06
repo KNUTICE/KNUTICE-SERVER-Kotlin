@@ -3,14 +3,15 @@ package com.fx.api.application.service.batch
 import com.fx.api.application.port.`in`.batch.BatchRunRequestCommandUseCase
 import com.fx.api.application.port.`in`.batch.BatchRunRequestQueryUseCase
 import com.fx.api.application.port.`in`.batch.dto.BatchRunRequestCommand
-import com.fx.api.application.port.`in`.batch.dto.BatchRunRequestSearchCommand
 import com.fx.api.application.port.out.batch.BatchRunRequestPersistencePort
 import com.fx.api.application.port.out.user.UserPersistencePort
-import com.fx.api.domain.CursorPage
 import com.fx.api.exception.BatchException
 import com.fx.api.exception.errorcode.BatchErrorCode
 import com.fx.common.domain.batch.BatchJobParameters
 import com.fx.common.domain.batch.BatchRunRequest
+import com.fx.common.domain.batch.BatchRunRequestStatus
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -42,11 +43,7 @@ class BatchRunRequestCommandQueryService(
         return batchRunRequestPersistencePort.save(BatchRunRequest(command.jobName, jobParameters, requester.nickname))
     }
 
-    override fun getRunRequests(command: BatchRunRequestSearchCommand): CursorPage<BatchRunRequest> {
-        val rows = batchRunRequestPersistencePort.findRequests(command.status, command.cursor, command.size + 1)
-        return CursorPage.of(rows, command.size) {
-            requireNotNull(it.id)
-        }
-    }
+    override fun getRunRequests(status: BatchRunRequestStatus?, pageable: Pageable): Page<BatchRunRequest> =
+        batchRunRequestPersistencePort.findRequests(status, pageable)
 
 }
