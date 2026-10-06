@@ -8,6 +8,12 @@ import java.time.LocalDateTime
 
 interface BatchScheduleRepository : JpaRepository<BatchSchedule, Long> {
 
+    fun findAllByOrderByScheduleKeyAsc(): List<BatchSchedule>
+
+    fun findByScheduleKey(scheduleKey: String): BatchSchedule?
+
+    fun existsByScheduleKey(scheduleKey: String): Boolean
+
     fun findAllByEnabledTrueAndNextFireAtIsNull(): List<BatchSchedule>
 
     fun findAllByEnabledTrueAndNextFireAtLessThanEqualOrderByNextFireAtAsc(now: LocalDateTime): List<BatchSchedule>

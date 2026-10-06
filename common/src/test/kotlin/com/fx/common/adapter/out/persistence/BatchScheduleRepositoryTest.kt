@@ -98,6 +98,26 @@ class BatchScheduleRepositoryTest @Autowired constructor(
     }
 
     @Test
+    fun `관리자가 설명을 바꿔도 그사이 폴러가 넘긴 발화 시각은 되돌리지 않는다`() {
+        val id = requireNotNull(batchScheduleRepository.findByScheduleKey("notice-crawl-notice")!!.id)
+        val previous = LocalDateTime.of(2026, 9, 30, 10, 0)
+        batchScheduleRepository.initializeNextFireAt(id, previous, now)
+        entityManager.clear()
+
+        // 관리자가 읽어 둔 사이 폴러가 발화를 선점한다
+        val loaded = batchScheduleRepository.findByScheduleKey("notice-crawl-notice")!!
+        batchScheduleRepository.claim(id, previous, now.plusMinutes(8), now)
+        loaded.changeDescription("공지 크롤링")
+        entityManager.flush()
+        entityManager.clear()
+
+        val saved = batchScheduleRepository.findById(id).orElseThrow()
+        assertThat(saved.description).isEqualTo("공지 크롤링")
+        assertThat(saved.nextFireAt).isEqualTo(now.plusMinutes(8))
+        assertThat(saved.lastFiredAt).isEqualTo(now)
+    }
+
+    @Test
     fun `수동 실행 요청은 한 번만 선점되고 결과가 기록된다`() {
         val launched = batchRunRequestRepository.saveAndFlush(BatchRunRequest(BatchJob.SILENT_PUSH.jobName, "{}", "admin"))
         val rejected = batchRunRequestRepository.saveAndFlush(BatchRunRequest("unknownJob", "{}", "admin"))

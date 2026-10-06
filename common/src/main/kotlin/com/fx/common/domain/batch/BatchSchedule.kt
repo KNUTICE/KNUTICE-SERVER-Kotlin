@@ -5,6 +5,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
+import org.hibernate.annotations.DynamicUpdate
 import java.time.LocalDateTime
 
 /** 스케줄 키 최대 길이 — `schedule_key` 컬럼 길이와 같아야 한다. */
@@ -16,6 +17,9 @@ const val BATCH_JOB_NAME_MAX_LENGTH = 100
 /** Job 파라미터(JSON) 최대 길이 — `job_parameters` 컬럼 길이와 같아야 한다. */
 const val BATCH_JOB_PARAMETERS_MAX_LENGTH = 1000
 
+/** 스케줄 설명 최대 길이 — `description` 컬럼 길이와 같아야 한다. */
+const val BATCH_SCHEDULE_DESCRIPTION_MAX_LENGTH = 200
+
 /**
  * Job 자동 실행 정의.
  *
@@ -26,8 +30,10 @@ const val BATCH_JOB_PARAMETERS_MAX_LENGTH = 1000
  * - [jobParameters] 는 문자열 값만 가진 JSON 객체다 (예: `{"topicType":"MAJOR"}`).
  * - [nextFireAt] 이 비어 있으면 아직 계산하지 않은 상태다. 폴러가 처음 볼 때 다음 발화 시각으로 채운다.
  * - 폴러는 조건부 UPDATE 로 발화를 선점하므로 [nextFireAt] · [lastFiredAt] 을 엔티티를 거치지 않고 바꾼다.
+ *   관리자 수정은 바뀐 컬럼만 UPDATE 한다. 모든 컬럼을 쓰면 그사이 폴러가 넘긴 발화 시각을 읽어 둔 옛 값으로 되돌려 같은 발화를 한 번 더 실행한다.
  */
 @Entity
+@DynamicUpdate
 @Table(
     name = "batch_schedule",
     uniqueConstraints = [
@@ -61,7 +67,7 @@ class BatchSchedule(
     var enabled: Boolean = enabled
         protected set
 
-    @Column(name = "description", nullable = false, length = 200, comment = "관리자 화면용 설명")
+    @Column(name = "description", nullable = false, length = BATCH_SCHEDULE_DESCRIPTION_MAX_LENGTH, comment = "관리자 화면용 설명")
     var description: String = description
         protected set
 
