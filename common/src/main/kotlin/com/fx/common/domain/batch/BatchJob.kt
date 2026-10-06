@@ -7,15 +7,17 @@ package com.fx.common.domain.batch
  */
 enum class BatchJob(
     val jobName: String,
+    /** 관리자 화면에 보여 줄 설명 */
+    val description: String,
     val parameters: List<BatchJobParameter>,
 ) {
 
-    NOTICE_CRAWL("noticeCrawlJob", listOf(BatchJobParameter.TOPIC_TYPE)),
-    NOTICE_SUMMARY("noticeSummaryJob", emptyList()),
-    MEAL_NOTIFY("mealNotifyJob", emptyList()),
-    SILENT_PUSH("silentPushJob", emptyList()),
-    SEAT_ALERT_CHECK("seatAlertCheckJob", emptyList()),
-    MAINTENANCE("maintenanceJob", listOf(BatchJobParameter.RETENTION_DAYS)),
+    NOTICE_CRAWL("noticeCrawlJob", "공지 · 학과 게시판 크롤링 · 알림", listOf(BatchJobParameter.TOPIC_TYPE)),
+    NOTICE_SUMMARY("noticeSummaryJob", "요약 대기 공지 AI 요약", emptyList()),
+    MEAL_NOTIFY("mealNotifyJob", "오늘 학식 알림", emptyList()),
+    SILENT_PUSH("silentPushJob", "iOS 토큰 갱신용 사일런트 푸시", emptyList()),
+    SEAT_ALERT_CHECK("seatAlertCheckJob", "열람실 빈자리 확인 · 알림, 만료 알림 정리", emptyList()),
+    MAINTENANCE("maintenanceJob", "보존 기간이 지난 실행 기록 삭제", listOf(BatchJobParameter.RETENTION_DAYS)),
     ;
 
     /** @throws IllegalArgumentException 받지 않는 파라미터가 있거나, 필요한 파라미터가 없거나, 값이 잘못됐을 때 */

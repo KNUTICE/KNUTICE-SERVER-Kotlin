@@ -23,6 +23,30 @@ class BatchJobTest {
     }
 
     @Test
+    fun `관리자 화면에 보여 줄 Job 과 파라미터 설명이 모두 있다`() {
+        assertThat(BatchJob.entries).allSatisfy {
+            assertThat(it.description).isNotBlank()
+        }
+        assertThat(BatchJobParameter.entries).allSatisfy {
+            assertThat(it.description).isNotBlank()
+        }
+    }
+
+    @Test
+    fun `고를 수 있는 값이 있는 파라미터는 그 값만 받는다`() {
+        assertThat(BatchJobParameter.TOPIC_TYPE.allowedValues).containsExactly("NOTICE", "MAJOR")
+        assertThat(BatchJobParameter.RETENTION_DAYS.allowedValues).isNull()
+
+        BatchJobParameter.entries.forEach { parameter ->
+            parameter.allowedValues?.forEach {
+                assertThatCode {
+                    parameter.validate(it)
+                }.doesNotThrowAnyException()
+            }
+        }
+    }
+
+    @Test
     fun `규칙에 맞는 파라미터는 통과한다`() {
         assertThatCode {
             BatchJob.NOTICE_CRAWL.validate(mapOf("topicType" to "NOTICE"))
