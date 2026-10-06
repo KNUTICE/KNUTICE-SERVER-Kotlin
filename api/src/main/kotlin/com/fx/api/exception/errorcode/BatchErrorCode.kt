@@ -14,6 +14,7 @@ enum class BatchErrorCode(
     JOB_NOT_FOUND(HttpStatus.BAD_REQUEST, "등록되지 않은 Job 입니다."),
     JOB_PARAMETERS_INVALID(HttpStatus.BAD_REQUEST, "Job 파라미터가 올바르지 않습니다."),
     RUN_REQUEST_DUPLICATED(HttpStatus.CONFLICT, "같은 실행 요청이 이미 대기 중입니다."),
+    EXECUTION_NOT_FOUND(HttpStatus.NOT_FOUND, "실행 기록이 존재하지 않습니다."),
     ;
 
     override fun getHttpStatus(): HttpStatus =

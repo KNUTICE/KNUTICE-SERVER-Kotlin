@@ -1,6 +1,7 @@
 package com.fx.crawler.adapter.out.batch
 
 import com.fx.common.domain.batch.BatchJobParameters
+import com.fx.common.domain.batch.BatchTriggerType
 import com.fx.crawler.application.port.out.JobLaunchPort
 import com.fx.crawler.domain.batch.JobLaunchRequest
 import com.fx.crawler.domain.batch.JobTrigger
@@ -61,11 +62,11 @@ class SpringBatchJobAdapter(
         when (val trigger = request.trigger) {
             is JobTrigger.Scheduled -> builder
                 .addLocalDateTime(BatchJobParameters.SCHEDULED_AT, trigger.scheduledAt)
-                .addString(BatchJobParameters.TRIGGER_TYPE, "SCHEDULED", false)
+                .addString(BatchJobParameters.TRIGGER_TYPE, BatchTriggerType.SCHEDULED.name, false)
                 .addString(BatchJobParameters.SCHEDULE_KEY, trigger.scheduleKey, false)
             is JobTrigger.Manual -> builder
                 .addLong(BatchJobParameters.REQUEST_ID, trigger.requestId)
-                .addString(BatchJobParameters.TRIGGER_TYPE, "MANUAL", false)
+                .addString(BatchJobParameters.TRIGGER_TYPE, BatchTriggerType.MANUAL.name, false)
                 .addString(BatchJobParameters.REQUESTED_BY, trigger.requestedBy, false)
         }
         return builder.toJobParameters()
