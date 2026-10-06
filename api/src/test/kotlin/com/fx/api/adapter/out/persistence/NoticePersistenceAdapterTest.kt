@@ -44,6 +44,17 @@ class NoticePersistenceAdapterTest @Autowired constructor(
     }
 
     @Test
+    fun `AI 요약을 기다리는 공지만 센다`() {
+        noticePersistenceAdapter.create(crawledNotice(1), null)
+        noticePersistenceAdapter.create(crawledNotice(2), null)
+        noticePersistenceAdapter.create(adminNotice(nttId = 3, hasSummary = true), "요약")
+        noticePersistenceAdapter.create(adminNotice(nttId = 4, hasSummary = false), null)
+        flushAndClear()
+
+        assertThat(noticePersistenceAdapter.countPendingSummaries()).isEqualTo(2)
+    }
+
+    @Test
     fun `공지가 없으면 예외가 발생한다`() {
         assertThat(noticePersistenceAdapter.existsByNttId(100)).isFalse()
         assertThatThrownBy {

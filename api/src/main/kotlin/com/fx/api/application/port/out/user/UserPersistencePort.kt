@@ -12,4 +12,7 @@ interface UserPersistencePort {
 
     fun findByEmail(email: String): User?
 
+    /** @throws com.fx.api.exception.UserException 없는 사용자 (USER_NOT_FOUND) */
+    fun getById(userId: Long): User
+
 }

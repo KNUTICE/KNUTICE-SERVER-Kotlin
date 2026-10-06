@@ -2,6 +2,7 @@ package com.fx.common.adapter.out.persistence.repository
 
 import com.fx.common.domain.notice.Notice
 import com.fx.common.domain.notice.NotificationStatus
+import com.fx.common.domain.notice.SummaryStatus
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -12,6 +13,8 @@ interface NoticeRepository : JpaRepository<Notice, Long> {
     fun findByNttId(nttId: Long): Notice?
 
     fun existsByNttId(nttId: Long): Boolean
+
+    fun countBySummaryStatus(summaryStatus: SummaryStatus): Long
 
     /** 이미 저장된 게시글 번호만 읽는다 (신규 공지 판별). */
     @Query("SELECT n.nttId FROM Notice n WHERE n.nttId IN :nttIds")

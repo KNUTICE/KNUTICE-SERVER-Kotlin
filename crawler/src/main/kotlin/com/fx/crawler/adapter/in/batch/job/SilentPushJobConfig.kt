@@ -1,6 +1,6 @@
 package com.fx.crawler.adapter.`in`.batch.job
 
-import com.fx.common.domain.batch.BatchJobNames
+import com.fx.common.domain.batch.BatchJob
 import com.fx.crawler.adapter.`in`.batch.support.KeysetItemReader
 import com.fx.crawler.application.port.`in`.PushSendUseCase
 import com.fx.crawler.application.port.`in`.PushTargetQueryUseCase
@@ -28,7 +28,7 @@ class SilentPushJobConfig(
 
     @Bean
     fun silentPushJob(@Qualifier("silentPushStep") silentPushStep: Step): Job =
-        JobBuilder(BatchJobNames.SILENT_PUSH, jobRepository)
+        JobBuilder(BatchJob.SILENT_PUSH.jobName, jobRepository)
             .start(silentPushStep)
             .build()
 

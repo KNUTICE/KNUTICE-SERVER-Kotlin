@@ -1,6 +1,6 @@
 package com.fx.crawler.adapter.`in`.batch.job
 
-import com.fx.common.domain.batch.BatchJobNames
+import com.fx.common.domain.batch.BatchJob
 import com.fx.crawler.adapter.`in`.batch.support.CatalogRefreshJobListener
 import com.fx.crawler.adapter.`in`.batch.support.KeysetItemReader
 import com.fx.crawler.adapter.`in`.batch.support.StepTransactions
@@ -39,7 +39,7 @@ class NoticeSummaryJobConfig(
         catalogRefreshJobListener: CatalogRefreshJobListener,
         @Qualifier("noticeSummaryStep") noticeSummaryStep: Step,
     ): Job =
-        JobBuilder(BatchJobNames.NOTICE_SUMMARY, jobRepository)
+        JobBuilder(BatchJob.NOTICE_SUMMARY.jobName, jobRepository)
             .listener(catalogRefreshJobListener)
             .start(noticeSummaryStep)
             .build()

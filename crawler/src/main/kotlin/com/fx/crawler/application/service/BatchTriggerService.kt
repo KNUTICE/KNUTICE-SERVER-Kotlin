@@ -4,6 +4,7 @@ import com.fx.common.application.port.out.WebhookPort
 import com.fx.common.domain.SlackMessage
 import com.fx.common.domain.SlackType
 import com.fx.common.domain.batch.BATCH_REJECT_REASON_MAX_LENGTH
+import com.fx.common.domain.batch.BatchJob
 import com.fx.common.domain.batch.BatchJobParameters
 import com.fx.common.domain.batch.BatchSchedule
 import com.fx.crawler.application.port.`in`.BatchTriggerUseCase
@@ -25,6 +26,7 @@ import java.time.LocalDateTime
  * - 발화와 요청은 조건부 UPDATE 로 선점한 뒤 실행하므로 인스턴스가 여러 개여도 한 번만 실행된다.
  * - 놓친 발화(서버 중단 등)는 한 번만 실행하고, 다음 발화 시각은 지금 이후로 다시 계산한다.
  * - 같은 작업(Job 이름 + 업무 파라미터)이 실행 중이면 이번 발화는 건너뛰고, 수동 요청은 거절한다.
+ * - 모르는 Job 이나 Job 의 규칙([BatchJob.validate])에 맞지 않는 파라미터는 실행하지 않는다. 발화는 Slack 으로 알리고, 수동 요청은 거절한다.
  * - 원격 · 장시간 작업을 기다리지 않도록 트랜잭션을 걸지 않는다. 각 저장은 영속성 어댑터에서 끝난다.
  */
 @Service
@@ -126,10 +128,13 @@ class BatchTriggerService(
         }
     }
 
+    /** @throws IllegalArgumentException 파라미터가 Job 의 규칙에 맞지 않을 때 */
     private fun launch(request: JobLaunchRequest): JobLaunchOutcome {
-        if (!jobLaunchPort.exists(request.jobName)) {
+        val job = BatchJob.from(request.jobName)
+        if (job == null || !jobLaunchPort.exists(request.jobName)) {
             return JobLaunchOutcome.Rejected("등록되지 않은 Job 입니다: ${request.jobName}")
         }
+        job.validate(request.parameters)
         if (jobLaunchPort.isRunning(request.jobName, request.parameters)) {
             return JobLaunchOutcome.Rejected(ALREADY_RUNNING)
         }

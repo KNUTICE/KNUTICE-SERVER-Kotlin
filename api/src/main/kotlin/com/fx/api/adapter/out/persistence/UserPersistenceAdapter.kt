@@ -3,6 +3,8 @@ package com.fx.api.adapter.out.persistence
 import com.fx.api.adapter.out.persistence.repository.UserRepository
 import com.fx.api.application.port.out.user.UserPersistencePort
 import com.fx.api.domain.User
+import com.fx.api.exception.UserException
+import com.fx.api.exception.errorcode.UserErrorCode
 import com.fx.common.annotation.PersistenceAdapter
 
 @PersistenceAdapter
@@ -21,5 +23,10 @@ class UserPersistenceAdapter(
 
     override fun findByEmail(email: String): User? =
         userRepository.findByEmail(email)
+
+    override fun getById(userId: Long): User =
+        userRepository.findById(userId).orElseThrow {
+            UserException(UserErrorCode.USER_NOT_FOUND)
+        }
 
 }

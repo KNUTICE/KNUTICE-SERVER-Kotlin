@@ -1,6 +1,6 @@
 package com.fx.crawler.adapter.`in`.batch.job
 
-import com.fx.common.domain.batch.BatchJobNames
+import com.fx.common.domain.batch.BatchJob
 import com.fx.crawler.adapter.`in`.batch.push.PushPartitionStepFactory
 import com.fx.crawler.adapter.`in`.batch.push.TopicPushPartitioner
 import com.fx.crawler.adapter.`in`.batch.support.CatalogRefreshJobListener
@@ -39,7 +39,7 @@ class MealNotifyJobConfig(
         @Qualifier("mealFetchStep") mealFetchStep: Step,
         @Qualifier("mealPushStep") mealPushStep: Step,
     ): Job =
-        JobBuilder(BatchJobNames.MEAL_NOTIFY, jobRepository)
+        JobBuilder(BatchJob.MEAL_NOTIFY.jobName, jobRepository)
             .listener(catalogRefreshJobListener)
             .start(mealFetchStep)
             .next(mealPushStep)
