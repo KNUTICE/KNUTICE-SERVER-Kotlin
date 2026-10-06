@@ -13,6 +13,7 @@ enum class BatchErrorCode(
     CRON_INVALID(HttpStatus.BAD_REQUEST, "cron 이 올바르지 않습니다."),
     JOB_NOT_FOUND(HttpStatus.BAD_REQUEST, "등록되지 않은 Job 입니다."),
     JOB_PARAMETERS_INVALID(HttpStatus.BAD_REQUEST, "Job 파라미터가 올바르지 않습니다."),
+    RUN_REQUEST_DUPLICATED(HttpStatus.CONFLICT, "같은 실행 요청이 이미 대기 중입니다."),
     ;
 
     override fun getHttpStatus(): HttpStatus =

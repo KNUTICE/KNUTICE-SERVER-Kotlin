@@ -12,6 +12,8 @@ interface BatchRunRequestRepository : JpaRepository<BatchRunRequest, Long> {
 
     fun findAllByStatusOrderByIdAsc(status: BatchRunRequestStatus, limit: Limit): List<BatchRunRequest>
 
+    fun findAllByStatusAndJobName(status: BatchRunRequestStatus, jobName: String): List<BatchRunRequest>
+
     /** 요청을 선점해 실행 상태로 바꾼다. 다른 인스턴스가 먼저 가져갔으면 0. */
     @Modifying
     @Query(
