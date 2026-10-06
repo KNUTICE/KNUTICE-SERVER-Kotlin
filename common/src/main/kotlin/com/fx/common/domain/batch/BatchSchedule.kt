@@ -100,4 +100,8 @@ class BatchSchedule(
         this.jobParameters = jobParameters
     }
 
+    fun changeDescription(description: String) {
+        this.description = description
+    }
+
 }

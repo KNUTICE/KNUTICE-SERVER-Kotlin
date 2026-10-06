@@ -1,6 +1,6 @@
 package com.fx.crawler.adapter.`in`.batch.job
 
-import com.fx.common.domain.batch.BatchJobNames
+import com.fx.common.domain.batch.BatchJob
 import com.fx.crawler.adapter.`in`.batch.support.CatalogRefreshJobListener
 import com.fx.crawler.adapter.`in`.batch.support.StepTransactions
 import com.fx.crawler.application.port.`in`.SeatAlertCheckUseCase
@@ -31,7 +31,7 @@ class SeatAlertCheckJobConfig(
         @Qualifier("seatAlertExpireStep") seatAlertExpireStep: Step,
         @Qualifier("seatAlertNotifyStep") seatAlertNotifyStep: Step,
     ): Job =
-        JobBuilder(BatchJobNames.SEAT_ALERT_CHECK, jobRepository)
+        JobBuilder(BatchJob.SEAT_ALERT_CHECK.jobName, jobRepository)
             .listener(catalogRefreshJobListener)
             .start(seatAlertExpireStep)
             .next(seatAlertNotifyStep)

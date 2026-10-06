@@ -3,7 +3,7 @@ package com.fx.common.adapter.out.persistence
 import com.fx.common.adapter.out.persistence.repository.BatchRunRequestRepository
 import com.fx.common.adapter.out.persistence.repository.BatchScheduleRepository
 import com.fx.common.domain.batch.BatchCron
-import com.fx.common.domain.batch.BatchJobNames
+import com.fx.common.domain.batch.BatchJob
 import com.fx.common.domain.batch.BatchJobParameters
 import com.fx.common.domain.batch.BatchRunRequest
 import com.fx.common.domain.batch.BatchRunRequestStatus
@@ -41,13 +41,13 @@ class BatchScheduleRepositoryTest @Autowired constructor(
             it.jobName to it.cron
         }).containsExactlyInAnyOrderEntriesOf(
             mapOf(
-                "notice-crawl-notice" to (BatchJobNames.NOTICE_CRAWL to "0 0/15 * * * *"),
-                "notice-crawl-major" to (BatchJobNames.NOTICE_CRAWL to "0 10 16 * * *"),
-                "notice-summary" to (BatchJobNames.NOTICE_SUMMARY to "0 */5 * * * *"),
-                "meal-notify" to (BatchJobNames.MEAL_NOTIFY to "0 10 10 * * MON-FRI"),
-                "silent-push" to (BatchJobNames.SILENT_PUSH to "0 0 0 1 * *"),
-                "seat-alert-check" to (BatchJobNames.SEAT_ALERT_CHECK to "0 * * * * *"),
-                "batch-maintenance" to (BatchJobNames.MAINTENANCE to "0 30 4 * * *"),
+                "notice-crawl-notice" to (BatchJob.NOTICE_CRAWL.jobName to "0 0/15 * * * *"),
+                "notice-crawl-major" to (BatchJob.NOTICE_CRAWL.jobName to "0 10 16 * * *"),
+                "notice-summary" to (BatchJob.NOTICE_SUMMARY.jobName to "0 */5 * * * *"),
+                "meal-notify" to (BatchJob.MEAL_NOTIFY.jobName to "0 10 10 * * MON-FRI"),
+                "silent-push" to (BatchJob.SILENT_PUSH.jobName to "0 0 0 1 * *"),
+                "seat-alert-check" to (BatchJob.SEAT_ALERT_CHECK.jobName to "0 * * * * *"),
+                "batch-maintenance" to (BatchJob.MAINTENANCE.jobName to "0 30 4 * * *"),
             )
         )
         schedules.values.forEach { schedule ->
@@ -55,7 +55,7 @@ class BatchScheduleRepositoryTest @Autowired constructor(
                 BatchCron.parse(schedule.cron)
             }.doesNotThrowAnyException()
             assertThatCode {
-                BatchJobParameters.parse(schedule.jobParameters)
+                BatchJob.from(schedule.jobName)!!.validate(BatchJobParameters.parse(schedule.jobParameters))
             }.doesNotThrowAnyException()
             assertThat(schedule.nextFireAt).isNull()
         }
@@ -99,7 +99,7 @@ class BatchScheduleRepositoryTest @Autowired constructor(
 
     @Test
     fun `수동 실행 요청은 한 번만 선점되고 결과가 기록된다`() {
-        val launched = batchRunRequestRepository.saveAndFlush(BatchRunRequest(BatchJobNames.SILENT_PUSH, "{}", "admin"))
+        val launched = batchRunRequestRepository.saveAndFlush(BatchRunRequest(BatchJob.SILENT_PUSH.jobName, "{}", "admin"))
         val rejected = batchRunRequestRepository.saveAndFlush(BatchRunRequest("unknownJob", "{}", "admin"))
         val launchedId = requireNotNull(launched.id)
         val rejectedId = requireNotNull(rejected.id)

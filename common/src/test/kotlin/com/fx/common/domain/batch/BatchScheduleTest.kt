@@ -12,7 +12,7 @@ class BatchScheduleTest {
     private fun schedule(enabled: Boolean = true) =
         BatchSchedule(
             scheduleKey = "notice-crawl-notice",
-            jobName = BatchJobNames.NOTICE_CRAWL,
+            jobName = BatchJob.NOTICE_CRAWL.jobName,
             jobParameters = """{"topicType":"NOTICE"}""",
             cron = "0 0/15 * * * *",
             enabled = enabled,
@@ -22,7 +22,7 @@ class BatchScheduleTest {
     @Test
     fun `잘못된 cron 으로는 만들 수 없다`() {
         assertThatThrownBy {
-            BatchSchedule("key", BatchJobNames.SILENT_PUSH, "{}", "*/10 * * * * *", true, "설명")
+            BatchSchedule("key", BatchJob.SILENT_PUSH.jobName, "{}", "*/10 * * * * *", true, "설명")
         }.isInstanceOf(IllegalArgumentException::class.java)
     }
 

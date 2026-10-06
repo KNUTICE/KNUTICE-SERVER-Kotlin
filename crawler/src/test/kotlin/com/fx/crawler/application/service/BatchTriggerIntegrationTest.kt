@@ -2,7 +2,7 @@ package com.fx.crawler.application.service
 
 import com.fx.common.adapter.out.persistence.repository.BatchRunRequestRepository
 import com.fx.common.adapter.out.persistence.repository.BatchScheduleRepository
-import com.fx.common.domain.batch.BatchJobNames
+import com.fx.common.domain.batch.BatchJob
 import com.fx.common.domain.batch.BatchRunRequest
 import com.fx.common.domain.batch.BatchRunRequestStatus
 import com.fx.crawler.application.port.`in`.BatchTriggerUseCase
@@ -53,7 +53,7 @@ class BatchTriggerIntegrationTest : CrawlerIntegrationTest() {
         assertThat(fired.nextFireAt).isAfter(LocalDateTime.now())
         assertThat(fired.lastFiredAt).isNotNull()
 
-        val execution = jobRepository.getLastJobExecution(BatchJobNames.SILENT_PUSH, lastParameters())!!
+        val execution = jobRepository.getLastJobExecution(BatchJob.SILENT_PUSH.jobName, lastParameters())!!
         assertThat(execution.status).isEqualTo(BatchStatus.COMPLETED)
         assertThat(execution.jobParameters.getLocalDateTime("scheduledAt")).isEqualTo(scheduledAt)
         assertThat(execution.jobParameters.getString("triggerType")).isEqualTo("SCHEDULED")
@@ -62,7 +62,7 @@ class BatchTriggerIntegrationTest : CrawlerIntegrationTest() {
 
     @Test
     fun `수동 실행 요청을 실행하고, 실행할 수 없는 요청은 거절한다`() {
-        val launched = batchRunRequestRepository.save(BatchRunRequest(BatchJobNames.SILENT_PUSH, "{}", "admin"))
+        val launched = batchRunRequestRepository.save(BatchRunRequest(BatchJob.SILENT_PUSH.jobName, "{}", "admin"))
         val unknown = batchRunRequestRepository.save(BatchRunRequest("unknownJob", "{}", "admin"))
 
         batchTriggerUseCase.processRunRequests()
@@ -88,11 +88,11 @@ class BatchTriggerIntegrationTest : CrawlerIntegrationTest() {
         jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM BATCH_JOB_EXECUTION e JOIN BATCH_JOB_INSTANCE i ON i.JOB_INSTANCE_ID = e.JOB_INSTANCE_ID WHERE i.JOB_NAME = ?",
             Int::class.java,
-            BatchJobNames.SILENT_PUSH,
+            BatchJob.SILENT_PUSH.jobName,
         )!!
 
     private fun lastParameters() =
-        jobRepository.getJobInstances(BatchJobNames.SILENT_PUSH, 0, 1).single().let { instance ->
+        jobRepository.getJobInstances(BatchJob.SILENT_PUSH.jobName, 0, 1).single().let { instance ->
             jobRepository.getLastJobExecution(instance)!!.jobParameters
         }
 

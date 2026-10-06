@@ -2,14 +2,8 @@ package com.fx.crawler.domain.batch
 
 import com.fx.common.domain.batch.BatchJobParameters
 
-/** Job 파라미터 이름. */
+/** 폴러가 실행마다 붙이는 Job 파라미터 이름. 업무 파라미터는 common 의 `BatchJobParameter` 에 있다. */
 object BatchParameterKeys {
-
-    /** `noticeCrawlJob` 의 크롤링 대상 토픽 유형 (NOTICE / MAJOR) */
-    const val TOPIC_TYPE = "topicType"
-
-    /** `maintenanceJob` 의 메타데이터 보존 일수 */
-    const val RETENTION_DAYS = "retentionDays"
 
     /** 자동 실행의 발화 시각. 발화마다 JobInstance 가 새로 생긴다 (identifying) */
     const val SCHEDULED_AT = "scheduledAt"
