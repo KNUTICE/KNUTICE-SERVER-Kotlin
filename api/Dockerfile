@@ -1,9 +1,5 @@
-FROM gradle:9.8.0-jdk25 AS build
-WORKDIR /app
-COPY . .
-RUN gradle :api:bootJar --no-daemon
-
+# jar 는 CI 러너에서 Gradle 로 미리 만든다 (./gradlew build). 이미지는 실행만 한다
 FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
-COPY --from=build /app/api/build/libs/*.jar app.jar
+COPY api/build/libs/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]

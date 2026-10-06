@@ -11,90 +11,90 @@
     </a>
 </div>
 
-# 프로젝트 소개 🎓
-학생들에게 꼭 필요한 공지사항을 놓치지 않도록 <br>
-최신 기술을 통해 실시간으로 제공하며 <br>
-효율적이고 스마트한 캠퍼스 라이프를 지원합니다. <br>
-지금, KNUTICE와 함께 편리한 학교생활을 경험해보세요! <br>
+# 프로젝트 소개
 
+한국교통대학교 공지사항 · 학과 공지 · 학식을 수집해 구독자에게 **실시간 푸시 알림**으로 전달하는 서비스의 백엔드입니다.
+학생들이 꼭 필요한 공지를 놓치지 않고, 효율적인 캠퍼스 라이프를 누릴 수 있도록 돕습니다.
 
-# 사용 기술 ⚙️
+| 기능 | 설명 |
+| :-- | :-- |
+| 공지 알림 | 일반 · 장학 · 행사 · 학사 · 취업 공지와 학과 공지를 크롤링해, 구독한 토픽의 새 공지를 FCM 으로 발송 |
+| 학식 알림 | 평일 학생식당 · 교직원식당 메뉴 발송 |
+| AI 요약 | Gemini 로 공지 본문을 요약해 제공 |
+| 열람실 빈자리 알림 | 원하는 좌석이 비면 즉시 알림 |
+| 다국어 알림 | 기기 언어(한국어 · 영어 · 일본어)에 맞춘 알림 제목 · 문구 |
+
+# 사용 기술
+
 | 구분 | 기술 스택 |
-|------|-----------|
-| 🖥️ Backend | Kotlin, Java, Spring Boot, QueryDSL, Firebase Cloud Messaging |
-| 🗄️ Database | MongoDB |
-| ☁️ Infra & DevOps | Docker, Docker Compose, Docker Multi-Stage Build, AWS Lightsail, Doppler, GitHub Actions |
-| 🤝 Collaboration | Confluence, Slack |
-| ⚡ 기타 | Kotlin Coroutine, Hexagonal Architecture |
+| :-- | :-- |
+| Backend | Kotlin 2.3, Java 25, Spring Boot 4.1, Spring Batch 6, Spring Data JPA, QueryDSL, Spring AI (Gemini), Firebase Cloud Messaging |
+| Database | MySQL 8.4, Flyway |
+| Test | JUnit 5, Kotest, MockK, Testcontainers |
+| Infra & DevOps | Docker, Docker Compose, AWS Lightsail, GHCR, Doppler, GitHub Actions |
+| Collaboration | Confluence, Slack |
+| 기타 | Hexagonal Architecture, Java Virtual Threads |
 
+# 아키텍처
 
-# 리팩토링 🔧
+```mermaid
+flowchart LR
+    App["KNUTICE 앱<br/>iOS · Android"] -- "Open API" --> API["api"]
+    API --> DB[("MySQL")]
+    Crawler["crawler<br/>Spring Batch"] --> DB
+    Crawler -- "크롤링" --> School["학교 홈페이지"]
+    Crawler -- "좌석 조회" --> Room["열람실 시스템"]
+    Crawler -- "공지 요약" --> Gemini["Gemini"]
+    Crawler -- "푸시 발송" --> FCM["FCM"]
+    FCM -. "알림" .-> App
+```
 
-## 📦 Layered Architecture ➝ Hexagonal Architecture
-<details>
-<summary>자세히 보기</summary>
-  
-기존 크롤링 로직은 체계적인 아키텍처를 갖추지 못해 유지보수성과 확장성이 부족했습니다.
-특히 패키지 네이밍의 일관성이 떨어지고, 외부 모듈 교체/확장이 어려운 구조였습니다.
+api 와 crawler 는 같은 MySQL 을 공유하는 별도 프로세스입니다. 스키마 마이그레이션(Flyway)은 api 만 실행합니다.
 
-이를 개선하기 위해 Hexagonal Architecture로 리팩토링을 진행했습니다.
+| 모듈 | 역할 |
+| :-- | :-- |
+| `api` | 앱용 Open API(`/open-api/**`), 관리자 API(`/api/**`) |
+| `crawler` | 크롤링 · AI 요약 · FCM 발송 배치 (Spring Batch) |
+| `common` | 공용 엔티티 · 리포지토리 · 카탈로그(토픽 · 알림 문구) · 공통 예외 |
+| `persistence-common` | JPA · QueryDSL · Flyway 설정과 마이그레이션 스크립트, `BaseEntity` |
+| `reading-room` | 열람실 좌석 조회 · 빈자리 알림 |
 
-### 리팩토링 전 문제점
-- **강한 결합도** : Service, Repository, 외부 API 호출 로직이 서로 직접적으로 의존  
-- **패키지 구조 혼란** : 도메인/애플리케이션/인프라 구분이 모호하여 유지보수 시 혼란 발생
+모든 모듈은 **헥사고날 아키텍처**를 따릅니다. 도메인 로직은 크롤링 · DB · FCM 같은 외부 구현에 의존하지 않고, 외부와는 포트(인터페이스)와 어댑터로만 연결됩니다.
 
-### 리팩토링 후 장점
-- **관심사 분리**  
-  - 도메인 로직과 인프라(크롤링, DB, Webhook 등) 의존성을 완전히 분리  
-  - 핵심 비즈니스 로직이 외부 구현체와 독립적으로 동작
- 
-- **유지보수성 향상**  
-  - 명확한 패키지 구조 (domain, application, adapter, port)  
-  - 새로운 기능 추가 시 기존 코드 변경 최소화 (OCP 원칙 준수)
+```text
+com.fx.<module>
+├── domain/                  # 엔티티(= 도메인 모델), 값 객체
+├── application/
+│   ├── port/in/             # 유스케이스
+│   ├── port/out/            # 영속성 · 외부 시스템 포트
+│   └── service/             # 유스케이스 구현 (트랜잭션 경계)
+└── adapter/
+    ├── in/                  # REST, 배치, 스케줄러
+    └── out/                 # 영속성, FCM, 크롤러, AI
+```
 
-</details>
+# 배치 구성
 
+배치 실행 시각은 코드가 아니라 **DB(`batch_schedule`)의 cron** 으로 관리합니다.
+매분 도는 스케줄 폴러가 실행할 Job 을 찾아 시작하므로, 배포 없이 실행 시각을 바꾸거나 Job 을 끄고 켤 수 있습니다.
 
-## ⚡ Java ➝ Kotlin Coroutine 도입
-<details>
-<summary>자세히 보기</summary>
+| Job | 하는 일 |
+| :-- | :-- |
+| `noticeCrawlJob` | 공지 · 학과 게시판 크롤링 → 새 공지 저장 → 토픽별 병렬 발송 |
+| `noticeSummaryJob` | 요약 대기 공지를 Gemini 로 요약 |
+| `mealNotifyJob` | 오늘 식단 조회 · 발송 |
+| `seatAlertCheckJob` | 만료 알림 정리 · 열람실 좌석 조회 · 빈자리 알림 |
+| `silentPushJob` | iOS 토큰 갱신용 사일런트 푸시 |
+| `maintenanceJob` | 7일이 지난 배치 실행 기록 삭제 |
 
-우리 크롤링 서버는 크롤링 작업 특성상 **외부 IO 요청**이 빈번합니다.  
-기존 Java 기반의 동기 처리 방식에서는 이러한 요청마다 스레드가 블로킹되어 **자원 활용도가 떨어지고, 처리량이 제한**되었습니다.  
+# 실행 방법
 
-이를 해결하기 위해 **Kotlin Coroutine**을 도입했습니다.  
+**요구 사항**: Java 25, Docker (테스트가 Testcontainers 로 MySQL 컨테이너를 띄웁니다)
 
-### 도입 후
-- **비동기/논블로킹 처리**  
-  - Coroutine 기반으로 IO 요청을 처리하여, 스레드가 블로킹되지 않고 다른 작업을 이어갈 수 있음  
-- **경량성 (Lightweight)**  
-  - 수천 개의 Coroutine을 하나의 스레드 풀에서 효율적으로 실행 가능
-  
-</details>
+```bash
+./gradlew build                # 전체 빌드 + 테스트
+./gradlew :api:bootRun         # api 실행 (기동 시 Flyway 마이그레이션)
+./gradlew :crawler:bootRun     # crawler 실행
+```
 
-## 🔑 Doppler 도입
-<details>
-<summary>자세히 보기</summary>
-
-개발자 간 환경 변수를 공유할 때, 기존에는 **구두/메신저**를 통해 전달하거나  
-별도의 문서에 정리하는 방식으로 진행했습니다.  
-
-이러한 문제를 해결하기 위해 환경 변수 관리 도구인 **Doppler**를 도입했습니다.  
-Doppler를 통해 환경 변수를 중앙에서 통합적으로 관리할 수 있게 되었고,  
-모든 개발자와 서버가 동일한 환경을 자동으로 동기화할 수 있었습니다.  
-
-</details>
-
-## 🐳 Docker Multi-Stage Build
-<details>
-<summary>자세히 보기</summary>
-
-초기 빌드 과정에서는 애플리케이션을 컴파일하고 실행하는 데 불필요한 라이브러리와 빌드 도구들이  
-최종 이미지에 그대로 포함되었습니다. 이로 인해 이미지 용량이 불필요하게 커지는 경우가 있었습니다.
-
-이를 개선하기 위해 **Docker Multi-Stage Build** 방식을 도입했습니다.  
-멀티 스테이지 빌드를 통해 빌드 단계에서는 필요한 도구와 라이브러리만 포함시키고,  
-최종 실행 단계에서는 애플리케이션 실행에 꼭 필요한 최소한의 파일만 남겨  
-경량화된 이미지를 생성할 수 있었습니다.  
-
-</details>
+환경 변수는 Doppler 로 주입합니다. MySQL 접속에는 `MYSQL_URL`(데이터베이스 이름을 뺀 주소, 예: `jdbc:mysql://localhost:3306`), `MYSQL_DATABASE`, `MYSQL_USERNAME`, `MYSQL_PASSWORD` 가 필요합니다.
