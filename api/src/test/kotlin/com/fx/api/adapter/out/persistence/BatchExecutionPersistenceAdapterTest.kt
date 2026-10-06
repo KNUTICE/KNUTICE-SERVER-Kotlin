@@ -1,5 +1,6 @@
 package com.fx.api.adapter.out.persistence
 
+import com.fx.api.domain.BatchExecutionCounts
 import com.fx.api.domain.BatchJobExecution
 import com.fx.api.domain.BatchStepExecution
 import com.fx.api.domain.LastJobExecution
@@ -121,6 +122,14 @@ class BatchExecutionPersistenceAdapterTest @Autowired constructor(
         assertThat(steps[0].writeCount).isEqualTo(3)
         assertThat(steps[1].skipCount).isEqualTo(6)
         assertThat(steps[1].exitMessage).isEqualTo("FCM 오류")
+    }
+
+    @Test
+    fun `기준 시각 이후 실패로 끝난 실행과 실행 중인 실행을 센다`() {
+        assertThat(batchExecutionPersistenceAdapter.countFailedAndRunning(failedSince = startTime))
+            .isEqualTo(BatchExecutionCounts(failed = 1, running = 1))
+        assertThat(batchExecutionPersistenceAdapter.countFailedAndRunning(failedSince = startTime.plusHours(1)))
+            .isEqualTo(BatchExecutionCounts(failed = 0, running = 1))
     }
 
     @Test

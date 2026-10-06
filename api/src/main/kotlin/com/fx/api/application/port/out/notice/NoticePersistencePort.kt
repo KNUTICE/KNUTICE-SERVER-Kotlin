@@ -24,4 +24,7 @@ interface NoticePersistencePort {
     /** 공지와 본문 · 요약 행을 함께 지운다. */
     fun delete(notice: Notice)
 
+    /** AI 요약을 기다리는 공지 수 */
+    fun countPendingSummaries(): Long
+
 }

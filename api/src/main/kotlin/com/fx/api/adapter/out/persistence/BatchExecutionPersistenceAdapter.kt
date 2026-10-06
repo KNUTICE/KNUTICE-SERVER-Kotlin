@@ -1,6 +1,7 @@
 package com.fx.api.adapter.out.persistence
 
 import com.fx.api.application.port.out.batch.BatchExecutionPersistencePort
+import com.fx.api.domain.BatchExecutionCounts
 import com.fx.api.domain.BatchJobExecution
 import com.fx.api.domain.BatchStepExecution
 import com.fx.api.domain.LastJobExecution
@@ -131,6 +132,23 @@ class BatchExecutionPersistenceAdapter(
                 exitMessage = rs.getString("EXIT_MESSAGE"),
             )
         }
+
+    /** 실행 기록을 한 번만 읽어 두 건수를 함께 센다. 집계라 행은 항상 하나다. */
+    override fun countFailedAndRunning(failedSince: LocalDateTime): BatchExecutionCounts {
+        val counts = jdbcTemplate.queryForObject(
+            """
+            SELECT
+                COALESCE(SUM(CASE WHEN STATUS = 'FAILED' AND END_TIME >= :failedSince THEN 1 ELSE 0 END), 0) AS failed,
+                COALESCE(SUM(CASE WHEN STATUS IN ('STARTING', 'STARTED') THEN 1 ELSE 0 END), 0) AS running
+            FROM BATCH_JOB_EXECUTION
+            WHERE STATUS IN ('FAILED', 'STARTING', 'STARTED')
+            """,
+            mapOf("failedSince" to failedSince),
+        ) { rs, _ ->
+            BatchExecutionCounts(failed = rs.getLong("failed"), running = rs.getLong("running"))
+        }
+        return requireNotNull(counts)
+    }
 
     /** 실행별 파라미터. 값은 crawler 가 문자열로 남긴 그대로다. */
     private fun findParameters(executionIds: List<Long>): Map<Long, Map<String, String>> {

@@ -1,10 +1,12 @@
 package com.fx.api.application.port.out.batch
 
+import com.fx.api.domain.BatchExecutionCounts
 import com.fx.api.domain.BatchJobExecution
 import com.fx.api.domain.BatchStepExecution
 import com.fx.api.domain.LastJobExecution
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import java.time.LocalDateTime
 
 /** crawler 가 남긴 Spring Batch 실행 기록(`BATCH_*` 테이블)을 읽는다. */
 interface BatchExecutionPersistencePort {
@@ -20,5 +22,8 @@ interface BatchExecutionPersistencePort {
 
     /** 실행 순서 */
     fun findSteps(executionId: Long): List<BatchStepExecution>
+
+    /** [failedSince] 이후에 실패로 끝난 실행 수와 지금 실행 중인 실행 수 */
+    fun countFailedAndRunning(failedSince: LocalDateTime): BatchExecutionCounts
 
 }
