@@ -1,0 +1,4 @@
+# 이미지에는 미리 빌드한 jar 만 들어간다. 그 밖의 파일은 빌드 컨텍스트로 보내지 않는다
+*
+!api/build/libs/*.jar
+!crawler/build/libs/*.jar
