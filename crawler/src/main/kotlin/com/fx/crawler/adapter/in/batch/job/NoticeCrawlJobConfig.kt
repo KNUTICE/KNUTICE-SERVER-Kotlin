@@ -1,7 +1,7 @@
 package com.fx.crawler.adapter.`in`.batch.job
 
 import com.fx.common.domain.TopicType
-import com.fx.common.domain.batch.BatchJobNames
+import com.fx.common.domain.batch.BatchJob
 import com.fx.crawler.adapter.`in`.batch.push.PushPartitionStepFactory
 import com.fx.crawler.adapter.`in`.batch.push.TopicPushPartitioner
 import com.fx.crawler.adapter.`in`.batch.support.CatalogRefreshJobListener
@@ -43,7 +43,7 @@ class NoticeCrawlJobConfig(
         @Qualifier("noticeCrawlStep") noticeCrawlStep: Step,
         @Qualifier("noticePushStep") noticePushStep: Step,
     ): Job =
-        JobBuilder(BatchJobNames.NOTICE_CRAWL, jobRepository)
+        JobBuilder(BatchJob.NOTICE_CRAWL.jobName, jobRepository)
             .listener(catalogRefreshJobListener)
             .start(noticeCrawlStep)
             .next(noticePushStep)

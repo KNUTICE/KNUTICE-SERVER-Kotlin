@@ -23,6 +23,9 @@ dependencies {
     api("io.github.openfeign.querydsl:querydsl-jpa:$querydslVersion")
     ksp("io.github.openfeign.querydsl:querydsl-ksp-codegen:$querydslVersion")
 
+    // 목록 조회 요청(PagingRequest)의 검증 어노테이션. 검증은 실행 모듈의 validation starter 가 한다
+    implementation("jakarta.validation:jakarta.validation-api")
+
     // Test fixtures : 실제 MySQL(Testcontainers) 컨테이너 설정
     testFixturesImplementation("org.springframework.boot:spring-boot-test")
     testFixturesApi("org.springframework.boot:spring-boot-testcontainers")

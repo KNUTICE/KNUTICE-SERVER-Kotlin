@@ -1,7 +1,8 @@
 package com.fx.crawler.adapter.out.batch
 
+import com.fx.common.domain.batch.BatchJobParameters
+import com.fx.common.domain.batch.BatchTriggerType
 import com.fx.crawler.application.port.out.JobLaunchPort
-import com.fx.crawler.domain.batch.BatchParameterKeys
 import com.fx.crawler.domain.batch.JobLaunchRequest
 import com.fx.crawler.domain.batch.JobTrigger
 import org.springframework.batch.core.job.Job
@@ -60,13 +61,13 @@ class SpringBatchJobAdapter(
 
         when (val trigger = request.trigger) {
             is JobTrigger.Scheduled -> builder
-                .addLocalDateTime(BatchParameterKeys.SCHEDULED_AT, trigger.scheduledAt)
-                .addString(BatchParameterKeys.TRIGGER_TYPE, "SCHEDULED", false)
-                .addString(BatchParameterKeys.SCHEDULE_KEY, trigger.scheduleKey, false)
+                .addLocalDateTime(BatchJobParameters.SCHEDULED_AT, trigger.scheduledAt)
+                .addString(BatchJobParameters.TRIGGER_TYPE, BatchTriggerType.SCHEDULED.name, false)
+                .addString(BatchJobParameters.SCHEDULE_KEY, trigger.scheduleKey, false)
             is JobTrigger.Manual -> builder
-                .addLong(BatchParameterKeys.REQUEST_ID, trigger.requestId)
-                .addString(BatchParameterKeys.TRIGGER_TYPE, "MANUAL", false)
-                .addString(BatchParameterKeys.REQUESTED_BY, trigger.requestedBy, false)
+                .addLong(BatchJobParameters.REQUEST_ID, trigger.requestId)
+                .addString(BatchJobParameters.TRIGGER_TYPE, BatchTriggerType.MANUAL.name, false)
+                .addString(BatchJobParameters.REQUESTED_BY, trigger.requestedBy, false)
         }
         return builder.toJobParameters()
     }
@@ -74,7 +75,7 @@ class SpringBatchJobAdapter(
     private fun businessParameters(jobParameters: JobParameters): Map<String, String> =
         jobParameters.parameters()
             .filter {
-                it.identifying() && it.name() !in BatchParameterKeys.TRIGGER_KEYS
+                it.identifying() && it.name() !in BatchJobParameters.RESERVED_NAMES
             }
             .associate {
                 it.name() to it.value().toString()

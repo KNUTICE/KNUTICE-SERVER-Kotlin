@@ -8,6 +8,7 @@ import com.fx.common.adapter.out.persistence.repository.NoticeRepository
 import com.fx.common.annotation.PersistenceAdapter
 import com.fx.common.domain.notice.Notice
 import com.fx.common.domain.notice.NoticeContent
+import com.fx.common.domain.notice.SummaryStatus
 import com.fx.common.exception.NoticeException
 import com.fx.common.exception.errorcode.NoticeErrorCode
 
@@ -48,5 +49,8 @@ class NoticePersistenceAdapter(
         noticeContentRepository.deleteByNoticeId(requireNotNull(notice.id))
         noticeRepository.delete(notice)
     }
+
+    override fun countPendingSummaries(): Long =
+        noticeRepository.countBySummaryStatus(SummaryStatus.PENDING)
 
 }

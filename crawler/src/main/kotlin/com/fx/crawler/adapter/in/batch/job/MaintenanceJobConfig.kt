@@ -1,6 +1,6 @@
 package com.fx.crawler.adapter.`in`.batch.job
 
-import com.fx.common.domain.batch.BatchJobNames
+import com.fx.common.domain.batch.BatchJob
 import com.fx.crawler.application.port.`in`.BatchMaintenanceUseCase
 import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.core.job.Job
@@ -27,7 +27,7 @@ class MaintenanceJobConfig(
 
     @Bean
     fun maintenanceJob(@Qualifier("maintenanceStep") maintenanceStep: Step): Job =
-        JobBuilder(BatchJobNames.MAINTENANCE, jobRepository)
+        JobBuilder(BatchJob.MAINTENANCE.jobName, jobRepository)
             .start(maintenanceStep)
             .build()
 
