@@ -10,7 +10,8 @@ enum class NoticeErrorCode(
 
     NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."),
     SUMMARY_CONTENT_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글 요약 내용이 존재하지 않습니다."),
-    ALREADY_EXISTS(HttpStatus.CONFLICT, "게시글이 이미 존재합니다.");
+    ALREADY_EXISTS(HttpStatus.CONFLICT, "게시글이 이미 존재합니다."),
+    INVALID_TOPIC_TYPE(HttpStatus.BAD_REQUEST, "게시글은 공지 · 학과 토픽에만 둘 수 있습니다."),
     ;
 
     override fun getHttpStatus(): HttpStatus =

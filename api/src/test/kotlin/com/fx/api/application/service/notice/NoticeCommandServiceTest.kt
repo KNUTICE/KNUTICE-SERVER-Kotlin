@@ -97,9 +97,37 @@ class NoticeCommandServiceTest : BehaviorSpec({
                 }
             }
         }
+
+        When("학식 토픽이면") {
+            clearMocks(noticePersistencePort)
+
+            Then("INVALID_TOPIC_TYPE 예외가 발생하고 저장하지 않는다") {
+                val exception = shouldThrow<NoticeException> {
+                    noticeCommandService.saveNotice(command(summary = null, topicName = "STUDENT_CAFETERIA", topicType = TopicType.MEAL))
+                }
+                exception.baseErrorCode shouldBe NoticeErrorCode.INVALID_TOPIC_TYPE
+                verify(exactly = 0) {
+                    noticePersistencePort.create(any(), any())
+                }
+            }
+        }
     }
 
     Given("관리자 공지 수정") {
+
+        When("학식 토픽으로 바꾸면") {
+            clearMocks(noticePersistencePort)
+
+            Then("INVALID_TOPIC_TYPE 예외가 발생하고 공지를 읽지 않는다") {
+                val exception = shouldThrow<NoticeException> {
+                    noticeCommandService.updateNotice(command(summary = null, topicName = "STUDENT_CAFETERIA", topicType = TopicType.MEAL))
+                }
+                exception.baseErrorCode shouldBe NoticeErrorCode.INVALID_TOPIC_TYPE
+                verify(exactly = 0) {
+                    noticePersistencePort.getNotice(any())
+                }
+            }
+        }
 
         When("요약을 지우면") {
             clearMocks(noticePersistencePort)
