@@ -25,6 +25,12 @@ interface NoticeApiSwagger {
                 value = NoticeErrorCode::class,
                 constant = "ALREADY_EXISTS"
             ),
+            ApiExceptionExplanation(
+                name = "토픽 유형 오류",
+                description = "type 이 MEAL 인 경우 (공지는 NOTICE · MAJOR 토픽에만 둘 수 있음)",
+                value = NoticeErrorCode::class,
+                constant = "INVALID_TOPIC_TYPE"
+            ),
         ]
     )
     @Operation(summary = "공지 저장", description = "nttId 가 이미 존재하는 경우 예외 발생합니다.")
@@ -40,6 +46,12 @@ interface NoticeApiSwagger {
                 description = "수정하려는 공지가 존재하지 않는 경우",
                 value = NoticeErrorCode::class,
                 constant = "NOTICE_NOT_FOUND"
+            ),
+            ApiExceptionExplanation(
+                name = "토픽 유형 오류",
+                description = "type 이 MEAL 인 경우 (공지는 NOTICE · MAJOR 토픽에만 둘 수 있음)",
+                value = NoticeErrorCode::class,
+                constant = "INVALID_TOPIC_TYPE"
             ),
         ]
     )
