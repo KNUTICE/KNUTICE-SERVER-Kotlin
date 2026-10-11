@@ -4,6 +4,8 @@ import com.fx.api.application.port.`in`.notice.NoticeCommandUseCase
 import com.fx.api.application.port.`in`.notice.dto.NoticeCommand
 import com.fx.api.application.port.out.notice.NoticePersistencePort
 import com.fx.api.application.service.topic.TopicResolver
+import com.fx.common.domain.TopicType
+import com.fx.common.domain.catalog.TopicView
 import com.fx.common.domain.notice.Notice
 import com.fx.common.domain.notice.NoticeContent
 import com.fx.common.exception.NoticeException
@@ -24,10 +26,10 @@ class NoticeCommandService(
 
     @Transactional
     override fun saveNotice(noticeCommand: NoticeCommand): Boolean {
+        val topic = resolveNoticeTopic(noticeCommand)
         if (noticePersistencePort.existsByNttId(noticeCommand.nttId)) {
             throw NoticeException(NoticeErrorCode.ALREADY_EXISTS)
         }
-        val topic = topicResolver.byName(noticeCommand.topicName, noticeCommand.topicType)
 
         noticePersistencePort.create(
             Notice.registeredByAdmin(
@@ -49,8 +51,8 @@ class NoticeCommandService(
     /** 요약은 요청 값으로 바꾸고, 크롤링한 본문은 그대로 둔다. */
     @Transactional
     override fun updateNotice(noticeCommand: NoticeCommand): Boolean {
+        val topic = resolveNoticeTopic(noticeCommand)
         val notice = noticePersistencePort.getNotice(noticeCommand.nttId)
-        val topic = topicResolver.byName(noticeCommand.topicName, noticeCommand.topicType)
 
         notice.update(
             topic = topic,
@@ -74,6 +76,20 @@ class NoticeCommandService(
     override fun deleteNotice(nttId: Long): Boolean {
         noticePersistencePort.delete(noticePersistencePort.getNotice(nttId))
         return true
+    }
+
+    /** 학식 토픽은 식단 알림용이라 게시글을 두지 않는다. */
+    private fun resolveNoticeTopic(noticeCommand: NoticeCommand): TopicView {
+        if (noticeCommand.topicType !in NOTICE_TOPIC_TYPES) {
+            throw NoticeException(NoticeErrorCode.INVALID_TOPIC_TYPE)
+        }
+        return topicResolver.byName(noticeCommand.topicName, noticeCommand.topicType)
+    }
+
+    companion object {
+
+        private val NOTICE_TOPIC_TYPES = setOf(TopicType.NOTICE, TopicType.MAJOR)
+
     }
 
 }
