@@ -17,10 +17,21 @@ enum class BatchJobParameter(
     /** `maintenanceJob` 이 남길 실행 기록 보존 일수 */
     RETENTION_DAYS("retentionDays", "실행 기록 보존 일수 (1 이상 정수)", null) {
         override fun validate(value: String) {
-            val days = value.toIntOrNull()
-            require(days != null && days >= 1) {
-                "retentionDays 는 1 이상의 정수여야 합니다: $value"
-            }
+            requirePositiveInt(parameterName, value)
+        }
+    },
+
+    /** `dailyStatisticsJob` 이 어제부터 거슬러 올라가 다시 집계할 날짜 수 */
+    LOOKBACK_DAYS("lookbackDays", "다시 집계할 최근 일수 (어제부터, 1 이상 정수)", null) {
+        override fun validate(value: String) {
+            requirePositiveInt(parameterName, value)
+        }
+    },
+
+    /** `dailyStatisticsJob` 이 남길 API 로그 보존 일수 */
+    API_LOG_RETENTION_DAYS("apiLogRetentionDays", "API 로그 보존 일수 (lookbackDays 보다 큰 정수)", null) {
+        override fun validate(value: String) {
+            requirePositiveInt(parameterName, value)
         }
     },
     ;
@@ -33,4 +44,11 @@ enum class BatchJobParameter(
         }
     }
 
+}
+
+private fun requirePositiveInt(parameterName: String, value: String) {
+    val number = value.toIntOrNull()
+    require(number != null && number >= 1) {
+        "$parameterName 는 1 이상의 정수여야 합니다: $value"
+    }
 }
