@@ -28,6 +28,7 @@ class BatchSchedulePersistenceAdapterTest @Autowired constructor(
 
         assertThat(scheduleKeys).containsExactly(
             "batch-maintenance",
+            "daily-statistics",
             "meal-notify",
             "notice-crawl-major",
             "notice-crawl-notice",
