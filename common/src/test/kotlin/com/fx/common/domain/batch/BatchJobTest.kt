@@ -52,6 +52,7 @@ class BatchJobTest {
             BatchJob.NOTICE_CRAWL.validate(mapOf("topicType" to "NOTICE"))
             BatchJob.NOTICE_CRAWL.validate(mapOf("topicType" to "MAJOR"))
             BatchJob.MAINTENANCE.validate(mapOf("retentionDays" to "7"))
+            BatchJob.DAILY_STATISTICS.validate(mapOf("lookbackDays" to "3", "apiLogRetentionDays" to "30"))
             BatchJob.SILENT_PUSH.validate(emptyMap())
         }.doesNotThrowAnyException()
     }
@@ -89,6 +90,48 @@ class BatchJobTest {
                 BatchJob.MAINTENANCE.validate(mapOf("retentionDays" to retentionDays))
             }.isInstanceOf(IllegalArgumentException::class.java)
                 .hasMessageContaining("retentionDays 는 1 이상의 정수여야 합니다")
+        }
+    }
+
+    @Test
+    fun `일일 통계 Job 은 다시 집계할 일수와 API 로그 보존 일수를 받는다`() {
+        assertThat(BatchJob.from("dailyStatisticsJob")).isEqualTo(BatchJob.DAILY_STATISTICS)
+        assertThat(BatchJob.DAILY_STATISTICS.parameters)
+            .containsExactly(BatchJobParameter.LOOKBACK_DAYS, BatchJobParameter.API_LOG_RETENTION_DAYS)
+        assertThat(BatchJobParameter.LOOKBACK_DAYS.allowedValues).isNull()
+        assertThat(BatchJobParameter.API_LOG_RETENTION_DAYS.allowedValues).isNull()
+
+        assertThatThrownBy {
+            BatchJob.DAILY_STATISTICS.validate(mapOf("lookbackDays" to "3"))
+        }.isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("dailyStatisticsJob 에는 apiLogRetentionDays 파라미터가 필요합니다.")
+    }
+
+    @Test
+    fun `다시 집계할 일수와 API 로그 보존 일수는 1 이상의 정수만 받는다`() {
+        listOf("0", "-1", "3일", "1.5", "").forEach { days ->
+            assertThatThrownBy {
+                BatchJob.DAILY_STATISTICS.validate(mapOf("lookbackDays" to days, "apiLogRetentionDays" to "30"))
+            }.isInstanceOf(IllegalArgumentException::class.java)
+                .hasMessageContaining("lookbackDays 는 1 이상의 정수여야 합니다")
+            assertThatThrownBy {
+                BatchJob.DAILY_STATISTICS.validate(mapOf("lookbackDays" to "3", "apiLogRetentionDays" to days))
+            }.isInstanceOf(IllegalArgumentException::class.java)
+                .hasMessageContaining("apiLogRetentionDays 는 1 이상의 정수여야 합니다")
+        }
+    }
+
+    @Test
+    fun `다시 집계할 일수가 API 로그 보존 일수보다 작지 않으면 실패한다`() {
+        assertThatCode {
+            BatchJob.DAILY_STATISTICS.validate(mapOf("lookbackDays" to "29", "apiLogRetentionDays" to "30"))
+        }.doesNotThrowAnyException()
+
+        listOf("30", "31").forEach { lookbackDays ->
+            assertThatThrownBy {
+                BatchJob.DAILY_STATISTICS.validate(mapOf("lookbackDays" to lookbackDays, "apiLogRetentionDays" to "30"))
+            }.isInstanceOf(IllegalArgumentException::class.java)
+                .hasMessageContaining("lookbackDays($lookbackDays) 는 apiLogRetentionDays(30) 보다 작아야 합니다")
         }
     }
 

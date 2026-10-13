@@ -58,7 +58,10 @@ abstract class CrawlerIntegrationTest {
 
     @BeforeEach
     fun resetState() {
-        listOf("notice", "notice_content", "fcm_token", "fcm_token_subscription", "seat_alert", "batch_run_request")
+        listOf(
+            "notice", "notice_content", "fcm_token", "fcm_token_subscription", "seat_alert", "batch_run_request",
+            "api_log", "daily_api_log_statistics", "daily_topic_statistics", "daily_statistics",
+        )
             .forEach {
                 jdbcTemplate.update("DELETE FROM $it")
             }

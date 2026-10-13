@@ -13,6 +13,9 @@ interface FcmTokenPersistencePort {
 
     fun existsByToken(token: String): Boolean
 
+    /** 토큰 값별 토큰 ID. 등록되지 않은 토큰은 결과에 없다. */
+    fun findIdsByTokens(tokens: Collection<String>): Map<String, Long>
+
     /** 토큰을 저장하고 [topics] 를 구독시킨다. */
     fun create(fcmToken: FcmToken, topics: List<TopicView>): FcmToken
 

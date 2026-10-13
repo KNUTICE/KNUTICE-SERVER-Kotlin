@@ -30,6 +30,15 @@ class FcmTokenPersistenceAdapter(
     override fun existsByToken(token: String): Boolean =
         fcmTokenRepository.existsByToken(token)
 
+    override fun findIdsByTokens(tokens: Collection<String>): Map<String, Long> {
+        if (tokens.isEmpty()) {
+            return emptyMap()
+        }
+        return fcmTokenRepository.findRefsByTokenIn(tokens).associate {
+            it.token to it.id
+        }
+    }
+
     override fun create(fcmToken: FcmToken, topics: List<TopicView>): FcmToken {
         val saved = fcmTokenRepository.save(fcmToken)
         val fcmTokenId = requireNotNull(saved.id)

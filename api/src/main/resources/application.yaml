@@ -36,6 +36,13 @@ jwt:
   refresh-token:
     plus-hour: ${JWT_REFRESH_PLUS_HOUR}
 
+# API 요청 로그. 메모리 버퍼에 모아 주기마다 묶어서 저장한다
+api-log:
+  enabled: true          # false 면 필터 · 저장 스케줄러를 등록하지 않는다
+  buffer-capacity: 10000 # 가득 차면 새 로그를 버린다
+  batch-size: 500
+  flush-interval: 1s
+
 file:
   upload-dir: ${FILE_UPLOAD_DIR}
   context-path: ${FILE_CONTEXT_PATH}
