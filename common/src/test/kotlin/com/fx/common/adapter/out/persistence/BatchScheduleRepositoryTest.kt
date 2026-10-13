@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.data.domain.Limit
 import java.time.LocalDateTime
 
-/** Flyway V6 의 스케줄 시드와 폴러가 쓰는 선점 쿼리를 실제 MySQL 에서 검증한다. */
+/** Flyway 의 스케줄 시드와 폴러가 쓰는 선점 쿼리를 실제 MySQL 에서 검증한다. */
 @DataJpaTest(properties = ["spring.jpa.hibernate.ddl-auto=validate"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(MySqlContainerConfig::class)
@@ -32,7 +32,7 @@ class BatchScheduleRepositoryTest @Autowired constructor(
     private val now = LocalDateTime.of(2026, 9, 30, 10, 7)
 
     @Test
-    fun `레거시 cron 과 요약 스케줄이 시드된다`() {
+    fun `레거시 cron 과 요약 · 일일 통계 스케줄이 시드된다`() {
         val schedules = batchScheduleRepository.findAll().associateBy {
             it.scheduleKey
         }
@@ -48,6 +48,7 @@ class BatchScheduleRepositoryTest @Autowired constructor(
                 "silent-push" to (BatchJob.SILENT_PUSH.jobName to "0 0 0 1 * *"),
                 "seat-alert-check" to (BatchJob.SEAT_ALERT_CHECK.jobName to "0 * * * * *"),
                 "batch-maintenance" to (BatchJob.MAINTENANCE.jobName to "0 30 4 * * *"),
+                "daily-statistics" to (BatchJob.DAILY_STATISTICS.jobName to "0 10 0 * * *"),
             )
         )
         schedules.values.forEach { schedule ->
@@ -64,6 +65,8 @@ class BatchScheduleRepositoryTest @Autowired constructor(
         }
         assertThat(BatchJobParameters.parse(schedules.getValue("batch-maintenance").jobParameters))
             .isEqualTo(mapOf("retentionDays" to "7"))
+        assertThat(BatchJobParameters.parse(schedules.getValue("daily-statistics").jobParameters))
+            .isEqualTo(mapOf("lookbackDays" to "3", "apiLogRetentionDays" to "30"))
     }
 
     @Test

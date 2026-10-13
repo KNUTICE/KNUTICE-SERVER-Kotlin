@@ -18,6 +18,23 @@ enum class BatchJob(
     SILENT_PUSH("silentPushJob", "iOS 토큰 갱신용 사일런트 푸시", emptyList()),
     SEAT_ALERT_CHECK("seatAlertCheckJob", "열람실 빈자리 확인 · 알림, 만료 알림 정리", emptyList()),
     MAINTENANCE("maintenanceJob", "보존 기간이 지난 실행 기록 삭제", listOf(BatchJobParameter.RETENTION_DAYS)),
+    DAILY_STATISTICS(
+        "dailyStatisticsJob",
+        "일일 통계 집계 · 보관 기간이 지난 API 로그 삭제",
+        listOf(BatchJobParameter.LOOKBACK_DAYS, BatchJobParameter.API_LOG_RETENTION_DAYS),
+    ) {
+        /** 삭제가 시작돼 일부만 남은 날짜를 다시 집계하면 이미 저장한 통계를 더 작은 값으로 덮어쓴다. */
+        override fun validateTogether(parameters: Map<String, String>) {
+            val lookbackDays =
+                parameters.getValue(BatchJobParameter.LOOKBACK_DAYS.parameterName).toInt()
+            val retentionDays =
+                parameters.getValue(BatchJobParameter.API_LOG_RETENTION_DAYS.parameterName).toInt()
+            require(lookbackDays < retentionDays) {
+                "lookbackDays($lookbackDays) 는 apiLogRetentionDays($retentionDays) 보다 작아야 합니다. " +
+                    "보관 기간이 지나 로그가 지워지기 시작한 날짜를 다시 집계하면 통계가 줄어듭니다."
+            }
+        }
+    },
     ;
 
     /** @throws IllegalArgumentException 받지 않는 파라미터가 있거나, 필요한 파라미터가 없거나, 값이 잘못됐을 때 */
@@ -36,6 +53,11 @@ enum class BatchJob(
             }
             parameter.validate(value)
         }
+        validateTogether(parameters)
+    }
+
+    /** 파라미터끼리 맞아야 하는 규칙. 파라미터마다의 형식 검증을 통과한 뒤에 부른다. */
+    protected open fun validateTogether(parameters: Map<String, String>) {
     }
 
     companion object {

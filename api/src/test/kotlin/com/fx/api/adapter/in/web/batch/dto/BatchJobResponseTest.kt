@@ -14,6 +14,7 @@ class BatchJobResponseTest : BehaviorSpec({
         Then("모든 Job 을 담는다") {
             responses.keys shouldBe setOf(
                 "noticeCrawlJob", "noticeSummaryJob", "mealNotifyJob", "silentPushJob", "seatAlertCheckJob", "maintenanceJob",
+                "dailyStatisticsJob",
             )
         }
 

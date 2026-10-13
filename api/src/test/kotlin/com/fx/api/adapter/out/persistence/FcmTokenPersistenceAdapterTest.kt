@@ -62,6 +62,17 @@ class FcmTokenPersistenceAdapterTest @Autowired constructor(
     }
 
     @Test
+    fun `토큰 값으로 토큰 ID 를 한 번에 찾는다`() {
+        val lowerId = createToken("token-abc")
+        val upperId = createToken("token-ABC")
+
+        val ids = fcmTokenPersistenceAdapter.findIdsByTokens(listOf("token-abc", "token-ABC", "token-Abc", "unknown"))
+
+        assertThat(ids).isEqualTo(mapOf("token-abc" to lowerId, "token-ABC" to upperId))
+        assertThat(fcmTokenPersistenceAdapter.findIdsByTokens(emptyList())).isEmpty()
+    }
+
+    @Test
     fun `알림 언어를 바꾸면 저장된다`() {
         createToken("token-1")
 
