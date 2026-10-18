@@ -24,6 +24,9 @@ class UserPersistenceAdapter(
     override fun findByEmail(email: String): User? =
         userRepository.findByEmail(email)
 
+    override fun findById(userId: Long): User? =
+        userRepository.findById(userId).orElse(null)
+
     override fun getById(userId: Long): User =
         userRepository.findById(userId).orElseThrow {
             UserException(UserErrorCode.USER_NOT_FOUND)
