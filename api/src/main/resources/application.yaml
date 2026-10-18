@@ -28,13 +28,12 @@ spring:
         connect-timeout: 10s
         read-timeout: 60s
 
-jwt:
-  secret:
-    key: ${JWT_SECRET_KEY}
-  access-token:
-    plus-hour: ${JWT_ACCESS_PLUS_HOUR}
-  refresh-token:
-    plus-hour: ${JWT_REFRESH_PLUS_HOUR}
+# 관리자 로그인 토큰
+auth:
+  jwt-secret-key: ${JWT_SECRET_KEY}
+  access-token-ttl: 1h
+  refresh-token-ttl: 14d # 재발급할 때마다 그 시각부터 다시 센다
+  refresh-token-cookie-secure: ${REFRESH_TOKEN_COOKIE_SECURE:true} # https 가 아닌 로컬에서 쿠키가 저장되지 않으면 false
 
 # API 요청 로그. 메모리 버퍼에 모아 주기마다 묶어서 저장한다
 api-log:
