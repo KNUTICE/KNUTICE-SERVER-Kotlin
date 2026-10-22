@@ -9,4 +9,6 @@ interface CollegeRepository : JpaRepository<College, Long> {
 
     fun findAllByDeletedAtIsNullOrderByDisplayOrderAsc(): List<College>
 
+    fun findByCollegeKeyAndDeletedAtIsNull(collegeKey: String): College?
+
 }
