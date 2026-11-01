@@ -121,7 +121,9 @@ class ReadingRoomRemoteAdapter(
                 column = item.xPos,
                 isAvailable = item.useType == 0,
                 userMaskedName = item.userName,
-                returnAt = Instant.ofEpochMilli(item.seatReturn).atZone(SEOUL).toLocalDateTime(),
+                returnAt = item.seatReturn?.let {
+                    Instant.ofEpochMilli(it).atZone(SEOUL).toLocalDateTime()
+                },
             )
         }
     }
