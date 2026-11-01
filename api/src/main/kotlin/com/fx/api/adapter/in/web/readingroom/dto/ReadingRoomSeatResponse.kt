@@ -20,7 +20,7 @@ data class ReadingRoomSeatResponse(
 
     val isAvailable: Boolean, // 사용 가능 여부
 //    val userMaskedName: String? = null, // 사용자 마스킹 이름? // dslee (2026-01-31) : 이름 응답 안함
-    val returnAt: LocalDateTime // 반납 시간
+    val returnAt: LocalDateTime? // 반납 시간 (반납 기록이 없는 좌석은 null)
 
 ) {
     companion object {

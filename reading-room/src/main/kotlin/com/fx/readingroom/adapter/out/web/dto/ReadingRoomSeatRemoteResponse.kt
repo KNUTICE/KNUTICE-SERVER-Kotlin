@@ -17,6 +17,6 @@ data class SeatItem(
     @param:JsonProperty("x_pos") val xPos: Int,
     @param:JsonProperty("y_pos") val yPos: Int,
     @param:JsonProperty("use_type") val useType: Int,
-    @param:JsonProperty("seat_return") val seatReturn: Long, // epoch milliseconds
+    @param:JsonProperty("seat_return") val seatReturn: Long?, // epoch milliseconds. 반납 기록이 없는 좌석은 필드 자체가 없음
     @param:JsonProperty("user_name") val userName: String?, // use_type = 1 인 경우에만 존재함
 )
