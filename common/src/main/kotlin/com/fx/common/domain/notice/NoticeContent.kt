@@ -26,8 +26,8 @@ class NoticeContent(
     @Column(name = "notice_id", nullable = false, updatable = false, comment = "notice.id")
     val noticeId: Long = noticeId
 
-    /** TEXT(64KB)는 한글 약 2만 자가 한계라 MEDIUMTEXT 를 쓴다. */
-    @Column(name = "content", nullable = true, columnDefinition = "MEDIUMTEXT", comment = "본문 텍스트 (AI 요약 입력)")
+    /** PostgreSQL 의 TEXT 는 길이 제한이 없다. */
+    @Column(name = "content", nullable = true, columnDefinition = "TEXT", comment = "본문 텍스트 (AI 요약 입력)")
     var content: String? = content
         protected set
 

@@ -1,6 +1,6 @@
 plugins {
     id("java-library")
-    // 다른 모듈의 영속성 테스트가 MySQL 컨테이너 설정(MySqlContainerConfig)을 함께 쓴다
+    // 다른 모듈의 영속성 테스트가 PostgreSQL 컨테이너 설정(PostgreSqlContainerConfig)을 함께 쓴다
     id("java-test-fixtures")
 }
 
@@ -8,13 +8,13 @@ val querydslVersion = rootProject.extra["querydslVersion"] as String
 val hypersistenceUtilsVersion = rootProject.extra["hypersistenceUtilsVersion"] as String
 
 dependencies {
-    // JPA · MySQL
+    // JPA · PostgreSQL
     api("org.springframework.boot:spring-boot-starter-data-jpa")
-    runtimeOnly("com.mysql:mysql-connector-j")
+    runtimeOnly("org.postgresql:postgresql")
 
     // 스키마 마이그레이션
     implementation("org.springframework.boot:spring-boot-starter-flyway")
-    implementation("org.flywaydb:flyway-mysql")
+    implementation("org.flywaydb:flyway-database-postgresql")
 
     // TSID 식별자 (Hibernate 7.3 · 7.4 용 모듈)
     api("io.hypersistence:hypersistence-utils-hibernate-73:$hypersistenceUtilsVersion")
@@ -26,10 +26,10 @@ dependencies {
     // 목록 조회 요청(PagingRequest)의 검증 어노테이션. 검증은 실행 모듈의 validation starter 가 한다
     implementation("jakarta.validation:jakarta.validation-api")
 
-    // Test fixtures : 실제 MySQL(Testcontainers) 컨테이너 설정
+    // Test fixtures : 실제 PostgreSQL(Testcontainers) 컨테이너 설정
     testFixturesImplementation("org.springframework.boot:spring-boot-test")
     testFixturesApi("org.springframework.boot:spring-boot-testcontainers")
-    testFixturesApi("org.testcontainers:testcontainers-mysql")
+    testFixturesApi("org.testcontainers:testcontainers-postgresql")
 
     // Test : JPA 슬라이스 테스트
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")

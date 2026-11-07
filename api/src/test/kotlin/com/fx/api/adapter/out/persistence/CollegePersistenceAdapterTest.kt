@@ -7,7 +7,7 @@ import com.fx.api.exception.errorcode.CollegeErrorCode
 import com.fx.common.adapter.out.persistence.repository.CollegeRepository
 import com.fx.common.adapter.out.persistence.repository.TopicRepository
 import com.fx.common.domain.i18n.LocalizedText
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -18,10 +18,10 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.context.annotation.Import
 import java.time.LocalDateTime
 
-/** 실제 MySQL 에서 Flyway 로 시드된 단과대 · 토픽을 조회 · 수정한다. */
-@DataJpaTest(properties = ["MYSQL_URL=unused", "MYSQL_DATABASE=unused", "MYSQL_USERNAME=unused", "MYSQL_PASSWORD=unused"])
+/** 실제 PostgreSQL 에서 Flyway 로 시드된 단과대 · 토픽을 조회 · 수정한다. */
+@DataJpaTest(properties = ["POSTGRES_URL=unused", "POSTGRES_DATABASE=unused", "POSTGRES_USERNAME=unused", "POSTGRES_PASSWORD=unused"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class, QuerydslConfig::class, CollegeQueryRepository::class, CollegePersistenceAdapter::class)
+@Import(PostgreSqlContainerConfig::class, QuerydslConfig::class, CollegeQueryRepository::class, CollegePersistenceAdapter::class)
 class CollegePersistenceAdapterTest @Autowired constructor(
     private val collegePersistenceAdapter: CollegePersistenceAdapter,
     private val collegeRepository: CollegeRepository,

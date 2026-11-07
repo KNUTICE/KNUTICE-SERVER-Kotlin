@@ -1,7 +1,7 @@
 package com.fx.api.adapter.out.persistence
 
 import com.fx.common.domain.notification.NotificationTemplateKey
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -9,10 +9,10 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase
 import org.springframework.context.annotation.Import
 
-/** 실제 MySQL 에서 Flyway 로 시드된 알림 문구를 조회한다. */
-@DataJpaTest(properties = ["MYSQL_URL=unused", "MYSQL_DATABASE=unused", "MYSQL_USERNAME=unused", "MYSQL_PASSWORD=unused"])
+/** 실제 PostgreSQL 에서 Flyway 로 시드된 알림 문구를 조회한다. */
+@DataJpaTest(properties = ["POSTGRES_URL=unused", "POSTGRES_DATABASE=unused", "POSTGRES_USERNAME=unused", "POSTGRES_PASSWORD=unused"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class, NotificationTemplatePersistenceAdapter::class)
+@Import(PostgreSqlContainerConfig::class, NotificationTemplatePersistenceAdapter::class)
 class NotificationTemplatePersistenceAdapterTest @Autowired constructor(
     private val notificationTemplatePersistenceAdapter: NotificationTemplatePersistenceAdapter,
 ) {

@@ -8,7 +8,7 @@ import com.fx.common.domain.catalog.TopicView
 import com.fx.common.domain.fcmtoken.FcmToken
 import com.fx.common.domain.i18n.Language
 import com.fx.common.exception.FcmTokenException
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -18,10 +18,10 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase
 import org.springframework.context.annotation.Import
 
-/** 실제 MySQL 에서 토큰 · 구독 저장을 검증한다. 스키마는 Flyway 로 만들고 엔티티 매핑과 맞는지 함께 검증한다. */
-@DataJpaTest(properties = ["MYSQL_URL=unused", "MYSQL_DATABASE=unused", "MYSQL_USERNAME=unused", "MYSQL_PASSWORD=unused"])
+/** 실제 PostgreSQL 에서 토큰 · 구독 저장을 검증한다. 스키마는 Flyway 로 만들고 엔티티 매핑과 맞는지 함께 검증한다. */
+@DataJpaTest(properties = ["POSTGRES_URL=unused", "POSTGRES_DATABASE=unused", "POSTGRES_USERNAME=unused", "POSTGRES_PASSWORD=unused"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class, ClockConfig::class, FcmTokenPersistenceAdapter::class)
+@Import(PostgreSqlContainerConfig::class, ClockConfig::class, FcmTokenPersistenceAdapter::class)
 class FcmTokenPersistenceAdapterTest @Autowired constructor(
     private val fcmTokenPersistenceAdapter: FcmTokenPersistenceAdapter,
     private val fcmTokenSubscriptionRepository: FcmTokenSubscriptionRepository,

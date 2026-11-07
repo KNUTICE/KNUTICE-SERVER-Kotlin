@@ -3,7 +3,7 @@ package com.fx.api.adapter.out.persistence
 import com.fx.api.exception.BatchException
 import com.fx.api.exception.errorcode.BatchErrorCode
 import com.fx.common.domain.batch.BatchSchedule
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -12,10 +12,10 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase
 import org.springframework.context.annotation.Import
 
-/** 실제 MySQL 에서 Flyway 로 시드된 스케줄을 조회 · 저장한다. */
-@DataJpaTest(properties = ["MYSQL_URL=unused", "MYSQL_DATABASE=unused", "MYSQL_USERNAME=unused", "MYSQL_PASSWORD=unused"])
+/** 실제 PostgreSQL 에서 Flyway 로 시드된 스케줄을 조회 · 저장한다. */
+@DataJpaTest(properties = ["POSTGRES_URL=unused", "POSTGRES_DATABASE=unused", "POSTGRES_USERNAME=unused", "POSTGRES_PASSWORD=unused"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class, BatchSchedulePersistenceAdapter::class)
+@Import(PostgreSqlContainerConfig::class, BatchSchedulePersistenceAdapter::class)
 class BatchSchedulePersistenceAdapterTest @Autowired constructor(
     private val batchSchedulePersistenceAdapter: BatchSchedulePersistenceAdapter,
 ) {

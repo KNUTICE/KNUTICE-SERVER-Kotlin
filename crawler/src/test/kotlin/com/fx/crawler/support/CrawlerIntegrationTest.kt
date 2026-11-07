@@ -1,6 +1,6 @@
 package com.fx.crawler.support
 
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import com.google.firebase.messaging.FirebaseMessaging
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.batch.core.job.Job
@@ -17,7 +17,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 
 /**
- * crawler 전체 컨텍스트를 실제 MySQL(Testcontainers) 위에 띄워 Job 을 끝까지 실행한다.
+ * crawler 전체 컨텍스트를 실제 PostgreSQL(Testcontainers) 위에 띄워 Job 을 끝까지 실행한다.
  * 외부 시스템만 [FakeExternalAdapters] 로 바꾸고, Job 은 동기로 실행한다.
  * 모든 통합 테스트가 같은 설정을 쓰므로 컨텍스트와 컨테이너를 함께 쓴다. 업무 테이블은 테스트마다 비운다.
  */
@@ -29,10 +29,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
         "crawler.push.chunk-size=2",
         "crawler.summary.chunk-size=2",
         "CRAWLER_PORT=0",
-        "MYSQL_URL=unused",
-        "MYSQL_DATABASE=unused",
-        "MYSQL_USERNAME=unused",
-        "MYSQL_PASSWORD=unused",
+        "POSTGRES_URL=unused",
+        "POSTGRES_DATABASE=unused",
+        "POSTGRES_USERNAME=unused",
+        "POSTGRES_PASSWORD=unused",
         "GEMINI_API_KEY=test",
         "FIREBASE_KEY_PATH=unused",
         "WEBHOOK_SLACK_URL=http://localhost",
@@ -41,7 +41,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
         "READING_ROOM_STATUS_ENDPOINT=/status",
     ]
 )
-@Import(MySqlContainerConfig::class, FakeExternalAdapters::class)
+@Import(PostgreSqlContainerConfig::class, FakeExternalAdapters::class)
 @MockitoBean(types = [FirebaseMessaging::class])
 abstract class CrawlerIntegrationTest {
 

@@ -9,7 +9,7 @@ import com.fx.common.domain.notice.Notice
 import com.fx.common.domain.notice.NotificationStatus
 import com.fx.common.domain.notice.SummaryStatus
 import com.fx.common.exception.NoticeException
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -20,10 +20,10 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.context.annotation.Import
 import java.time.LocalDate
 
-/** 실제 MySQL 에서 공지 저장 · keyset 목록 조회 · 삭제를 검증한다. */
-@DataJpaTest(properties = ["MYSQL_URL=unused", "MYSQL_DATABASE=unused", "MYSQL_USERNAME=unused", "MYSQL_PASSWORD=unused"])
+/** 실제 PostgreSQL 에서 공지 저장 · keyset 목록 조회 · 삭제를 검증한다. */
+@DataJpaTest(properties = ["POSTGRES_URL=unused", "POSTGRES_DATABASE=unused", "POSTGRES_USERNAME=unused", "POSTGRES_PASSWORD=unused"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class, QuerydslConfig::class, NoticeQueryRepository::class, NoticePersistenceAdapter::class)
+@Import(PostgreSqlContainerConfig::class, QuerydslConfig::class, NoticeQueryRepository::class, NoticePersistenceAdapter::class)
 class NoticePersistenceAdapterTest @Autowired constructor(
     private val noticePersistenceAdapter: NoticePersistenceAdapter,
     private val entityManager: EntityManager,
@@ -91,7 +91,7 @@ class NoticePersistenceAdapterTest @Autowired constructor(
             it.nttId
         })
             .containsExactly(2L, 1L)
-        // 대소문자를 구분하지 않는다 (utf8mb4_0900_ai_ci)
+        // 대소문자를 구분하지 않는다
         assertThat(noticePersistenceAdapter.findNotices(NoticeQuery(keyword = "SCHOLARSHIP", size = 10)).map {
             it.nttId
         })

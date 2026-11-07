@@ -7,7 +7,7 @@ import com.fx.api.domain.LastJobExecution
 import com.fx.api.exception.BatchException
 import com.fx.api.exception.errorcode.BatchErrorCode
 import com.fx.common.domain.batch.BatchTriggerType
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import com.fx.persistence.request.PagingRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -20,10 +20,10 @@ import org.springframework.context.annotation.Import
 import org.springframework.jdbc.core.JdbcTemplate
 import java.time.LocalDateTime
 
-/** crawler 가 남기는 형태로 `BATCH_*` 행을 넣고 실제 MySQL 에서 조회한다. */
-@DataJpaTest(properties = ["MYSQL_URL=unused", "MYSQL_DATABASE=unused", "MYSQL_USERNAME=unused", "MYSQL_PASSWORD=unused"])
+/** crawler 가 남기는 형태로 `BATCH_*` 행을 넣고 실제 PostgreSQL 에서 조회한다. */
+@DataJpaTest(properties = ["POSTGRES_URL=unused", "POSTGRES_DATABASE=unused", "POSTGRES_USERNAME=unused", "POSTGRES_PASSWORD=unused"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class, BatchExecutionPersistenceAdapter::class)
+@Import(PostgreSqlContainerConfig::class, BatchExecutionPersistenceAdapter::class)
 class BatchExecutionPersistenceAdapterTest @Autowired constructor(
     private val batchExecutionPersistenceAdapter: BatchExecutionPersistenceAdapter,
     private val jdbcTemplate: JdbcTemplate,
