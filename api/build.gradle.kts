@@ -48,7 +48,7 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
 
-    // Test : 실제 MySQL(Testcontainers)로 JPA 슬라이스 테스트
+    // Test : 실제 PostgreSQL(Testcontainers)로 JPA 슬라이스 테스트
     testImplementation(testFixtures(project(":persistence-common")))
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 }

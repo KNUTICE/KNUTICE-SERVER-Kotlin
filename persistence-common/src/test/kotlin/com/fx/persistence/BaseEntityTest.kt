@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.simple.JdbcClient
 
 @DataJpaTest(properties = ["spring.jpa.hibernate.ddl-auto=create-drop"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class)
+@Import(PostgreSqlContainerConfig::class)
 class BaseEntityTest @Autowired constructor(
     private val sampleRepository: SampleRepository,
     private val entityManager: EntityManager,
@@ -64,13 +64,46 @@ class BaseEntityTest @Autowired constructor(
     }
 
     @Test
-    fun `Flyway 가 Spring Batch 메타데이터 테이블을 만든다`() {
+    fun `Flyway 가 Spring Batch 메타데이터 테이블과 시퀀스를 만든다`() {
+        // 따옴표 없는 이름은 소문자로 저장된다. batch_schedule 같은 업무 테이블과 구분하려고 job · step 접두어로 거른다
         val batchTables = jdbcClient
-            .sql("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name LIKE 'BATCH\\_%'")
+            .sql(
+                """
+                SELECT table_name FROM information_schema.tables
+                WHERE table_schema = current_schema()
+                  AND (table_name LIKE 'batch\_job\_%' OR table_name LIKE 'batch\_step\_%')
+                """
+            )
+            .query(String::class.java)
+            .list()
+        val batchSequences = jdbcClient
+            .sql("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema()")
+            .query(String::class.java)
+            .list()
+
+        assertThat(batchTables).containsExactlyInAnyOrder(
+            "batch_job_instance",
+            "batch_job_execution",
+            "batch_job_execution_params",
+            "batch_job_execution_context",
+            "batch_step_execution",
+            "batch_step_execution_context",
+        )
+        assertThat(batchSequences).containsExactlyInAnyOrder(
+            "batch_job_instance_seq",
+            "batch_job_execution_seq",
+            "batch_step_execution_seq",
+        )
+    }
+
+    @Test
+    fun `운영 DB 처럼 pgvector 확장이 만들어져 있다`() {
+        val vectorExtensions = jdbcClient
+            .sql("SELECT COUNT(*) FROM pg_extension WHERE extname = 'vector'")
             .query(Long::class.java)
             .single()
 
-        assertThat(batchTables).isEqualTo(9L)
+        assertThat(vectorExtensions).isEqualTo(1L)
     }
 
 }

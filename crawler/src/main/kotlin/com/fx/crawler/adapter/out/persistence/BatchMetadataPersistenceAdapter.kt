@@ -33,9 +33,10 @@ class BatchMetadataPersistenceAdapter(
         val ids = mapOf("ids" to jobExecutionIds)
         jdbcTemplate.update(
             """
-            DELETE c FROM BATCH_STEP_EXECUTION_CONTEXT c
-            JOIN BATCH_STEP_EXECUTION s ON s.STEP_EXECUTION_ID = c.STEP_EXECUTION_ID
-            WHERE s.JOB_EXECUTION_ID IN (:ids)
+            DELETE FROM BATCH_STEP_EXECUTION_CONTEXT
+            WHERE STEP_EXECUTION_ID IN (
+                SELECT STEP_EXECUTION_ID FROM BATCH_STEP_EXECUTION WHERE JOB_EXECUTION_ID IN (:ids)
+            )
             """,
             ids,
         )
@@ -51,16 +52,21 @@ class BatchMetadataPersistenceAdapter(
      * Job 을 시작하면 JobInstance 와 JobExecution 이 따로 커밋되므로, 그 사이에는 방금 만든 JobInstance 도 실행 기록이 없다.
      * 이를 지우면 이어지는 JobExecution INSERT 가 외래 키 오류로 실패하므로, 실행 기록이 남은 JobInstance 중
      * 가장 오래된 것보다 앞선(id 가 작은) 것만 지운다. id 는 생성 순으로 커지므로 새로 만든 JobInstance 는 범위에 들지 않는다.
+     * DELETE 에 LIMIT 을 쓸 수 없으므로 지울 id 를 서브쿼리에서 정한다.
      */
     override fun deleteOrphanJobInstances(limit: Int): Int =
         jdbcTemplate.update(
             """
             DELETE FROM BATCH_JOB_INSTANCE
-            WHERE JOB_INSTANCE_ID < (SELECT MIN(e.JOB_INSTANCE_ID) FROM BATCH_JOB_EXECUTION e)
-              AND NOT EXISTS (
-                  SELECT 1 FROM BATCH_JOB_EXECUTION e WHERE e.JOB_INSTANCE_ID = BATCH_JOB_INSTANCE.JOB_INSTANCE_ID
-              )
-            LIMIT :limit
+            WHERE JOB_INSTANCE_ID IN (
+                SELECT i.JOB_INSTANCE_ID
+                FROM BATCH_JOB_INSTANCE i
+                WHERE i.JOB_INSTANCE_ID < (SELECT MIN(e.JOB_INSTANCE_ID) FROM BATCH_JOB_EXECUTION e)
+                  AND NOT EXISTS (
+                      SELECT 1 FROM BATCH_JOB_EXECUTION e WHERE e.JOB_INSTANCE_ID = i.JOB_INSTANCE_ID
+                  )
+                LIMIT :limit
+            )
             """,
             mapOf("limit" to limit),
         )

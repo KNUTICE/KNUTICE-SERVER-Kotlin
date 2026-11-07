@@ -7,7 +7,7 @@ import com.fx.api.domain.EndpointStatistics
 import com.fx.api.domain.RequestCounts
 import com.fx.api.domain.StatisticsPeriod
 import com.fx.api.domain.TopicRequestCount
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,10 +19,10 @@ import org.springframework.jdbc.core.JdbcTemplate
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-/** crawler 의 일일 통계 Job 이 남기는 형태로 통계 행을 넣고 실제 MySQL 에서 조회한다. */
-@DataJpaTest(properties = ["MYSQL_URL=unused", "MYSQL_DATABASE=unused", "MYSQL_USERNAME=unused", "MYSQL_PASSWORD=unused"])
+/** crawler 의 일일 통계 Job 이 남기는 형태로 통계 행을 넣고 실제 PostgreSQL 에서 조회한다. */
+@DataJpaTest(properties = ["POSTGRES_URL=unused", "POSTGRES_DATABASE=unused", "POSTGRES_USERNAME=unused", "POSTGRES_PASSWORD=unused"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class, StatisticsPersistenceAdapter::class)
+@Import(PostgreSqlContainerConfig::class, StatisticsPersistenceAdapter::class)
 class StatisticsPersistenceAdapterTest @Autowired constructor(
     private val statisticsPersistenceAdapter: StatisticsPersistenceAdapter,
     private val jdbcTemplate: JdbcTemplate,

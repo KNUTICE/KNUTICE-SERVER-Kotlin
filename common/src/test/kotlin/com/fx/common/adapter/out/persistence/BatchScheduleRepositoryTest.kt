@@ -7,7 +7,7 @@ import com.fx.common.domain.batch.BatchJob
 import com.fx.common.domain.batch.BatchJobParameters
 import com.fx.common.domain.batch.BatchRunRequest
 import com.fx.common.domain.batch.BatchRunRequestStatus
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
@@ -19,10 +19,10 @@ import org.springframework.context.annotation.Import
 import org.springframework.data.domain.Limit
 import java.time.LocalDateTime
 
-/** Flyway 의 스케줄 시드와 폴러가 쓰는 선점 쿼리를 실제 MySQL 에서 검증한다. */
+/** Flyway 의 스케줄 시드와 폴러가 쓰는 선점 쿼리를 실제 PostgreSQL 에서 검증한다. */
 @DataJpaTest(properties = ["spring.jpa.hibernate.ddl-auto=validate"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class)
+@Import(PostgreSqlContainerConfig::class)
 class BatchScheduleRepositoryTest @Autowired constructor(
     private val batchScheduleRepository: BatchScheduleRepository,
     private val batchRunRequestRepository: BatchRunRequestRepository,

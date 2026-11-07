@@ -1,7 +1,7 @@
 package com.fx.api.adapter.out.persistence
 
 import com.fx.api.domain.RefreshToken
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,10 +12,10 @@ import org.springframework.context.annotation.Import
 import java.time.Duration
 import java.time.LocalDateTime
 
-/** 실제 MySQL 에서 리프레시 토큰 세션을 저장 · 회전 · 삭제한다. */
-@DataJpaTest(properties = ["MYSQL_URL=unused", "MYSQL_DATABASE=unused", "MYSQL_USERNAME=unused", "MYSQL_PASSWORD=unused"])
+/** 실제 PostgreSQL 에서 리프레시 토큰 세션을 저장 · 회전 · 삭제한다. */
+@DataJpaTest(properties = ["POSTGRES_URL=unused", "POSTGRES_DATABASE=unused", "POSTGRES_USERNAME=unused", "POSTGRES_PASSWORD=unused"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class, RefreshTokenPersistenceAdapter::class)
+@Import(PostgreSqlContainerConfig::class, RefreshTokenPersistenceAdapter::class)
 class RefreshTokenPersistenceAdapterTest @Autowired constructor(
     private val refreshTokenPersistenceAdapter: RefreshTokenPersistenceAdapter,
     private val entityManager: EntityManager,

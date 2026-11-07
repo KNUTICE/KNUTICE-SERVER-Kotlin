@@ -18,8 +18,8 @@ import java.time.LocalDateTime
  * 통계 테이블은 SQL 로만 다루므로 엔티티 없이 JDBC 로 집계 · 저장한다.
  *
  * 집계는 DB 에서 한 번에 하고, 저장은 앱에서 새 행의 TSID 를 붙여 upsert 한다.
- * `INSERT … SELECT … ON DUPLICATE KEY UPDATE` 한 문장으로는 새 행의 TSID 를 만들 수 없기 때문이다.
- * 기존 행은 `id` · `created_at` 을 그대로 두고 값만 새 집계 결과로 바꾼다.
+ * `INSERT … SELECT … ON CONFLICT DO UPDATE` 한 문장으로는 새 행의 TSID 를 만들 수 없기 때문이다.
+ * 기존 행은 `id` · `created_at` 을 그대로 두고 값만 새 집계 결과(`EXCLUDED`)로 바꾼다.
  */
 @PersistenceAdapter
 class StatisticsPersistenceAdapter(
@@ -152,14 +152,15 @@ class StatisticsPersistenceAdapter(
                 (id, statistics_date, method, url_pattern, request_count, client_error_count, server_error_count,
                  total_duration_ms, max_duration_ms, device_count, created_at, updated_at)
             VALUES (:id, :statisticsDate, :method, :urlPattern, :requestCount, :clientErrorCount, :serverErrorCount,
-                    :totalDurationMs, :maxDurationMs, :deviceCount, :now, :now) AS new
-            ON DUPLICATE KEY UPDATE request_count      = new.request_count,
-                                    client_error_count = new.client_error_count,
-                                    server_error_count = new.server_error_count,
-                                    total_duration_ms  = new.total_duration_ms,
-                                    max_duration_ms    = new.max_duration_ms,
-                                    device_count       = new.device_count,
-                                    updated_at         = new.updated_at
+                    :totalDurationMs, :maxDurationMs, :deviceCount, :now, :now)
+            ON CONFLICT (statistics_date, method, url_pattern)
+            DO UPDATE SET request_count      = EXCLUDED.request_count,
+                          client_error_count = EXCLUDED.client_error_count,
+                          server_error_count = EXCLUDED.server_error_count,
+                          total_duration_ms  = EXCLUDED.total_duration_ms,
+                          max_duration_ms    = EXCLUDED.max_duration_ms,
+                          device_count       = EXCLUDED.device_count,
+                          updated_at         = EXCLUDED.updated_at
             """,
             statistics.map {
                 newRow(date, now)
@@ -183,10 +184,11 @@ class StatisticsPersistenceAdapter(
             """
             INSERT INTO daily_topic_statistics
                 (id, statistics_date, topic_code, topic_name, request_count, created_at, updated_at)
-            VALUES (:id, :statisticsDate, :topicCode, :topicName, :requestCount, :now, :now) AS new
-            ON DUPLICATE KEY UPDATE topic_name    = new.topic_name,
-                                    request_count = new.request_count,
-                                    updated_at    = new.updated_at
+            VALUES (:id, :statisticsDate, :topicCode, :topicName, :requestCount, :now, :now)
+            ON CONFLICT (statistics_date, topic_code)
+            DO UPDATE SET topic_name    = EXCLUDED.topic_name,
+                          request_count = EXCLUDED.request_count,
+                          updated_at    = EXCLUDED.updated_at
             """,
             statistics.map {
                 newRow(date, now)
@@ -204,16 +206,17 @@ class StatisticsPersistenceAdapter(
                 (id, statistics_date, request_count, device_count, ios_device_count, aos_device_count,
                  notice_count, summary_completed_count, summary_failed_count, new_token_count, created_at, updated_at)
             VALUES (:id, :statisticsDate, :requestCount, :deviceCount, :iosDeviceCount, :aosDeviceCount,
-                    :noticeCount, :summaryCompletedCount, :summaryFailedCount, :newTokenCount, :now, :now) AS new
-            ON DUPLICATE KEY UPDATE request_count           = new.request_count,
-                                    device_count            = new.device_count,
-                                    ios_device_count        = new.ios_device_count,
-                                    aos_device_count        = new.aos_device_count,
-                                    notice_count            = new.notice_count,
-                                    summary_completed_count = new.summary_completed_count,
-                                    summary_failed_count    = new.summary_failed_count,
-                                    new_token_count         = new.new_token_count,
-                                    updated_at              = new.updated_at
+                    :noticeCount, :summaryCompletedCount, :summaryFailedCount, :newTokenCount, :now, :now)
+            ON CONFLICT (statistics_date)
+            DO UPDATE SET request_count           = EXCLUDED.request_count,
+                          device_count            = EXCLUDED.device_count,
+                          ios_device_count        = EXCLUDED.ios_device_count,
+                          aos_device_count        = EXCLUDED.aos_device_count,
+                          notice_count            = EXCLUDED.notice_count,
+                          summary_completed_count = EXCLUDED.summary_completed_count,
+                          summary_failed_count    = EXCLUDED.summary_failed_count,
+                          new_token_count         = EXCLUDED.new_token_count,
+                          updated_at              = EXCLUDED.updated_at
             """,
             newRow(date, now)
                 .addValue("requestCount", totals.requestCount)
@@ -248,9 +251,13 @@ class StatisticsPersistenceAdapter(
         )
     }
 
+    /** DELETE 에 LIMIT 을 쓸 수 없으므로 지울 id 를 서브쿼리에서 정한다. */
     override fun deleteApiLogsRequestedBefore(cutoff: LocalDateTime, limit: Int): Int =
         jdbcTemplate.update(
-            "DELETE FROM api_log WHERE requested_at < :cutoff LIMIT :limit",
+            """
+            DELETE FROM api_log
+            WHERE id IN (SELECT id FROM api_log WHERE requested_at < :cutoff LIMIT :limit)
+            """,
             mapOf("cutoff" to cutoff, "limit" to limit),
         )
 

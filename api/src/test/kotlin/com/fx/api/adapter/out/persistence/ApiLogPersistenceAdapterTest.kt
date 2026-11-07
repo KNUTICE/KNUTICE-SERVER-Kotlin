@@ -7,7 +7,7 @@ import com.fx.api.domain.ApiLogEntry
 import com.fx.api.domain.ApiLogStatusGroup
 import com.fx.api.fixture.TopicFixture
 import com.fx.common.domain.DeviceType
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import com.fx.persistence.request.PagingRequest
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
@@ -17,16 +17,17 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase
 import org.springframework.context.annotation.Import
 import org.springframework.jdbc.core.JdbcTemplate
+import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 /**
- * 실제 MySQL 에 API 로그를 묶어 저장하고 컬럼 값을 직접 읽어 엔티티 매핑이 Flyway 스키마와 맞는지 확인한다.
+ * 실제 PostgreSQL 에 API 로그를 묶어 저장하고 컬럼 값을 직접 읽어 엔티티 매핑이 Flyway 스키마와 맞는지 확인한다.
  * 원본 로그 목록은 행을 직접 넣고 조회한다.
  */
-@DataJpaTest(properties = ["MYSQL_URL=unused", "MYSQL_DATABASE=unused", "MYSQL_USERNAME=unused", "MYSQL_PASSWORD=unused"])
+@DataJpaTest(properties = ["POSTGRES_URL=unused", "POSTGRES_DATABASE=unused", "POSTGRES_USERNAME=unused", "POSTGRES_PASSWORD=unused"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class, QuerydslConfig::class, ApiLogQueryRepository::class, ApiLogPersistenceAdapter::class)
+@Import(PostgreSqlContainerConfig::class, QuerydslConfig::class, ApiLogQueryRepository::class, ApiLogPersistenceAdapter::class)
 class ApiLogPersistenceAdapterTest @Autowired constructor(
     private val apiLogPersistenceAdapter: ApiLogPersistenceAdapter,
     private val entityManager: EntityManager,
@@ -77,7 +78,8 @@ class ApiLogPersistenceAdapterTest @Autowired constructor(
 
         val withTopic = rows[0]
         assertThat(withTopic["id"]).isNotNull()
-        assertThat(withTopic["requested_at"]).isEqualTo(requestedAt)
+        // PostgreSQL 드라이버는 TIMESTAMP 를 java.sql.Timestamp 로 돌려준다
+        assertThat((withTopic["requested_at"] as Timestamp).toLocalDateTime()).isEqualTo(requestedAt)
         assertThat(withTopic["method"]).isEqualTo("GET")
         assertThat(withTopic["url_pattern"]).isEqualTo("/open-api/v1/notices")
         assertThat(withTopic["status_code"]).isEqualTo(200)

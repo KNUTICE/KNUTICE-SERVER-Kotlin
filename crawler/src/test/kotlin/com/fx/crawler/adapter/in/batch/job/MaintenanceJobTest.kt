@@ -58,7 +58,7 @@ class MaintenanceJobTest : CrawlerIntegrationTest() {
     }
 
     private fun expireExecutions() {
-        jdbcTemplate.update("UPDATE BATCH_JOB_EXECUTION SET END_TIME = DATE_SUB(NOW(6), INTERVAL 8 DAY) WHERE END_TIME IS NOT NULL")
+        jdbcTemplate.update("UPDATE BATCH_JOB_EXECUTION SET END_TIME = LOCALTIMESTAMP - INTERVAL '8 days' WHERE END_TIME IS NOT NULL")
     }
 
     private fun countExecution(jobExecutionId: Long) =
