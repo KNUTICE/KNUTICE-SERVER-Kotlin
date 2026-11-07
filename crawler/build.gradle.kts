@@ -12,7 +12,7 @@ dependencies {
 
     implementation("io.github.seob7:common-api:$commonApiVersion")
 
-    // Spring Batch (JobRepository 는 MySQL 의 BATCH_* 테이블)
+    // Spring Batch (JobRepository 는 PostgreSQL 의 BATCH_* 테이블)
     implementation("org.springframework.boot:spring-boot-starter-batch-jdbc")
 
     // Web (Boot 4 : spring-boot-starter-web 은 deprecated)

@@ -5,7 +5,7 @@ import com.fx.common.adapter.out.persistence.repository.TopicRepository
 import com.fx.common.domain.TopicType
 import com.fx.common.domain.i18n.Language
 import com.fx.common.domain.notification.NotificationTemplateKey
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
@@ -17,12 +17,12 @@ import org.springframework.context.annotation.Import
 import java.time.LocalDateTime
 
 /**
- * Flyway 가 만든 스키마 · 시드를 실제 MySQL 에서 검증한다.
+ * Flyway 가 만든 스키마 · 시드를 실제 PostgreSQL 에서 검증한다.
  * `ddl-auto=validate` 이므로 엔티티 매핑과 스키마가 어긋나면 컨텍스트가 뜨지 않는다.
  */
 @DataJpaTest(properties = ["spring.jpa.hibernate.ddl-auto=validate"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class, CatalogPersistenceAdapter::class)
+@Import(PostgreSqlContainerConfig::class, CatalogPersistenceAdapter::class)
 class CatalogPersistenceAdapterTest @Autowired constructor(
     private val catalogPersistenceAdapter: CatalogPersistenceAdapter,
     private val topicRepository: TopicRepository,

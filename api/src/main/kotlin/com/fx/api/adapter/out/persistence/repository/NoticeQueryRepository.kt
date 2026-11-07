@@ -33,9 +33,10 @@ class NoticeQueryRepository(
             notice.topicCode.eq(it)
         }
 
+    /** 대소문자를 무시한다 (`lower(title) like lower(?)`). */
     private fun titleContains(keyword: String?): BooleanExpression? =
         keyword?.let {
-            notice.title.contains(it)
+            notice.title.containsIgnoreCase(it)
         }
 
     private fun nttIdLt(nttId: Long?): BooleanExpression? =

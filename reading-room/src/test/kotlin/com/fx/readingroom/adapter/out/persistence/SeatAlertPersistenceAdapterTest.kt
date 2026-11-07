@@ -1,6 +1,6 @@
 package com.fx.readingroom.adapter.out.persistence
 
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import com.fx.readingroom.adapter.out.persistence.repository.SeatAlertRepository
 import com.fx.readingroom.domain.ReadingRoom
 import com.fx.readingroom.domain.SeatAlert
@@ -21,12 +21,12 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 /**
- * 실제 MySQL 에서 좌석 알림 저장 · 조회 · 삭제를 검증한다.
+ * 실제 PostgreSQL 에서 좌석 알림 저장 · 조회 · 삭제를 검증한다.
  * `ddl-auto=validate` 이므로 엔티티 매핑과 Flyway 스키마가 어긋나면 컨텍스트가 뜨지 않는다.
  */
 @DataJpaTest(properties = ["spring.jpa.hibernate.ddl-auto=validate"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class, SeatAlertPersistenceAdapterTest.FixedClockConfig::class, SeatAlertPersistenceAdapter::class)
+@Import(PostgreSqlContainerConfig::class, SeatAlertPersistenceAdapterTest.FixedClockConfig::class, SeatAlertPersistenceAdapter::class)
 class SeatAlertPersistenceAdapterTest @Autowired constructor(
     private val seatAlertPersistenceAdapter: SeatAlertPersistenceAdapter,
     private val seatAlertRepository: SeatAlertRepository,

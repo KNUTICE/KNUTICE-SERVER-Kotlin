@@ -5,7 +5,7 @@ import com.fx.api.config.querydsl.QuerydslConfig
 import com.fx.common.adapter.out.persistence.repository.BatchRunRequestRepository
 import com.fx.common.domain.batch.BatchRunRequest
 import com.fx.common.domain.batch.BatchRunRequestStatus
-import com.fx.persistence.MySqlContainerConfig
+import com.fx.persistence.PostgreSqlContainerConfig
 import com.fx.persistence.request.PagingRequest
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
@@ -17,10 +17,10 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.context.annotation.Import
 import java.time.LocalDateTime
 
-/** 실제 MySQL 에서 수동 실행 요청을 저장 · 조회한다. */
-@DataJpaTest(properties = ["MYSQL_URL=unused", "MYSQL_DATABASE=unused", "MYSQL_USERNAME=unused", "MYSQL_PASSWORD=unused"])
+/** 실제 PostgreSQL 에서 수동 실행 요청을 저장 · 조회한다. */
+@DataJpaTest(properties = ["POSTGRES_URL=unused", "POSTGRES_DATABASE=unused", "POSTGRES_USERNAME=unused", "POSTGRES_PASSWORD=unused"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(MySqlContainerConfig::class, QuerydslConfig::class, BatchRunRequestQueryRepository::class, BatchRunRequestPersistenceAdapter::class)
+@Import(PostgreSqlContainerConfig::class, QuerydslConfig::class, BatchRunRequestQueryRepository::class, BatchRunRequestPersistenceAdapter::class)
 class BatchRunRequestPersistenceAdapterTest @Autowired constructor(
     private val batchRunRequestPersistenceAdapter: BatchRunRequestPersistenceAdapter,
     private val batchRunRequestRepository: BatchRunRequestRepository,

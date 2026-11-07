@@ -19,7 +19,7 @@ interface FcmTokenSubscriptionRepository : JpaRepository<FcmTokenSubscription, L
         value = """
             INSERT INTO fcm_token_subscription (id, fcm_token_id, topic_code, topic_name, created_at, updated_at)
             VALUES (:id, :fcmTokenId, :topicCode, :topicName, :now, :now)
-            ON DUPLICATE KEY UPDATE id = id
+            ON CONFLICT (topic_code, fcm_token_id) DO NOTHING
         """,
     )
     fun insertIfAbsent(id: Long, fcmTokenId: Long, topicCode: Int, topicName: String, now: LocalDateTime): Int

@@ -16,13 +16,13 @@ class UserPersistenceAdapter(
         userRepository.save(user)
 
     override fun existsByEmail(email: String): Boolean =
-        userRepository.existsByEmail(email)
+        userRepository.existsByEmailIgnoreCase(email)
 
     override fun existsByNickname(nickname: String): Boolean =
-        userRepository.existsByNickname(nickname)
+        userRepository.existsByNicknameIgnoreCase(nickname)
 
     override fun findByEmail(email: String): User? =
-        userRepository.findByEmail(email)
+        userRepository.findByEmailIgnoreCase(email)
 
     override fun findById(userId: Long): User? =
         userRepository.findById(userId).orElse(null)
