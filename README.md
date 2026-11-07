@@ -29,7 +29,7 @@
 | 구분 | 기술 스택 |
 | :-- | :-- |
 | Backend | Kotlin 2.3, Java 25, Spring Boot 4.1, Spring Batch 6, Spring Data JPA, QueryDSL, Spring AI (Gemini), Firebase Cloud Messaging |
-| Database | MySQL 8.4, Flyway |
+| Database | PostgreSQL 18 (pgvector), Flyway |
 | Test | JUnit 5, Kotest, MockK, Testcontainers |
 | Infra & DevOps | Docker, Docker Compose, AWS Lightsail, GHCR, Doppler, GitHub Actions |
 | Collaboration | Confluence, Slack |
@@ -40,7 +40,7 @@
 ```mermaid
 flowchart LR
     App["KNUTICE 앱<br/>iOS · Android"] -- "Open API" --> API["api"]
-    API --> DB[("MySQL")]
+    API --> DB[("PostgreSQL")]
     Crawler["crawler<br/>Spring Batch"] --> DB
     Crawler -- "크롤링" --> School["학교 홈페이지"]
     Crawler -- "좌석 조회" --> Room["열람실 시스템"]
@@ -49,7 +49,7 @@ flowchart LR
     FCM -. "알림" .-> App
 ```
 
-api 와 crawler 는 같은 MySQL 을 공유하는 별도 프로세스입니다. 스키마 마이그레이션(Flyway)은 api 만 실행합니다.
+api 와 crawler 는 같은 PostgreSQL 을 공유하는 별도 프로세스입니다. 스키마 마이그레이션(Flyway)은 api 만 실행합니다.
 
 | 모듈 | 역할 |
 | :-- | :-- |
@@ -89,7 +89,7 @@ com.fx.<module>
 
 # 실행 방법
 
-**요구 사항**: Java 25, Docker (테스트가 Testcontainers 로 MySQL 컨테이너를 띄웁니다)
+**요구 사항**: Java 25, Docker (테스트가 Testcontainers 로 PostgreSQL 컨테이너를 띄웁니다)
 
 ```bash
 ./gradlew build                # 전체 빌드 + 테스트
@@ -97,4 +97,4 @@ com.fx.<module>
 ./gradlew :crawler:bootRun     # crawler 실행
 ```
 
-환경 변수는 Doppler 로 주입합니다. MySQL 접속에는 `MYSQL_URL`(데이터베이스 이름을 뺀 주소, 예: `jdbc:mysql://localhost:3306`), `MYSQL_DATABASE`, `MYSQL_USERNAME`, `MYSQL_PASSWORD` 가 필요합니다.
+환경 변수는 Doppler 로 주입합니다. PostgreSQL 접속에는 `POSTGRES_URL`(데이터베이스 이름을 뺀 주소, 예: `jdbc:postgresql://localhost:5432`), `POSTGRES_DATABASE`, `POSTGRES_USERNAME`, `POSTGRES_PASSWORD` 가 필요합니다.
