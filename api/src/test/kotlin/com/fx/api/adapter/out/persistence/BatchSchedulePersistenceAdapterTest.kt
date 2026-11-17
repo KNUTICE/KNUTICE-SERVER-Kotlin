@@ -32,6 +32,7 @@ class BatchSchedulePersistenceAdapterTest @Autowired constructor(
             "meal-notify",
             "notice-crawl-major",
             "notice-crawl-notice",
+            "notice-embedding",
             "notice-summary",
             "seat-alert-check",
             "silent-push",

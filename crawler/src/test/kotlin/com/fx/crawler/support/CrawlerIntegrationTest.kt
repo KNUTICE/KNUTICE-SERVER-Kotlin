@@ -28,6 +28,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
         "crawler.launch.async=false",
         "crawler.push.chunk-size=2",
         "crawler.summary.chunk-size=2",
+        "crawler.embedding.chunk-size=2",
         "CRAWLER_PORT=0",
         "POSTGRES_URL=unused",
         "POSTGRES_DATABASE=unused",
@@ -53,13 +54,15 @@ abstract class CrawlerIntegrationTest {
     @Autowired lateinit var noticeCrawlPort: FakeNoticeCrawlPort
     @Autowired lateinit var mealPort: FakeMealPort
     @Autowired lateinit var noticeSummaryPort: FakeNoticeSummaryPort
+    @Autowired lateinit var noticeEmbeddingPort: FakeNoticeEmbeddingPort
+    @Autowired lateinit var noticeImagePort: FakeNoticeImagePort
     @Autowired lateinit var readingRoomRemotePort: FakeReadingRoomRemotePort
     @Autowired lateinit var webhookPort: FakeWebhookPort
 
     @BeforeEach
     fun resetState() {
         listOf(
-            "notice", "notice_content", "fcm_token", "fcm_token_subscription", "seat_alert", "batch_run_request",
+            "notice", "notice_content", "notice_chunk", "fcm_token", "fcm_token_subscription", "seat_alert", "batch_run_request",
             "api_log", "daily_api_log_statistics", "daily_topic_statistics", "daily_statistics",
         )
             .forEach {
@@ -69,6 +72,8 @@ abstract class CrawlerIntegrationTest {
         noticeCrawlPort.reset()
         mealPort.reset()
         noticeSummaryPort.reset()
+        noticeEmbeddingPort.reset()
+        noticeImagePort.reset()
         readingRoomRemotePort.reset()
         webhookPort.reset()
     }

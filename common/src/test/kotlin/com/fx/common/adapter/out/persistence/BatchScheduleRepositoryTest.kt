@@ -32,7 +32,7 @@ class BatchScheduleRepositoryTest @Autowired constructor(
     private val now = LocalDateTime.of(2026, 9, 30, 10, 7)
 
     @Test
-    fun `레거시 cron 과 요약 · 일일 통계 스케줄이 시드된다`() {
+    fun `레거시 cron 과 요약 · 일일 통계 · 임베딩 스케줄이 시드된다`() {
         val schedules = batchScheduleRepository.findAll().associateBy {
             it.scheduleKey
         }
@@ -44,6 +44,7 @@ class BatchScheduleRepositoryTest @Autowired constructor(
                 "notice-crawl-notice" to (BatchJob.NOTICE_CRAWL.jobName to "0 0/15 * * * *"),
                 "notice-crawl-major" to (BatchJob.NOTICE_CRAWL.jobName to "0 10 16 * * *"),
                 "notice-summary" to (BatchJob.NOTICE_SUMMARY.jobName to "0 */5 * * * *"),
+                "notice-embedding" to (BatchJob.NOTICE_EMBEDDING.jobName to "0 */10 * * * *"),
                 "meal-notify" to (BatchJob.MEAL_NOTIFY.jobName to "0 10 10 * * MON-FRI"),
                 "silent-push" to (BatchJob.SILENT_PUSH.jobName to "0 0 0 1 * *"),
                 "seat-alert-check" to (BatchJob.SEAT_ALERT_CHECK.jobName to "0 * * * * *"),
@@ -60,9 +61,8 @@ class BatchScheduleRepositoryTest @Autowired constructor(
             }.doesNotThrowAnyException()
             assertThat(schedule.nextFireAt).isNull()
         }
-        assertThat(schedules.values).allMatch {
-            it.enabled
-        }
+        // 임베딩은 한도 · 비용을 확인한 뒤 켜도록 꺼진 채로 시드한다
+        assertThat(schedules.filterValues { !it.enabled }.keys).containsExactly("notice-embedding")
         assertThat(BatchJobParameters.parse(schedules.getValue("batch-maintenance").jobParameters))
             .isEqualTo(mapOf("retentionDays" to "7"))
         assertThat(BatchJobParameters.parse(schedules.getValue("daily-statistics").jobParameters))
