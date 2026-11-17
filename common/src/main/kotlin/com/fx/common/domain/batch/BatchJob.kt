@@ -14,6 +14,7 @@ enum class BatchJob(
 
     NOTICE_CRAWL("noticeCrawlJob", "공지 · 학과 게시판 크롤링 · 알림", listOf(BatchJobParameter.TOPIC_TYPE)),
     NOTICE_SUMMARY("noticeSummaryJob", "요약 대기 공지 AI 요약", emptyList()),
+    NOTICE_EMBEDDING("noticeEmbeddingJob", "임베딩 대기 공지 RAG 임베딩 (본문 · 본문 이미지)", emptyList()),
     MEAL_NOTIFY("mealNotifyJob", "오늘 학식 알림", emptyList()),
     SILENT_PUSH("silentPushJob", "iOS 토큰 갱신용 사일런트 푸시", emptyList()),
     SEAT_ALERT_CHECK("seatAlertCheckJob", "열람실 빈자리 확인 · 알림, 만료 알림 정리", emptyList()),
