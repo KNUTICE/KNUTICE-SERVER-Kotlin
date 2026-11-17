@@ -27,8 +27,8 @@ const val NOTICE_URL_MAX_LENGTH = 1000
  *
  * - [nttId] 는 학교 게시판 게시글 번호이자 API 식별자 · 커서다. TSID `id` 는 외부에 내보내지 않는다.
  * - 토픽은 `topic_code` · `topic_name` 을 복제 저장해 JOIN 없이 v1 · v2 응답을 만든다.
- * - [notificationStatus] · [summaryStatus] 로 배치가 중단된 지점부터 이어서 처리한다.
- * - 발송 Job 과 요약 Job 이 같은 공지의 다른 컬럼을 동시에 바꾸므로 바뀐 컬럼만 UPDATE 한다.
+ * - [notificationStatus] · [summaryStatus] · [embeddingStatus] 로 배치가 중단된 지점부터 이어서 처리한다.
+ * - 발송 · 요약 · 임베딩 Job 이 같은 공지의 다른 컬럼을 동시에 바꾸므로 바뀐 컬럼만 UPDATE 한다.
  *   모든 컬럼을 쓰면 상대 Job 이 방금 바꾼 값(예: 발송 완료)을 읽어 둔 옛 값으로 되돌린다.
  */
 @Entity
@@ -45,6 +45,8 @@ const val NOTICE_URL_MAX_LENGTH = 1000
         Index(name = "idx_notice_notification_status", columnList = "notification_status"),
         // 요약 대상 : `WHERE summary_status = 'PENDING'`
         Index(name = "idx_notice_summary_status", columnList = "summary_status"),
+        // 임베딩 대상 : `WHERE embedding_status = 'PENDING'`
+        Index(name = "idx_notice_embedding_status", columnList = "embedding_status"),
     ],
 )
 class Notice(
@@ -113,6 +115,15 @@ class Notice(
     var summaryAttemptCount: Int = 0
         protected set
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "embedding_status", nullable = false, length = 20, comment = "PENDING / COMPLETED / FAILED")
+    var embeddingStatus: EmbeddingStatus = EmbeddingStatus.PENDING
+        protected set
+
+    @Column(name = "embedding_attempt_count", nullable = false, comment = "임베딩 시도 횟수")
+    var embeddingAttemptCount: Int = 0
+        protected set
+
     /** 목록 응답의 `isContentSummary`. */
     val hasSummary: Boolean
         get() = summaryStatus == SummaryStatus.COMPLETED
@@ -162,6 +173,19 @@ class Notice(
     /** 요약할 본문이 없어 요약하지 않는다. */
     fun skipSummary() {
         summaryStatus = SummaryStatus.SKIPPED
+    }
+
+    /** 청크를 모두 저장했다. */
+    fun completeEmbedding() {
+        embeddingStatus = EmbeddingStatus.COMPLETED
+    }
+
+    /** 임베딩 실패를 기록한다. [maxAttempts] 에 도달하면 더 시도하지 않는다. */
+    fun failEmbedding(maxAttempts: Int) {
+        embeddingAttemptCount += 1
+        if (embeddingAttemptCount >= maxAttempts) {
+            embeddingStatus = EmbeddingStatus.FAILED
+        }
     }
 
     companion object {
