@@ -1,6 +1,7 @@
 package com.fx.api.domain.question
 
 import com.fx.common.domain.notice.NoticeChunkType
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -84,7 +85,20 @@ data class NoticeSource(
             it.score
         }
 
+    fun toInfo(): NoticeSourceInfo =
+        NoticeSourceInfo(n, nttId, title, boardName, registrationDate, contentUrl)
+
 }
+
+/** 화면에 보여 줄 근거 공지 (검색 점수 없이) */
+data class NoticeSourceInfo(
+    val n: Int,
+    val nttId: Long,
+    val title: String,
+    val boardName: String?,
+    val registrationDate: LocalDate,
+    val contentUrl: String,
+)
 
 /** 점수 순 청크를 공지 단위로 묶어 근거 공지를 고른다. */
 object NoticeSourcePicker {
@@ -112,6 +126,12 @@ object NoticeSourcePicker {
     }
 
 }
+
+/** 채팅 형식 메시지. 팩트챗(OpenAI 형식)은 그대로, Gemini 는 system → systemInstruction 으로 옮겨 쓴다 */
+data class NoticeChatMessage(
+    val role: String,
+    val content: String,
+)
 
 /** 답변 모델에 넘기는 글. 근거 공지에 적힌 내용만으로 답하게 한다. */
 object NoticeAnswerPrompt {
@@ -144,10 +164,42 @@ object NoticeAnswerPrompt {
         return "[지금] ${now.format(NOW_FORMAT)} (한국시간)\n\n[근거 공지]\n$context\n\n[질문]\n$question"
     }
 
+    fun messages(question: String, sources: List<NoticeSource>, now: LocalDateTime): List<NoticeChatMessage> =
+        listOf(
+            NoticeChatMessage(role = "system", content = SYSTEM),
+            NoticeChatMessage(role = "user", content = user(question, sources, now)),
+        )
+
+}
+
+/** 답변의 근거 번호 `[n]` 정리 */
+object NoticeCitations {
+
+    private val CITATION = Regex("\\[(\\d{1,3})]")
+
+    /**
+     * 근거 목록에 없는 번호(`[0]`, 근거 수보다 큰 번호)를 지운다.
+     *
+     * @return 정리한 답변과, 답변에 남은 근거 번호 (처음 나온 순서, 중복 없음)
+     */
+    fun clean(answer: String, sourceCount: Int): Pair<String, List<Int>> {
+        val cited = LinkedHashSet<Int>()
+        val cleaned = CITATION.replace(answer) { match ->
+            val n = match.groupValues[1].toInt()
+            if (n in 1..sourceCount) {
+                cited += n
+                match.value
+            } else {
+                ""
+            }
+        }
+        return cleaned.replace(Regex("[ \\t]+\\n"), "\n").trim() to cited.toList()
+    }
+
 }
 
 /**
- * 하루 질문 한도의 기준 시각. Gemini 무료 한도가 초기화되는 한국시간 [resetHour] 시에 맞춘다.
+ * 하루 질문 한도의 기준 시각 (한국시간 [resetHour] 시).
  * 기록의 `created_at` 은 JVM 기본 시간대(운영 컨테이너 TZ=Asia/Seoul)로 저장되므로 같은 시간대로 비교한다.
  */
 object QuestionWindow {
@@ -173,19 +225,31 @@ data class QuestionQuota(
     val resetsAt: LocalDateTime,
 )
 
-/** 질문 처리 결과 */
-data class NoticeAnswer(
+/** 질문 준비 결과. 근거가 있으면 앱 · 웹이 [messages] 로 사용자 키를 써서 답변을 받고 finish 로 돌려준다 */
+data class PreparedQuestion(
     val questionId: Long,
     val status: NoticeQuestionStatus,
-    val answer: String?,
     val sources: List<NoticeSource>,
+    /** 근거가 없으면 (NOT_FOUND) null */
+    val messages: List<NoticeChatMessage>?,
+    /** finish 때 함께 보내야 하는 서명. 근거가 없으면 null */
+    val finishToken: String?,
+    val finishExpiresAt: Instant?,
     /** 점수 순 검색 결과 (관리자 화면의 검색 정보) */
     val retrieved: List<NoticeChunkHit>,
     val ranking: NoticeSearchRanking,
     val minSimilarity: Double,
-    val answerModel: String?,
-    val inputTokens: Int?,
-    val outputTokens: Int?,
     val elapsedMs: Int,
     val quota: QuestionQuota,
+)
+
+/** 답변 저장 결과 */
+data class FinishedQuestion(
+    val questionId: Long,
+    /** 없는 근거 번호를 지운 답변 */
+    val answer: String,
+    /** 답변에 남은 근거 번호 */
+    val citedNumbers: List<Int>,
+    /** 답변이 쓴 근거 공지 */
+    val sources: List<NoticeSourceInfo>,
 )

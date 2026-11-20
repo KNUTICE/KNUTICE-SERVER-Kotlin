@@ -1,7 +1,5 @@
 package com.fx.api.adapter.out.ai
 
-import com.fx.api.application.port.out.question.AnswerGenerationPort
-import com.fx.api.application.port.out.question.GeneratedAnswer
 import com.fx.api.application.port.out.question.QuestionEmbeddingPort
 import com.fx.api.config.question.NoticeQuestionProperties
 import com.fx.api.exception.QuestionException
@@ -19,7 +17,7 @@ import tools.jackson.databind.JsonNode
 import kotlin.math.sqrt
 
 /**
- * Gemini 기본 API 로 질문을 임베딩하고 답변을 만든다.
+ * Gemini 기본 API 로 질문을 임베딩한다 (서버 무료 키). 답변은 서버가 만들지 않는다 (사용자 개인 키로 앱 · 웹이 직접 부른다).
  *
  * - 임베딩은 crawler 의 공지 임베딩과 같은 요청(`batchEmbedContents`, 768차원, taskType 없음)을 보내고 길이 1 로 정규화한다.
  *   모델 · 차원 · 정규화가 다르면 공지 벡터와 비교할 수 없다.
@@ -33,7 +31,7 @@ class GeminiNoticeQuestionAdapter(
     restClientBuilder: RestClient.Builder,
     @Value("\${notice-question.api-key:}") private val apiKey: String,
     private val properties: NoticeQuestionProperties,
-) : QuestionEmbeddingPort, AnswerGenerationPort {
+) : QuestionEmbeddingPort {
 
     private val log = LoggerFactory.getLogger(GeminiNoticeQuestionAdapter::class.java)
     private val restClient: RestClient = restClientBuilder
@@ -41,8 +39,6 @@ class GeminiNoticeQuestionAdapter(
         .build()
 
     override val modelTag: String = "${properties.embeddingModel}@$EMBEDDING_DIMENSIONS"
-
-    override val model: String = properties.answerModel
 
     override fun embed(text: String): FloatArray {
         val body = mapOf(
@@ -65,41 +61,6 @@ class GeminiNoticeQuestionAdapter(
         return normalize(FloatArray(values.size()) {
             values[it].floatValue()
         })
-    }
-
-    override fun generate(systemPrompt: String, userPrompt: String): GeneratedAnswer {
-        val body = mapOf(
-            "systemInstruction" to mapOf("parts" to listOf(mapOf("text" to systemPrompt))),
-            "contents" to listOf(mapOf("role" to "user", "parts" to listOf(mapOf("text" to userPrompt)))),
-            "generationConfig" to mapOf(
-                "temperature" to ANSWER_TEMPERATURE,
-                "maxOutputTokens" to properties.answerMaxOutputTokens,
-            ),
-        )
-        val response = post("/models/{model}:generateContent", properties.answerModel, body)
-        val parts = response?.get("candidates")?.get(0)?.get("content")?.get("parts")
-        // 생각(thought) 부분은 답변이 아니므로 뺀다
-        val text = parts?.takeIf {
-            it.isArray
-        }?.let { array ->
-            (0 until array.size()).map {
-                array[it]
-            }.filter {
-                it.get("thought")?.asBoolean() != true
-            }.joinToString("") {
-                it.get("text")?.asString().orEmpty()
-            }
-        }?.trim()
-        if (text.isNullOrBlank()) {
-            log.warn("답변 응답에 글이 없습니다 (finishReason={})", response?.get("candidates")?.get(0)?.get("finishReason")?.asString())
-            throw QuestionException(QuestionErrorCode.AI_UNAVAILABLE)
-        }
-        val usage = response.get("usageMetadata")
-        return GeneratedAnswer(
-            text = text,
-            inputTokens = usage?.get("promptTokenCount")?.asInt(),
-            outputTokens = usage?.get("candidatesTokenCount")?.asInt(),
-        )
     }
 
     private fun post(path: String, model: String, body: Any): JsonNode? {
@@ -145,8 +106,6 @@ class GeminiNoticeQuestionAdapter(
 
     companion object {
         private const val API_KEY_HEADER = "x-goog-api-key"
-        /** 근거에 적힌 내용을 그대로 옮기도록 낮게 둔다 */
-        private const val ANSWER_TEMPERATURE = 0.2
     }
 
 }

@@ -1,28 +1,40 @@
 package com.fx.api.application.port.`in`.question
 
-import com.fx.api.application.port.`in`.question.dto.NoticeQuestionCommand
-import com.fx.api.domain.question.NoticeAnswer
+import com.fx.api.application.port.`in`.question.dto.FinishQuestionCommand
+import com.fx.api.application.port.`in`.question.dto.PrepareQuestionCommand
+import com.fx.api.application.port.`in`.question.dto.QuestionAsker
+import com.fx.api.domain.question.FinishedQuestion
 import com.fx.api.domain.question.NoticeQuestionVerdict
+import com.fx.api.domain.question.PreparedQuestion
 import com.fx.api.domain.question.QuestionQuota
 import com.fx.api.exception.QuestionException
+import com.fx.common.exception.FcmTokenException
 
+/**
+ * 공지 질문(RAG). 답변은 서버가 만들지 않고, 앱 · 관리자 웹이 사용자 개인 AI 키로 받는다.
+ *
+ * 1. [prepare]: 한도 확인 → 질문 임베딩(서버 키) → 검색 → 근거 공지 · 프롬프트 · 서명
+ * 2. 앱 · 웹이 프롬프트로 팩트챗 · Gemini 를 직접 부른다 (키는 기기 · 브라우저에만)
+ * 3. [finish]: 서명 확인 → 없는 근거 번호 정리 → 답변 저장
+ */
 interface NoticeQuestionUseCase {
 
     /**
-     * 질문을 임베딩해 관련 공지를 찾고, 근거가 있으면 답변을 만든다. 처리한 질문은 기록으로 남긴다.
-     *
-     * @throws QuestionException 하루 한도를 넘었을 때 (DAILY_LIMIT_EXCEEDED), Gemini 한도 · 장애일 때 (AI_RATE_LIMITED · AI_UNAVAILABLE)
+     * @throws QuestionException 하루 한도 (DAILY_LIMIT_EXCEEDED · SERVICE_DAILY_LIMIT_EXCEEDED), 임베딩 한도 · 장애 (AI_RATE_LIMITED · AI_UNAVAILABLE)
+     * @throws FcmTokenException 앱의 기기 토큰이 등록되지 않았을 때 (TOKEN_NOT_FOUND)
      */
-    fun ask(command: NoticeQuestionCommand): NoticeAnswer
-
-    /** 오늘(한국시간 초기화 시각 기준) 질문 사용량 */
-    fun getQuota(): QuestionQuota
+    fun prepare(command: PrepareQuestionCommand): PreparedQuestion
 
     /**
-     * 질문 기록에 관리자 판정과 메모를 남긴다.
-     *
-     * @throws QuestionException 기록이 없을 때 (QUESTION_NOT_FOUND)
+     * @throws QuestionException 다른 사람 · 없는 질문 (QUESTION_NOT_FOUND), 서명 오류 · 만료 (FINISH_TOKEN_INVALID),
+     *   이미 저장 · 근거 없음 (ALREADY_FINISHED), 빈 답변 (ANSWER_EMPTY)
      */
-    fun giveFeedback(questionId: Long, verdict: NoticeQuestionVerdict, memo: String?): Boolean
+    fun finish(command: FinishQuestionCommand): FinishedQuestion
+
+    /** 오늘(한국시간 초기화 시각 기준) 질문 사용량 */
+    fun getQuota(asker: QuestionAsker): QuestionQuota
+
+    /** @throws QuestionException 다른 사람 · 없는 질문 (QUESTION_NOT_FOUND) */
+    fun giveFeedback(asker: QuestionAsker, questionId: Long, verdict: NoticeQuestionVerdict, memo: String?): Boolean
 
 }
