@@ -60,7 +60,9 @@ class NoticeEmbeddingService(
      */
     override fun embed(target: EmbeddingTarget): EmbeddingResult =
         try {
+            // 어느 한쪽이라도 멈춘 동안에는 아무것도 부르지 않고 미룬다 (본문만 임베딩해 놓고 버리지 않도록)
             noticeEmbeddingPort.checkAvailable()
+            noticeImagePort.checkAvailable()
             val board = boardName(target)
 
             val bodyDrafts = NoticeChunker.chunk(board, target.title, target.content, emptyList()).filter {

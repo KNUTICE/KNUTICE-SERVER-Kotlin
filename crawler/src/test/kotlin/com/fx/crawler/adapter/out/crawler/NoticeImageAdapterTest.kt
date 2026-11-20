@@ -145,6 +145,9 @@ class NoticeImageAdapterTest {
         assertThatThrownBy {
             adapter.findImageUrls("$base/page")
         }.isInstanceOf(EmbeddingUnavailableException::class.java)
+        assertThatThrownBy {
+            adapter.checkAvailable()
+        }.isInstanceOf(EmbeddingUnavailableException::class.java)
         // 멈춘 동안에는 이미지도 받지 않는다
         assertThat(adapter.fetchImage("$base/a.png")).isNull()
         assertThat(requested).containsExactly("/busy")

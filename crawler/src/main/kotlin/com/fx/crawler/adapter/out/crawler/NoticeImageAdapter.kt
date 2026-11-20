@@ -62,6 +62,9 @@ class NoticeImageAdapter(
     @Volatile
     private var pausedUntil: Instant = Instant.MIN
 
+    override fun checkAvailable() =
+        checkNotPaused()
+
     override fun findImageUrls(contentUrl: String): List<String> {
         val url = withoutSessionId(contentUrl)
         if (!isAllowed(url)) {

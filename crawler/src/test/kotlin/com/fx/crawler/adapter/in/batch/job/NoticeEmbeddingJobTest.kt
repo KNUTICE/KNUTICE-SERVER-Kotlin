@@ -112,6 +112,8 @@ class NoticeEmbeddingJobTest : CrawlerIntegrationTest() {
 
         assertThat(attemptsOf(100)).isEqualTo(EmbeddingStatus.PENDING to 0)
         assertThat(noticeChunkRepository.findAll()).isEmpty()
+        // 본문만 임베딩해 놓고 버리지 않는다 (무료 한도를 헛되이 쓰지 않음)
+        assertThat(noticeEmbeddingPort.calls).isEmpty()
 
         noticeImagePort.paused = false
         run(noticeEmbeddingJob)

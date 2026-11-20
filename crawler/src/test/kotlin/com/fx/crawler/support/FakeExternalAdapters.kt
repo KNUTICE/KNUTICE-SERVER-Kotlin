@@ -243,10 +243,14 @@ class FakeNoticeImagePort : NoticeImagePort {
     /** 켜면 학교 사이트 장애로 요청을 멈춘 상태가 된다 */
     @Volatile var paused = false
 
-    override fun findImageUrls(contentUrl: String): List<String> {
+    override fun checkAvailable() {
         if (paused) {
             throw EmbeddingUnavailableException("학교 사이트 장애로 요청하지 않음")
         }
+    }
+
+    override fun findImageUrls(contentUrl: String): List<String> {
+        checkAvailable()
         visitedPages += contentUrl
         check(contentUrl !in failingPages) {
             "학교 사이트 오류 500 - $contentUrl"

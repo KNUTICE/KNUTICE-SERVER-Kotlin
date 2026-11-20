@@ -10,6 +10,12 @@ import com.fx.crawler.domain.embedding.EmbeddingUnavailableException
 interface NoticeImagePort {
 
     /**
+     * 지금 학교 사이트에 요청할 수 있는지 확인한다. 학교 사이트 장애로 멈춘 동안 본문 임베딩까지 해 놓고 버리지 않도록 먼저 부른다.
+     * @throws EmbeddingUnavailableException 학교 사이트 장애로 요청을 멈춘 동안
+     */
+    fun checkAvailable()
+
+    /**
      * 상세 페이지 본문의 이미지 주소. 본문에 나온 순서대로 돌려준다.
      * 허용하지 않은 사이트 · 없는 페이지(404 등 4xx) · 다른 곳으로 보내는 페이지(3xx)면 빈 목록이다.
      * @throws EmbeddingUnavailableException 학교 사이트 장애로 요청을 멈춘 동안 (공지 탓이 아니므로 미룬다)
