@@ -51,28 +51,6 @@ class GeminiNoticeQuestionAdapterTest {
     }
 
     @Test
-    fun `답변 글을 이어 붙이고 생각(thought) 부분과 토큰 수를 구분한다`() {
-        server.expect(requestTo("https://gemini.test/v1beta/models/gemini-3.5-flash-lite:generateContent"))
-            .andExpect(jsonPath("$.systemInstruction.parts[0].text").value("system"))
-            .andExpect(jsonPath("$.contents[0].parts[0].text").value("user"))
-            .andRespond(
-                withSuccess(
-                    """
-                    {"candidates":[{"content":{"parts":[{"text":"생각 중","thought":true},{"text":" 11월 17일부터예요. "},{"text":"[1]"}]}}],
-                     "usageMetadata":{"promptTokenCount":3120,"candidatesTokenCount":96}}
-                    """.trimIndent(),
-                    MediaType.APPLICATION_JSON,
-                )
-            )
-
-        val answer = adapter.generate("system", "user")
-
-        assertThat(answer.text).isEqualTo("11월 17일부터예요. [1]")
-        assertThat(answer.inputTokens).isEqualTo(3120)
-        assertThat(answer.outputTokens).isEqualTo(96)
-    }
-
-    @Test
     fun `429 는 호출 한도, 그 밖의 거절은 AI 장애로 알린다`() {
         server.expect(requestTo("https://gemini.test/v1beta/models/gemini-embedding-2:batchEmbedContents"))
             .andRespond(withTooManyRequests())

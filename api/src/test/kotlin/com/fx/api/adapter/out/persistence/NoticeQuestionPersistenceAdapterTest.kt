@@ -1,6 +1,7 @@
 package com.fx.api.adapter.out.persistence
 
 import com.fx.api.adapter.out.persistence.repository.NoticeChunkSearchRepository
+import com.fx.api.domain.question.NoticeAnswerProvider
 import com.fx.api.domain.question.NoticeQuestion
 import com.fx.api.domain.question.NoticeQuestionAsker
 import com.fx.api.domain.question.NoticeQuestionStatus
@@ -87,22 +88,45 @@ class NoticeQuestionPersistenceAdapterTest @Autowired constructor(
     }
 
     @Test
-    fun `질문 기록을 저장하고 구간 시작 이후 질문 수를 센다`() {
-        val saved = adapter.save(question())
-        adapter.save(question())
+    fun `질문 기록을 저장하고 서버 전체 · 쪽별 · 기기별 질문 수를 센다`() {
+        val saved = adapter.save(question(NoticeQuestionAsker.APP, "device-a"))
+        adapter.save(question(NoticeQuestionAsker.APP, "device-a", NoticeQuestionStatus.NOT_FOUND))
+        adapter.save(question(NoticeQuestionAsker.APP, "device-b"))
+        adapter.save(question(NoticeQuestionAsker.ADMIN, "10"))
         flushAndClear()
+        val from = LocalDateTime.now().minusMinutes(1)
 
-        assertThat(adapter.countSince(LocalDateTime.now().minusMinutes(1))).isEqualTo(2)
+        assertThat(adapter.countSince(from)).isEqualTo(4)
         assertThat(adapter.countSince(LocalDateTime.now().plusMinutes(1))).isZero()
+        assertThat(adapter.countByAskedBySince(NoticeQuestionAsker.ADMIN, from)).isEqualTo(1)
+        // 근거를 못 찾은 질문은 빼고 센다
+        assertThat(adapter.countByAskerSince(NoticeQuestionAsker.APP, "device-a", from, NoticeQuestionStatus.NOT_FOUND)).isEqualTo(1)
+        assertThat(adapter.countByAskerSince(NoticeQuestionAsker.APP, "device-c", from, NoticeQuestionStatus.NOT_FOUND)).isZero()
 
         val found = adapter.getQuestion(requireNotNull(saved.id))
+        found.finish("마감은 11월 23일이에요 [1]", NoticeAnswerProvider.FACTCHAT, "gemini-3.5-flash-lite", 1612, 49, LocalDateTime.now())
         found.giveFeedback(NoticeQuestionVerdict.BAD, "작년 날짜")
         flushAndClear()
 
         val reloaded = adapter.getQuestion(requireNotNull(saved.id))
+        assertThat(reloaded.status).isEqualTo(NoticeQuestionStatus.ANSWERED)
+        assertThat(reloaded.answer).isEqualTo("마감은 11월 23일이에요 [1]")
+        assertThat(reloaded.answerProvider).isEqualTo(NoticeAnswerProvider.FACTCHAT)
         assertThat(reloaded.verdict).isEqualTo(NoticeQuestionVerdict.BAD)
         assertThat(reloaded.memo).isEqualTo("작년 날짜")
         assertThat(reloaded.sourceNttIds).containsExactly(11L, 12L)
+    }
+
+    @Test
+    fun `근거 공지를 nttId 로 읽는다`() {
+        notice(11, today)
+        notice(12, today)
+        flushAndClear()
+
+        assertThat(adapter.findNotices(listOf(12L, 99L)).map {
+            it.title
+        }).containsExactly("공지 12")
+        assertThat(adapter.findNotices(emptyList())).isEmpty()
     }
 
     @Test
@@ -112,21 +136,21 @@ class NoticeQuestionPersistenceAdapterTest @Autowired constructor(
         }.isInstanceOf(QuestionException::class.java)
     }
 
-    private fun question() =
+    private fun question(
+        askedBy: NoticeQuestionAsker,
+        askerKey: String,
+        status: NoticeQuestionStatus = NoticeQuestionStatus.PREPARED,
+    ) =
         NoticeQuestion(
-            askedBy = NoticeQuestionAsker.ADMIN,
-            askerKey = "10",
+            askedBy = askedBy,
+            askerKey = askerKey,
             question = "동계 계절학기 수강신청 언제야?",
-            status = NoticeQuestionStatus.ANSWERED,
-            answer = "11월 17일부터예요. [1]",
+            status = status,
             sourceNttIds = listOf(11, 12),
             topSimilarity = 0.745,
             decayPerYear = 0.04,
             titlePenalty = 0.0,
-            answerModel = "gemini-3.5-flash-lite",
-            inputTokens = 3120,
-            outputTokens = 96,
-            elapsedMs = 2400,
+            elapsedMs = 900,
         )
 
     private fun notice(nttId: Long, registrationDate: LocalDate): Notice =
