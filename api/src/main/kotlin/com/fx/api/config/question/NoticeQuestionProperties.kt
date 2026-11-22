@@ -27,6 +27,8 @@ import java.time.Duration
  * @property chunksPerNotice 근거 공지마다 프롬프트에 넣는 최대 청크 수
  * @property candidateChunks 점수 순으로 먼저 읽는 청크 수 (공지 단위로 묶기 전)
  * @property retrievedLimit 관리자 화면에 돌려주는 검색 결과 청크 수
+ * @property compareDailyLimit 관리자 검색 비교(답변 없이 A/B 검색만)가 하루에 새로 임베딩하는 질문 수.
+ *   같은 질문은 메모리에 둔 임베딩을 다시 써서 세지 않는다. 질문 기록을 남기지 않으므로 서버 메모리에서 센다 (재시작하면 0)
  */
 @ConfigurationProperties("notice-question")
 data class NoticeQuestionProperties(
@@ -47,13 +49,14 @@ data class NoticeQuestionProperties(
     val chunksPerNotice: Int = 3,
     val candidateChunks: Int = 150,
     val retrievedLimit: Int = 15,
+    val compareDailyLimit: Int = 100,
 ) {
 
     init {
         require(resetHour in 0..23) {
             "notice-question.reset-hour 는 0 ~ 23 이어야 합니다: $resetHour"
         }
-        require(appDailyLimit > 0 && adminDailyLimit > 0 && totalDailyLimit > 0) {
+        require(appDailyLimit > 0 && adminDailyLimit > 0 && totalDailyLimit > 0 && compareDailyLimit > 0) {
             "notice-question 의 하루 한도는 1 이상이어야 합니다."
         }
         require(topNotices > 0 && chunksPerNotice > 0 && candidateChunks > 0 && answerMaxLength > 0) {

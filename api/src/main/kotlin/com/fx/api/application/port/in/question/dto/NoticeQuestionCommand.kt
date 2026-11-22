@@ -27,6 +27,18 @@ data class PrepareQuestionCommand(
 )
 
 /**
+ * 관리자 검색 비교. B 의 검색 설정을 비우면 서버 기본값을 쓴다 (A 는 항상 유사도만).
+ *
+ * @property topNotices 양쪽에 보여 줄 공지 수
+ */
+data class CompareSearchCommand(
+    val question: String,
+    val decayPerYear: Double? = null,
+    val titlePenalty: Double? = null,
+    val topNotices: Int? = null,
+)
+
+/**
  * 사용자 키로 받은 답변 저장.
  *
  * @property finishToken prepare 응답의 서명. 질문 · 질문한 사람 · 만료 시각을 묶는다

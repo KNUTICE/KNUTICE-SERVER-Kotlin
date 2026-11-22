@@ -6,6 +6,8 @@ import com.fx.api.adapter.`in`.web.question.dto.NoticeQuestionFinishRequest
 import com.fx.api.adapter.`in`.web.question.dto.NoticeQuestionFinishResponse
 import com.fx.api.adapter.`in`.web.question.dto.NoticeQuestionPrepareResponse
 import com.fx.api.adapter.`in`.web.question.dto.NoticeQuestionQuotaResponse
+import com.fx.api.adapter.`in`.web.question.dto.NoticeSearchCompareRequest
+import com.fx.api.adapter.`in`.web.question.dto.NoticeSearchCompareResponse
 import com.fx.api.config.security.dto.AuthenticatedUser
 import com.fx.api.exception.errorcode.QuestionErrorCode
 import com.fx.common.annotation.ApiExceptionExplanation
@@ -21,6 +23,25 @@ import org.springframework.web.bind.annotation.RequestBody
 
 @Tag(name = "공지 질문(RAG) API - ADMIN")
 interface NoticeQuestionApiSwagger {
+
+    @ApiResponseExplanations(
+        errors = [
+            ApiExceptionExplanation(name = "검색 비교 하루 한도", description = "오늘 새로 임베딩한 질문 수가 상한에 닿은 경우. 이미 검색한 질문은 계속 비교할 수 있다", value = QuestionErrorCode::class, constant = "COMPARE_DAILY_LIMIT_EXCEEDED"),
+            ApiExceptionExplanation(name = "임베딩 한도", description = "질문 임베딩(서버 무료 키)이 호출 한도(429)에 걸린 경우. 횟수에 남지 않는다", value = QuestionErrorCode::class, constant = "AI_RATE_LIMITED"),
+            ApiExceptionExplanation(name = "임베딩 장애", description = "서버 키가 없거나 Gemini 가 응답하지 못한 경우. 횟수에 남지 않는다", value = QuestionErrorCode::class, constant = "AI_UNAVAILABLE"),
+        ]
+    )
+    @Operation(
+        summary = "검색 비교 (관리자, 답변 없음)",
+        description = "질문을 한 번 임베딩해 A(유사도만)와 B(검색 설정 적용, 비우면 서버 기본값)로 두 번 검색하고 공지 단위로 나란히 돌려줍니다. " +
+            "질문 기록을 남기지 않고 질문 한도에도 세지 않습니다. 같은 질문은 서버 메모리에 둔 임베딩을 다시 써서 검색 설정만 바꿔 비교할 때는 서버 키를 쓰지 않습니다."
+    )
+    fun compareSearch(
+        @RequestBody @Valid request: NoticeSearchCompareRequest,
+    ): ResponseEntity<Api<NoticeSearchCompareResponse>>
+
+    @Operation(summary = "오늘 검색 비교 사용량", description = "새로 임베딩한 질문 수입니다. 서버 메모리에서 세므로 재시작하면 0 이 됩니다.")
+    fun getSearchCompareUsage(): ResponseEntity<Api<NoticeQuestionQuotaResponse>>
 
     @ApiResponseExplanations(
         errors = [

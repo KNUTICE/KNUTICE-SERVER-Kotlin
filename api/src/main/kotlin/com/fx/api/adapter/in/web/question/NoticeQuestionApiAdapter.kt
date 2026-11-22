@@ -6,7 +6,10 @@ import com.fx.api.adapter.`in`.web.question.dto.NoticeQuestionFinishRequest
 import com.fx.api.adapter.`in`.web.question.dto.NoticeQuestionFinishResponse
 import com.fx.api.adapter.`in`.web.question.dto.NoticeQuestionPrepareResponse
 import com.fx.api.adapter.`in`.web.question.dto.NoticeQuestionQuotaResponse
+import com.fx.api.adapter.`in`.web.question.dto.NoticeSearchCompareRequest
+import com.fx.api.adapter.`in`.web.question.dto.NoticeSearchCompareResponse
 import com.fx.api.application.port.`in`.question.NoticeQuestionUseCase
+import com.fx.api.application.port.`in`.question.NoticeSearchCompareUseCase
 import com.fx.api.application.port.`in`.question.dto.QuestionAsker
 import com.fx.api.config.question.NoticeQuestionProperties
 import com.fx.api.config.security.dto.AuthenticatedUser
@@ -27,8 +30,19 @@ import org.springframework.web.bind.annotation.RequestMapping
 @RequestMapping("/api/v1/notice-questions")
 class NoticeQuestionApiAdapter(
     private val noticeQuestionUseCase: NoticeQuestionUseCase,
+    private val noticeSearchCompareUseCase: NoticeSearchCompareUseCase,
     private val properties: NoticeQuestionProperties,
 ) : NoticeQuestionApiSwagger {
+
+    @PostMapping("/search-compare")
+    override fun compareSearch(
+        @RequestBody @Valid request: NoticeSearchCompareRequest,
+    ): ResponseEntity<Api<NoticeSearchCompareResponse>> =
+        Api.OK(NoticeSearchCompareResponse.from(noticeSearchCompareUseCase.compare(request.toCommand())), "검색을 비교했습니다.")
+
+    @GetMapping("/search-compare/usage")
+    override fun getSearchCompareUsage(): ResponseEntity<Api<NoticeQuestionQuotaResponse>> =
+        Api.OK(NoticeQuestionQuotaResponse.from(noticeSearchCompareUseCase.getUsage()), "검색 비교 사용량 조회 성공")
 
     @PostMapping("/prepare")
     override fun prepare(
