@@ -12,6 +12,9 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
 
+    // pgvector 의 vector 타입을 엔티티 FloatArray 로 매핑 (notice_chunk.embedding). 버전은 Boot 의 Hibernate BOM 이 맞춘다
+    runtimeOnly("org.hibernate.orm:hibernate-vector")
+
     // 스키마 마이그레이션
     implementation("org.springframework.boot:spring-boot-starter-flyway")
     implementation("org.flywaydb:flyway-database-postgresql")

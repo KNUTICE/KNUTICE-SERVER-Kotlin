@@ -79,6 +79,31 @@ crawler:
     request-interval: 5s
     # 429 를 받으면 1분 동안 요청하지 않고 남은 공지는 다음 실행으로 미룬다
     rate-limit-cooldown: 1m
+  embedding:
+    chunk-size: 5
+    max-attempts: 3
+    retry-interval: 30m
+    # 요약과 같은 키. CrawlerProperties 에 넣지 않고 GeminiEmbeddingAdapter 가 직접 읽는다
+    api-key: ${GEMINI_API_KEY}
+    model: gemini-embedding-2
+    # 무료 한도(분당 100회 · 3만 토큰, 하루 1,000회)는 묶음 요청도 입력마다 센다.
+    # 입력 하나당 2초 = 분당 30개, 본문 조각(약 700자)이 다 차도 분당 3만 토큰 안쪽
+    request-interval: 2s
+    rate-limit-cooldown: 1m
+    # 하루 한도를 다 쓰면 1시간 멈춘다 (그동안 학교 사이트도 읽지 않음)
+    daily-limit-cooldown: 1h
+    # Gemini 인증 · 5xx, 학교 사이트 장애면 그 공지만 실패로 세고 10분 멈춘다
+    error-cooldown: 10m
+    max-batch-size: 20
+    # 본문 이미지는 상세 페이지를 다시 읽어 얻는다. 학교 사이트(ut.ac.kr)만 요청하고, 1초 간격으로 보낸다
+    max-images-per-notice: 10
+    allowed-image-host: ut.ac.kr
+    min-image-size: 2KB
+    max-image-size: 5MB
+    site-request-interval: 1s
+    site-timeout: 15s
+    # 학교 이미지 서버는 느리다(1.3MB 에 52~72초). 넘으면 그 이미지만 건너뛰고 본문 · 다른 이미지는 저장한다
+    image-timeout: 90s
   seat-alert:
     max-concurrency: 4
     timeout: 30s

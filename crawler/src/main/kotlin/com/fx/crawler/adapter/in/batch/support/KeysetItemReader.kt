@@ -4,7 +4,8 @@ import org.springframework.batch.infrastructure.item.ExecutionContext
 import org.springframework.batch.infrastructure.item.ItemStreamReader
 
 /**
- * 키(보통 id) 오름차순으로 한 페이지씩 읽는 reader. OFFSET 대신 `키 > 마지막 키` 로 다음 페이지를 읽는다.
+ * 키(보통 id) 순서대로 한 페이지씩 읽는 reader. OFFSET 대신 `키 > 마지막 키` 로 다음 페이지를 읽는다.
+ * 내림차순이 필요하면 [fetchPage] 가 `키 < 마지막 키` 로 읽으면 된다 (임베딩 Job 은 최신 게시글부터 읽는다).
  *
  * - 읽는 도중 조회 조건에서 빠지는 행(상태가 바뀐 행 등)이 있어도 행을 건너뛰거나 두 번 읽지 않는다.
  * - 커밋된 chunk 의 마지막 키를 ExecutionContext 에 저장하므로 재시작하면 그 다음부터 읽는다.

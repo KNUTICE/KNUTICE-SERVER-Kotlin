@@ -74,11 +74,43 @@ class NoticeHtmlParserTest {
     }
 
     @Test
+    fun `임베딩용으로 본문 이미지를 모두 순서대로 읽는다`() {
+        val html = """
+            <img src="https://www.ut.ac.kr/images/logo.png">
+            <div class="bbs_detail_content">
+              <img src="http://www.ut.ac.kr/upload/a.png">
+              <p><img src="/upload/b.jpg"></p>
+              <img src="data:image/png;base64,AAAA">
+              <img src="">
+              <img src="https://www.ut.ac.kr/upload/a.png">
+            </div>
+        """.trimIndent()
+
+        val imageUrls = NoticeHtmlParser.parseImageUrls(
+            Jsoup.parse(html, "https://www.ut.ac.kr/cop/bbs/BBSMSTR_59/selectBoardArticle.do?nttId=1001")
+        )
+
+        // 본문 밖 이미지 · data URI · 빈 주소는 빼고, 상대 경로는 절대 주소로, 같은 이미지는 한 번만
+        assertThat(imageUrls).containsExactly(
+            "https://www.ut.ac.kr/upload/a.png",
+            "https://www.ut.ac.kr/upload/b.jpg",
+        )
+    }
+
+    @Test
+    fun `문서 주소를 모르면 상대 경로 이미지는 뺀다`() {
+        val html = """<div class="bbs_detail_content"><img src="/upload/b.jpg"><img src="https://www.ut.ac.kr/upload/c.png"></div>"""
+
+        assertThat(NoticeHtmlParser.parseImageUrls(Jsoup.parse(html))).containsExactly("https://www.ut.ac.kr/upload/c.png")
+    }
+
+    @Test
     fun `본문이 없으면 비워 둔다`() {
         val detail = NoticeHtmlParser.parseDetail(Jsoup.parse("<div class='other'>내용</div>"))
 
         assertThat(detail.content).isNull()
         assertThat(detail.contentImageUrl).isNull()
+        assertThat(NoticeHtmlParser.parseImageUrls(Jsoup.parse("<div class='other'><img src='https://a/b.png'></div>"))).isEmpty()
     }
 
 }

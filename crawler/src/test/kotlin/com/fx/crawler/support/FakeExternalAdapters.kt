@@ -4,11 +4,17 @@ import com.fx.common.application.port.out.WebhookPort
 import com.fx.common.domain.SlackMessage
 import com.fx.common.domain.catalog.TopicView
 import com.fx.crawler.application.port.out.MealPort
+import com.fx.common.domain.notice.EMBEDDING_DIMENSIONS
 import com.fx.crawler.application.port.out.NoticeCrawlPort
+import com.fx.crawler.application.port.out.NoticeEmbeddingPort
+import com.fx.crawler.application.port.out.NoticeImagePort
 import com.fx.crawler.application.port.out.NoticeSummaryPort
 import com.fx.crawler.application.port.out.PushPort
 import com.fx.crawler.domain.crawl.CrawledNotice
 import com.fx.crawler.domain.crawl.NoticeDetail
+import com.fx.crawler.domain.embedding.EmbeddingInput
+import com.fx.crawler.domain.embedding.EmbeddingRejectedException
+import com.fx.crawler.domain.embedding.EmbeddingUnavailableException
 import com.fx.crawler.domain.meal.Meal
 import com.fx.crawler.domain.push.PushMessage
 import com.fx.crawler.domain.push.PushTarget
@@ -39,6 +45,10 @@ class FakeExternalAdapters {
         FakeMealPort()
     @Bean @Primary fun fakeNoticeSummaryPort() =
         FakeNoticeSummaryPort()
+    @Bean @Primary fun fakeNoticeEmbeddingPort() =
+        FakeNoticeEmbeddingPort()
+    @Bean @Primary fun fakeNoticeImagePort() =
+        FakeNoticeImagePort()
     @Bean @Primary fun fakeReadingRoomRemotePort() =
         FakeReadingRoomRemotePort()
     @Bean @Primary fun fakeWebhookPort() =
@@ -158,6 +168,105 @@ class FakeNoticeSummaryPort : NoticeSummaryPort {
     fun reset() {
         failingContents.clear()
         rateLimited = false
+    }
+
+}
+
+/** 입력마다 한 칸만 1 인 단위 벡터를 돌려준다. 텍스트는 글자 수 칸, 이미지는 마지막 칸. */
+class FakeNoticeEmbeddingPort : NoticeEmbeddingPort {
+
+    override val modelTag: String = "fake-embedding@$EMBEDDING_DIMENSIONS"
+
+    /** 받은 요청 (본문 조각 묶음 하나, 이미지 한 장, 제목 하나가 각각 요청 하나) */
+    val calls = ConcurrentLinkedQueue<List<EmbeddingInput>>()
+
+    /** 이 글이 들어간 텍스트를 받으면 실패한다 */
+    val failingTexts: MutableSet<String> = ConcurrentHashMap.newKeySet()
+
+    /** 이 형식의 이미지는 모델이 받지 않는다 (400) */
+    val rejectedMimeTypes: MutableSet<String> = ConcurrentHashMap.newKeySet()
+
+    /** 켜면 모든 요청이 호출 한도에 걸린다 */
+    @Volatile var rateLimited = false
+
+    override fun checkAvailable() {
+        if (rateLimited) {
+            throw EmbeddingUnavailableException("429 RESOURCE_EXHAUSTED")
+        }
+    }
+
+    override fun embed(inputs: List<EmbeddingInput>): List<FloatArray> {
+        checkAvailable()
+        calls += inputs
+        inputs.forEach { input ->
+            when (input) {
+                is EmbeddingInput.Text -> check(failingTexts.none { input.text.contains(it) }) {
+                    "임베딩 응답 없음"
+                }
+                is EmbeddingInput.Image -> if (input.mimeType in rejectedMimeTypes) {
+                    throw EmbeddingRejectedException("400 INVALID_ARGUMENT")
+                }
+            }
+        }
+        return inputs.map { input ->
+            val index = when (input) {
+                is EmbeddingInput.Text -> input.text.length % (EMBEDDING_DIMENSIONS - 1)
+                is EmbeddingInput.Image -> EMBEDDING_DIMENSIONS - 1
+            }
+            FloatArray(EMBEDDING_DIMENSIONS).also {
+                it[index] = 1f
+            }
+        }
+    }
+
+    fun reset() {
+        calls.clear()
+        failingTexts.clear()
+        rejectedMimeTypes.clear()
+        rateLimited = false
+    }
+
+}
+
+/** 상세 페이지 주소 → 본문 이미지 주소, 이미지 주소 → 이미지. 없는 이미지는 건너뛴 이미지(null)로 본다. */
+class FakeNoticeImagePort : NoticeImagePort {
+
+    val pages = ConcurrentHashMap<String, List<String>>()
+    val images = ConcurrentHashMap<String, EmbeddingInput.Image>()
+
+    /** 이 상세 페이지를 읽으면 학교 사이트 오류가 난다 */
+    val failingPages: MutableSet<String> = ConcurrentHashMap.newKeySet()
+
+    /** 읽으려 한 상세 페이지 (학교 사이트 요청) */
+    val visitedPages = ConcurrentLinkedQueue<String>()
+
+    /** 켜면 학교 사이트 장애로 요청을 멈춘 상태가 된다 */
+    @Volatile var paused = false
+
+    override fun checkAvailable() {
+        if (paused) {
+            throw EmbeddingUnavailableException("학교 사이트 장애로 요청하지 않음")
+        }
+    }
+
+    override fun findImageUrls(contentUrl: String): List<String> {
+        checkAvailable()
+        visitedPages += contentUrl
+        check(contentUrl !in failingPages) {
+            "학교 사이트 오류 500 - $contentUrl"
+        }
+        return pages[contentUrl].orEmpty()
+    }
+
+    override fun fetchImage(imageUrl: String): EmbeddingInput.Image? =
+        images[imageUrl]
+
+    fun reset() {
+        pages.clear()
+        images.clear()
+        failingPages.clear()
+        visitedPages.clear()
+        paused = false
     }
 
 }
