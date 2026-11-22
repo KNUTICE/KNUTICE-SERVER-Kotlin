@@ -42,6 +42,21 @@ api-log:
   batch-size: 500
   flush-interval: 1s
 
+# 공지 질문(RAG). 서버는 검색 · 프롬프트만 만들고, 답변은 앱 · 관리자 웹이 사용자 개인 AI 키(팩트챗 · Gemini)로 직접 받는다
+# api-key 는 질문 임베딩에만 쓰는 서버 무료 등급 Gemini 키 (결제 연결 키 금지). 비어 있으면 질문 API 만 503
+notice-question:
+  api-key: ${GEMINI_API_KEY:}
+  secret: ${NOTICE_QUESTION_SECRET:${JWT_SECRET_KEY}} # 기기 해시 · finishToken 서명 (32자 이상)
+  embedding-model: gemini-embedding-2 # crawler 의 공지 임베딩 모델과 같아야 한다
+  app-daily-limit: 3      # 앱 기기마다 하루 질문 수 (근거를 못 찾은 질문은 세지 않음)
+  admin-daily-limit: 50   # 관리자 전체 하루 질문 수
+  total-daily-limit: 300  # 서버 전체 하루 질문 수. 질문마다 서버 키로 임베딩 1회 (crawler 와 무료 한도를 나눠 씀)
+  reset-hour: 0           # 하루 한도 초기화 (한국시간)
+  finish-token-ttl: 10m   # 프롬프트를 받은 뒤 답변을 돌려줘야 하는 시간
+  decay-per-year: 0.04    # 공지가 올라온 지 1년마다 빼는 점수 (11/19 점검: 1위 적중 9 → 23 / 33)
+  title-penalty: 0.0
+  min-similarity: 0.60    # 근거 공지 최고 유사도가 이보다 낮으면 NOT_FOUND (AI 를 부를 필요 없음)
+
 file:
   upload-dir: ${FILE_UPLOAD_DIR}
   context-path: ${FILE_CONTEXT_PATH}
