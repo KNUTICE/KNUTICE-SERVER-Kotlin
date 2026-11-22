@@ -56,6 +56,7 @@ notice-question:
   decay-per-year: 0.04    # 공지가 올라온 지 1년마다 빼는 점수 (11/19 점검: 1위 적중 9 → 23 / 33)
   title-penalty: 0.0
   min-similarity: 0.60    # 근거 공지 최고 유사도가 이보다 낮으면 NOT_FOUND (AI 를 부를 필요 없음)
+  compare-daily-limit: 100 # 관리자 검색 비교가 하루에 새로 임베딩하는 질문 수 (같은 질문은 다시 세지 않음)
 
 file:
   upload-dir: ${FILE_UPLOAD_DIR}

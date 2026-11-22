@@ -1,5 +1,6 @@
 package com.fx.api.adapter.`in`.web.question.dto
 
+import com.fx.api.application.port.`in`.question.dto.CompareSearchCommand
 import com.fx.api.application.port.`in`.question.dto.FinishQuestionCommand
 import com.fx.api.application.port.`in`.question.dto.PrepareQuestionCommand
 import com.fx.api.application.port.`in`.question.dto.QuestionAsker
@@ -57,6 +58,37 @@ data class NoticeQuestionAdminPrepareRequest(
     fun toCommand(userId: String): PrepareQuestionCommand =
         PrepareQuestionCommand(
             asker = QuestionAsker.Admin(userId),
+            question = normalize(question),
+            decayPerYear = decayPerYear,
+            titlePenalty = titlePenalty,
+            topNotices = topNotices,
+        )
+}
+
+/** 관리자 검색 비교. A 는 항상 유사도만, B 는 이 검색 설정 (비우면 서버 기본값) */
+data class NoticeSearchCompareRequest(
+
+    @field:NotBlank
+    @field:Size(min = QUESTION_MIN_LENGTH, max = QUESTION_MAX_LENGTH)
+    val question: String,
+
+    /** B: 공지가 올라온 지 1년마다 빼는 점수 */
+    @field:DecimalMin("0.0")
+    @field:DecimalMax("0.2")
+    val decayPerYear: Double? = null,
+
+    /** B: 제목만 있는 청크에서 빼는 점수 */
+    @field:DecimalMin("0.0")
+    @field:DecimalMax("0.2")
+    val titlePenalty: Double? = null,
+
+    /** 양쪽에 보여 줄 공지 수 (기본 10) */
+    @field:Min(1)
+    @field:Max(20)
+    val topNotices: Int? = null,
+) {
+    fun toCommand(): CompareSearchCommand =
+        CompareSearchCommand(
             question = normalize(question),
             decayPerYear = decayPerYear,
             titlePenalty = titlePenalty,

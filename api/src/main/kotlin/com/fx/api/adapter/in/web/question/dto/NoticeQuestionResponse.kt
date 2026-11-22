@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fx.api.domain.question.FinishedQuestion
 import com.fx.api.domain.question.NoticeChunkHit
 import com.fx.api.domain.question.NoticeQuestionStatus
+import com.fx.api.domain.question.NoticeSearchComparison
+import com.fx.api.domain.question.NoticeSource
 import com.fx.api.domain.question.NoticeSourceInfo
 import com.fx.api.domain.question.PreparedQuestion
 import com.fx.api.domain.question.QuestionQuota
@@ -181,5 +183,87 @@ data class NoticeQuestionFinishResponse(
                 citedNumbers = result.citedNumbers,
                 sources = result.sources.map(NoticeQuestionSourceResponse::from),
             )
+    }
+}
+
+/**
+ * 관리자 검색 비교. A([baseline]) 는 유사도만, B([ranked]) 는 검색 설정을 적용한 점수 순이고 둘 다 공지 단위다.
+ *
+ * @property embeddingCached 같은 질문을 이미 임베딩해 둬서 이번에 서버 키를 쓰지 않았으면 true
+ * @property usage 오늘 검색 비교가 새로 임베딩한 질문 수
+ */
+data class NoticeSearchCompareResponse(
+    val decayPerYear: Double,
+    val titlePenalty: Double,
+    val minSimilarity: Double,
+    val embeddingCached: Boolean,
+    val elapsedMs: Int,
+    val usage: NoticeQuestionQuotaResponse,
+    val baseline: List<Row>,
+    val ranked: List<Row>,
+) {
+
+    /** 공지 하나. 청크 정보는 그 공지에서 점수가 가장 높은 청크 */
+    data class Row(
+        val rank: Int,
+        val nttId: Long,
+        val title: String,
+        val boardName: String?,
+        val registrationDate: LocalDate,
+        val contentUrl: String,
+        val chunkIndex: Int,
+        val chunkType: NoticeChunkType,
+        val similarity: Double,
+        val score: Double,
+        /** 반대쪽 목록에서의 순위. 반대쪽에 없으면 null */
+        val otherRank: Int?,
+        /** 청크 본문 앞부분 (제목 줄 제외) */
+        val snippet: String,
+    )
+
+    companion object {
+
+        private const val SNIPPET_LENGTH = 160
+
+        fun from(result: NoticeSearchComparison): NoticeSearchCompareResponse {
+            val baselineRanks = result.baseline.associate {
+                it.noticeId to it.n
+            }
+            val rankedRanks = result.ranked.associate {
+                it.noticeId to it.n
+            }
+            return NoticeSearchCompareResponse(
+                decayPerYear = result.ranking.decayPerYear,
+                titlePenalty = result.ranking.titlePenalty,
+                minSimilarity = result.minSimilarity,
+                embeddingCached = result.embeddingCached,
+                elapsedMs = result.elapsedMs,
+                usage = NoticeQuestionQuotaResponse.from(result.usage),
+                baseline = result.baseline.map {
+                    toRow(it, rankedRanks[it.noticeId])
+                },
+                ranked = result.ranked.map {
+                    toRow(it, baselineRanks[it.noticeId])
+                },
+            )
+        }
+
+        private fun toRow(source: NoticeSource, otherRank: Int?): Row {
+            val hit = source.hits.first()
+            return Row(
+                rank = source.n,
+                nttId = source.nttId,
+                title = source.title,
+                boardName = source.boardName,
+                registrationDate = source.registrationDate,
+                contentUrl = source.contentUrl,
+                chunkIndex = hit.chunkIndex,
+                chunkType = hit.chunkType,
+                similarity = hit.similarity,
+                score = hit.score,
+                otherRank = otherRank,
+                snippet = hit.body.replace('\n', ' ').take(SNIPPET_LENGTH),
+            )
+        }
     }
 }

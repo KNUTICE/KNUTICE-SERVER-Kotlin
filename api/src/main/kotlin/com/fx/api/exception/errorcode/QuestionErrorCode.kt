@@ -16,6 +16,7 @@ enum class QuestionErrorCode(
     FINISH_TOKEN_INVALID(HttpStatus.FORBIDDEN, "답변을 저장할 수 있는 시간이 지났거나 올바르지 않은 요청입니다. 다시 질문해 주세요."),
     ALREADY_FINISHED(HttpStatus.CONFLICT, "이미 답변을 저장했거나 근거 공지가 없는 질문입니다."),
     ANSWER_EMPTY(HttpStatus.BAD_REQUEST, "답변이 비어 있습니다."),
+    COMPARE_DAILY_LIMIT_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "오늘 검색 비교에 쓸 수 있는 새 질문 수를 모두 썼습니다. 이미 검색한 질문은 계속 비교할 수 있습니다."),
     ;
 
     override fun getHttpStatus(): HttpStatus =
